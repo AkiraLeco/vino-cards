@@ -10,11 +10,24 @@ export const CONDITIONS = {
 export type Condition = keyof typeof CONDITIONS;
 export type Status = "available" | "reserved" | "sold";
 
+export const GAMES = { pokemon: "Pokémon", riftbound: "Riftbound" } as const;
+export type Game = keyof typeof GAMES;
+export const isGame = (s: string): s is Game => s in GAMES;
+
+export const CATEGORIES = {
+  single: "Carta avulsa",
+  sealed: "Produto selado",
+  accessory: "Acessório",
+} as const;
+export type Category = keyof typeof CATEGORIES;
+
 export const LANGUAGES = ["Português", "Inglês", "Japonês", "Espanhol", "Outro"];
 
 export interface Card {
   id: string;
   api_card_id: string | null;
+  game: Game | null;
+  category: Category;
   name: string;
   set_name: string | null;
   number: string | null;

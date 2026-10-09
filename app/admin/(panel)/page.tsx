@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { brl } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
-import { cardImage, type Card } from "@/lib/types";
+import { CATEGORIES, GAMES, cardImage, type Card } from "@/lib/types";
 import StatusButtons from "@/components/StatusButtons";
 import { sellOne } from "../actions";
 
@@ -51,7 +51,12 @@ export default async function AdminList() {
           <div className="min-w-[8rem] flex-1">
             <p className="font-semibold">{c.name}</p>
             <p className="text-xs text-black/60">
-              {c.set_name} · {c.condition} · qtd {c.quantity}
+              <span className="mr-1 rounded bg-violet-100 px-1.5 py-0.5 font-semibold text-violet-800">
+                {[c.game ? GAMES[c.game] : null, CATEGORIES[c.category]].filter(Boolean).join(" · ")}
+              </span>
+              {[c.set_name, c.category === "single" ? c.condition : null, `qtd ${c.quantity}`]
+                .filter(Boolean)
+                .join(" · ")}
             </p>
           </div>
           <span className="font-bold text-violet-700">{brl(c.price)}</span>

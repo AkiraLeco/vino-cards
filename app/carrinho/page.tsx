@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCart } from "@/components/CartProvider";
+import { WHATSAPP_ORDER } from "@/lib/features";
 import { brl } from "@/lib/format";
 import { whatsappUrl } from "@/lib/whatsapp";
 
@@ -49,14 +50,20 @@ export default function CartPage() {
         <span>Total</span>
         <span className="text-violet-700">{brl(total)}</span>
       </div>
-      <a
-        href={whatsappUrl(lines, window.location.origin)}
-        target="_blank"
-        rel="noreferrer"
-        className="mt-4 block rounded-xl bg-green-500 py-3 text-center font-bold text-white"
-      >
-        Enviar pedido pelo WhatsApp
-      </a>
+      {WHATSAPP_ORDER ? (
+        <a
+          href={whatsappUrl(lines, window.location.origin)}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-4 block rounded-xl bg-green-500 py-3 text-center font-bold text-white"
+        >
+          Enviar pedido pelo WhatsApp
+        </a>
+      ) : (
+        <p className="mt-4 rounded-xl bg-black/5 py-3 text-center text-sm text-black/60">
+          O envio de pedidos está indisponível no momento.
+        </p>
+      )}
       <button onClick={clear} className="mt-3 w-full text-sm text-black/50 hover:text-black">
         Esvaziar carrinho
       </button>

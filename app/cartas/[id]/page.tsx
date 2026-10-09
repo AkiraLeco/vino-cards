@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import AddToCart from "@/components/AddToCart";
 import { brl } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
-import { CONDITIONS, cardImage, type Card } from "@/lib/types";
+import { CATEGORIES, CONDITIONS, GAMES, cardImage, type Card } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +20,12 @@ export async function generateMetadata({
   if (!data) return {};
   const c = data as Card;
   const title = `${c.name} - ${brl(c.price)}`;
-  const description = [c.set_name, c.number, CONDITIONS[c.condition], c.language]
+  const description = [
+    c.set_name,
+    c.category === "single" ? c.number : null,
+    c.category === "single" ? CONDITIONS[c.condition] : null,
+    c.category === "accessory" ? null : c.language,
+  ]
     .filter(Boolean)
     .join(" · ");
   const image = cardImage(c);
@@ -42,13 +47,16 @@ export default async function CardPage({
   if (!data) notFound();
   const card = data as Card;
 
+  const single = card.category === "single";
   const rows: [string, string | null][] = [
-    ["Coleção", card.set_name],
-    ["Número", card.number],
-    ["Raridade", card.rarity],
-    ["Estado", CONDITIONS[card.condition]],
-    ["Idioma", card.language],
-    ["Foil", card.is_foil ? "Sim" : "Não"],
+    ["Jogo", card.game ? GAMES[card.game] : null],
+    ["Tipo", CATEGORIES[card.category]],
+    [single ? "Coleção" : "Coleção / linha", card.set_name],
+    ["Número", single ? card.number : null],
+    ["Raridade", single ? card.rarity : null],
+    ["Estado", single ? CONDITIONS[card.condition] : null],
+    ["Idioma", card.category === "accessory" ? null : card.language],
+    ["Foil", single ? (card.is_foil ? "Sim" : "Não") : null],
     ["Em estoque", String(card.quantity)],
   ];
 

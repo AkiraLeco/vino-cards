@@ -4,10 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/CartProvider";
 import Header from "@/components/Header";
+import { FLOATING_WHATSAPP } from "@/lib/features";
 import { STORE_NAME } from "@/lib/format";
-
-// Botão flutuante do WhatsApp desativado temporariamente. Troque para true para reativar.
-const SHOW_FLOATING_WHATSAPP = false;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,7 +38,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               QR Code
             </Link>
           </footer>
-          {SHOW_FLOATING_WHATSAPP && process.env.NEXT_PUBLIC_WHATSAPP_NUMBER && (
+          {FLOATING_WHATSAPP && process.env.NEXT_PUBLIC_WHATSAPP_NUMBER && (
             <a
               href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`}
               target="_blank"

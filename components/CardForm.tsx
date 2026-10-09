@@ -8,7 +8,7 @@ import { brl } from "@/lib/format";
 import { compressImage } from "@/lib/image";
 import { createClient } from "@/lib/supabase/client";
 import { searchTcg, type TcgResult } from "@/lib/pokemontcg";
-import { CONDITIONS, LANGUAGES, type Card } from "@/lib/types";
+import { CATEGORIES, CONDITIONS, GAMES, LANGUAGES, type Card } from "@/lib/types";
 
 const field = "w-full rounded-lg bg-black/5 px-3 py-2 text-sm outline-none [&>option]:text-black";
 const label = "flex flex-col gap-1 text-xs text-black/70";
@@ -22,6 +22,9 @@ export default function CardForm({ card }: { card?: Card }) {
     rarity: card?.rarity ?? "",
     image_api_url: card?.image_api_url ?? "",
   });
+  const [game, setGame] = useState<string>(card?.game ?? "pokemon");
+  const [category, setCategory] = useState<string>(card?.category ?? "single");
+  const isSingle = category === "single";
   const [q, setQ] = useState("");
   const [results, setResults] = useState<TcgResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -97,6 +100,32 @@ export default function CardForm({ card }: { card?: Card }) {
 
   return (
     <div className="mx-auto max-w-2xl">
+      <div className="mb-4 grid grid-cols-2 gap-3">
+        <label className={label}>
+          Tipo de item
+          <select value={category} onChange={(e) => setCategory(e.target.value)} className={field}>
+            {Object.entries(CATEGORIES).map(([k, t]) => (
+              <option key={k} value={k}>
+                {t}
+              </option>
+            ))}
+          </select>
+        </label>
+        {category !== "accessory" && (
+          <label className={label}>
+            Jogo
+            <select value={game} onChange={(e) => setGame(e.target.value)} className={field}>
+              {Object.entries(GAMES).map(([k, t]) => (
+                <option key={k} value={k}>
+                  {t}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+      </div>
+
+      {isSingle && game === "pokemon" && (
       <div className="mb-6 rounded-xl bg-black/5 p-4 ring-1 ring-black/10">
         <p className="mb-2 text-sm font-semibold">Buscar carta na base Pokémon TCG</p>
         <div className="flex gap-2">
@@ -128,9 +157,18 @@ export default function CardForm({ card }: { card?: Card }) {
           </div>
         )}
       </div>
+      )}
+      {isSingle && game !== "pokemon" && (
+        <p className="mb-6 rounded-xl bg-black/5 p-3 text-sm text-black/70">
+          A busca automática de cartas existe só para Pokémon. Para {GAMES[game as keyof typeof GAMES]},
+          preencha os dados e envie a foto da carta.
+        </p>
+      )}
 
       <form action={saveCard} encType="multipart/form-data" className="grid gap-3 sm:grid-cols-2">
         <input type="hidden" name="id" value={card?.id ?? ""} />
+        <input type="hidden" name="game" value={game} />
+        <input type="hidden" name="category" value={category} />
         <input type="hidden" name="api_card_id" value={v.api_card_id} />
         <input type="hidden" name="image_api_url" value={v.image_api_url} />
         <input type="hidden" name="photo_urls" value={photos.join("\n")} />
@@ -145,35 +183,43 @@ export default function CardForm({ card }: { card?: Card }) {
           <input required className={field} {...bind("name")} />
         </label>
         <label className={label}>
-          Coleção
+          {isSingle ? "Coleção" : "Coleção / linha (opcional)"}
           <input className={field} {...bind("set_name")} />
         </label>
-        <label className={label}>
-          Número
-          <input className={field} {...bind("number")} />
-        </label>
-        <label className={label}>
-          Raridade
-          <input className={field} {...bind("rarity")} />
-        </label>
-        <label className={label}>
-          Idioma
-          <select name="language" defaultValue={card?.language ?? "Português"} className={field}>
-            {LANGUAGES.map((l) => (
-              <option key={l}>{l}</option>
-            ))}
-          </select>
-        </label>
-        <label className={label}>
-          Estado
-          <select name="condition" defaultValue={card?.condition ?? "NM"} className={field}>
-            {Object.entries(CONDITIONS).map(([k, t]) => (
-              <option key={k} value={k}>
-                {t}
-              </option>
-            ))}
-          </select>
-        </label>
+        {isSingle && (
+          <>
+            <label className={label}>
+              Número
+              <input className={field} {...bind("number")} />
+            </label>
+            <label className={label}>
+              Raridade
+              <input className={field} {...bind("rarity")} />
+            </label>
+          </>
+        )}
+        {category !== "accessory" && (
+          <label className={label}>
+            Idioma
+            <select name="language" defaultValue={card?.language ?? "Português"} className={field}>
+              {LANGUAGES.map((l) => (
+                <option key={l}>{l}</option>
+              ))}
+            </select>
+          </label>
+        )}
+        {isSingle && (
+          <label className={label}>
+            Estado
+            <select name="condition" defaultValue={card?.condition ?? "NM"} className={field}>
+              {Object.entries(CONDITIONS).map(([k, t]) => (
+                <option key={k} value={k}>
+                  {t}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         <label className={label}>
           Status
           <select name="status" defaultValue={card?.status ?? "available"} className={field}>
@@ -208,6 +254,7 @@ export default function CardForm({ card }: { card?: Card }) {
           />
         </label>
 
+        {isSingle && game === "pokemon" && (
         <div className="rounded-xl bg-black/5 p-3 ring-1 ring-black/10 sm:col-span-2">
           <button
             type="button"
@@ -282,6 +329,7 @@ export default function CardForm({ card }: { card?: Card }) {
             se é a coleção e o número certos.
           </p>
         </div>
+        )}
         <label className={label}>
           Quantidade
           <input name="quantity" type="number" min="0" defaultValue={card?.quantity ?? 1} className={field} />
@@ -291,7 +339,7 @@ export default function CardForm({ card }: { card?: Card }) {
           <textarea name="notes" rows={3} defaultValue={card?.notes ?? ""} className={field} />
         </label>
         <div className={`${label} sm:col-span-2`}>
-          Fotos reais da carta
+          Fotos reais do item
           <input
             type="file"
             accept="image/*"
@@ -324,9 +372,11 @@ export default function CardForm({ card }: { card?: Card }) {
             </div>
           )}
         </div>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="is_foil" defaultChecked={card?.is_foil} /> Foil / Holo
-        </label>
+        {isSingle && (
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" name="is_foil" defaultChecked={card?.is_foil} /> Foil / Holo
+          </label>
+        )}
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" name="featured" defaultChecked={card?.featured} /> Destaque
         </label>

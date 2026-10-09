@@ -39,15 +39,21 @@ export async function saveCard(form: FormData) {
     .split("\n")
     .filter(Boolean);
 
+  const category = String(form.get("category") ?? "single");
+  const single = category === "single";
+  const game = category === "accessory" ? null : String(form.get("game") ?? "pokemon");
+
   const row = {
-    api_card_id: String(form.get("api_card_id") ?? "") || null,
+    game,
+    category,
+    api_card_id: single ? String(form.get("api_card_id") ?? "") || null : null,
     name: String(form.get("name")),
     set_name: String(form.get("set_name") ?? "") || null,
-    number: String(form.get("number") ?? "") || null,
-    rarity: String(form.get("rarity") ?? "") || null,
-    language: String(form.get("language")),
-    condition: String(form.get("condition")),
-    is_foil: form.get("is_foil") === "on",
+    number: single ? String(form.get("number") ?? "") || null : null,
+    rarity: single ? String(form.get("rarity") ?? "") || null : null,
+    language: String(form.get("language") ?? "Português"),
+    condition: single ? String(form.get("condition") ?? "NM") : "NM",
+    is_foil: single && form.get("is_foil") === "on",
     price: num(form.get("price")) ?? 0,
     ref_price: num(form.get("ref_price")),
     quantity:

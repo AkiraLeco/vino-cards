@@ -7,6 +7,8 @@ create table if not exists public.cards (
   set_name text,
   number text,
   rarity text,
+  game text default 'pokemon' check (game is null or game in ('pokemon', 'riftbound')),
+  category text not null default 'single' check (category in ('single', 'sealed', 'accessory')),
   language text not null default 'Português',
   condition text not null default 'NM' check (condition in ('M','NM','SP','MP','HP','D')),
   is_foil boolean not null default false,

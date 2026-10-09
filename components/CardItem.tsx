@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { brl } from "@/lib/format";
-import { cardImage, type Card } from "@/lib/types";
+import { GAMES, cardImage, type Card } from "@/lib/types";
 
 const STATUS_LABEL = { available: "", reserved: "RESERVADA", sold: "VENDIDA" };
 
@@ -20,7 +20,7 @@ export default function CardItem({ card }: { card: Card }) {
           loading="lazy"
           className={`h-full w-full rounded-sm object-contain ${sold ? "opacity-40" : reserved ? "opacity-70" : ""}`}
         />
-        {card.is_foil && (
+        {card.category === "single" && card.is_foil && (
           <span className="absolute left-0 top-[48%] bg-red-400/90 px-2 py-1 text-xs font-semibold uppercase text-white">
             Foil
           </span>
@@ -35,10 +35,19 @@ export default function CardItem({ card }: { card: Card }) {
       </div>
       <h3 className="mt-2 line-clamp-2 min-h-[2.25rem] text-sm leading-tight sm:mt-3 sm:min-h-[2.5rem] sm:text-lg">
         {card.name}
-        {card.number && <span className="text-black/60"> (#{card.number})</span>}
+        {card.category === "single" && card.number && (
+          <span className="text-black/60"> (#{card.number})</span>
+        )}
       </h3>
       <p className="line-clamp-1 text-[11px] text-black/50 sm:text-xs">
-        {card.set_name} · {card.condition} · {card.language}
+        {[
+          card.game ? GAMES[card.game] : null,
+          card.set_name,
+          card.category === "single" ? card.condition : null,
+          card.category === "accessory" ? null : card.language,
+        ]
+          .filter(Boolean)
+          .join(" · ")}
       </p>
       <div className="mt-2 flex items-baseline justify-between gap-1">
         <span className="text-xs sm:text-sm">{card.quantity} un.</span>
