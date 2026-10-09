@@ -30,7 +30,7 @@ export default async function CardPage({
 
   return (
     <div>
-      <Link href="/" className="text-sm text-white/60 hover:text-white">
+      <Link href="/" className="text-sm text-black/60 hover:text-black">
         ← Voltar
       </Link>
       <div className="mt-4 grid gap-8 md:grid-cols-2">
@@ -45,30 +45,30 @@ export default async function CardPage({
             <div className="flex justify-center gap-2">
               {[...card.photo_urls, card.image_api_url].map((u) => (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img key={u} src={u} alt="" className="h-20 rounded bg-white/5 object-contain" />
+                <img key={u} src={u} alt="" className="h-20 rounded bg-black/5 object-contain" />
               ))}
             </div>
           )}
         </div>
         <div className="flex flex-col gap-4">
           <h1 className="text-3xl font-extrabold">{card.name}</h1>
-          <p className="text-4xl font-extrabold text-yellow-400">{brl(card.price)}</p>
+          <p className="text-4xl font-extrabold text-violet-700">{brl(card.price)}</p>
           {card.ref_price != null && (
-            <p className="text-sm text-white/60">
+            <p className="text-sm text-black/60">
               Preço de referência: {brl(card.ref_price)}
             </p>
           )}
-          <dl className="divide-y divide-white/10 rounded-xl bg-white/5 ring-1 ring-white/10">
+          <dl className="divide-y divide-black/10 rounded-xl bg-black/5 ring-1 ring-black/10">
             {rows.map(([k, v]) =>
               v ? (
                 <div key={k} className="flex justify-between px-4 py-2 text-sm">
-                  <dt className="text-white/60">{k}</dt>
+                  <dt className="text-black/60">{k}</dt>
                   <dd className="font-semibold">{v}</dd>
                 </div>
               ) : null,
             )}
           </dl>
-          {card.notes && <p className="text-sm text-white/80">{card.notes}</p>}
+          {card.notes && <p className="text-sm text-black/80">{card.notes}</p>}
           <AddToCart card={card} />
         </div>
       </div>

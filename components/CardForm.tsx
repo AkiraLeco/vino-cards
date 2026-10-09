@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import { saveCard } from "@/app/admin/actions";
+import { fetchLigaPrice, type LigaResult } from "@/app/admin/liga";
+import { ligaSearchUrl, type LigaOffer } from "@/lib/liga";
+import { brl } from "@/lib/format";
 import { searchTcg, type TcgResult } from "@/lib/pokemontcg";
 import { CONDITIONS, LANGUAGES, type Card } from "@/lib/types";
 
-const field = "w-full rounded-lg bg-white/10 px-3 py-2 text-sm outline-none [&>option]:text-black";
-const label = "flex flex-col gap-1 text-xs text-white/70";
+const field = "w-full rounded-lg bg-black/5 px-3 py-2 text-sm outline-none [&>option]:text-black";
+const label = "flex flex-col gap-1 text-xs text-black/70";
 
 export default function CardForm({ card }: { card?: Card }) {
   const [v, setV] = useState({
@@ -20,6 +23,23 @@ export default function CardForm({ card }: { card?: Card }) {
   const [q, setQ] = useState("");
   const [results, setResults] = useState<TcgResult[]>([]);
   const [loading, setLoading] = useState(false);
+  const [price, setPrice] = useState(card?.price != null ? String(card.price) : "");
+  const [refPrice, setRefPrice] = useState(card?.ref_price != null ? String(card.ref_price) : "");
+  const [setCode, setSetCode] = useState("");
+  const [liga, setLiga] = useState<LigaResult | null>(null);
+  const [ligaLoading, setLigaLoading] = useState(false);
+
+  async function lookupPrice() {
+    setLigaLoading(true);
+    setLiga(null);
+    setLiga(await fetchLigaPrice({ name: v.name, number: v.number, setCode }));
+    setLigaLoading(false);
+  }
+
+  function applyPrice(o: LigaOffer, value: number) {
+    setPrice(value.toFixed(2));
+    setRefPrice((o.avg || value).toFixed(2));
+  }
 
   async function search() {
     setLoading(true);
@@ -36,6 +56,8 @@ export default function CardForm({ card }: { card?: Card }) {
       rarity: r.rarity ?? "",
       image_api_url: r.images.large,
     });
+    setSetCode(r.set.ptcgoCode ?? "");
+    setLiga(null);
     setResults([]);
   }
 
@@ -47,7 +69,7 @@ export default function CardForm({ card }: { card?: Card }) {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="mb-6 rounded-xl bg-white/5 p-4 ring-1 ring-white/10">
+      <div className="mb-6 rounded-xl bg-black/5 p-4 ring-1 ring-black/10">
         <p className="mb-2 text-sm font-semibold">Buscar carta na base Pokémon TCG</p>
         <div className="flex gap-2">
           <input
@@ -62,7 +84,7 @@ export default function CardForm({ card }: { card?: Card }) {
             placeholder="Ex: Charizard (nome em inglês)"
             className={field}
           />
-          <button type="button" onClick={search} className="rounded-lg bg-yellow-400 px-4 text-sm font-bold text-black">
+          <button type="button" onClick={search} className="rounded-lg bg-violet-700 px-4 text-sm font-bold text-white">
             {loading ? "..." : "Buscar"}
           </button>
         </div>
@@ -134,12 +156,91 @@ export default function CardForm({ card }: { card?: Card }) {
         </label>
         <label className={label}>
           Preço (R$)
-          <input name="price" type="number" step="0.01" min="0" required defaultValue={card?.price} className={field} />
+          <input
+            name="price"
+            type="number"
+            step="0.01"
+            min="0"
+            required
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            className={field}
+          />
         </label>
         <label className={label}>
           Preço de referência (R$, opcional)
-          <input name="ref_price" type="number" step="0.01" min="0" defaultValue={card?.ref_price ?? ""} className={field} />
+          <input
+            name="ref_price"
+            type="number"
+            step="0.01"
+            min="0"
+            value={refPrice}
+            onChange={(e) => setRefPrice(e.target.value)}
+            className={field}
+          />
         </label>
+
+        <div className="rounded-xl bg-black/5 p-3 ring-1 ring-black/10 sm:col-span-2">
+          <button
+            type="button"
+            disabled={!v.name || ligaLoading}
+            onClick={lookupPrice}
+            className="rounded-lg bg-blue-500 px-4 py-2 text-sm font-bold disabled:opacity-50"
+          >
+            {ligaLoading ? "Consultando..." : "Ver preço na LigaPokémon"}
+          </button>
+          {liga?.error && <p className="mt-2 text-sm text-red-400">{liga.error}</p>}
+          {liga && !liga.error && liga.offers.length === 0 && (
+            <p className="mt-2 text-sm text-black/70">
+              Não encontrei essa carta na Liga.{" "}
+              <a
+                href={ligaSearchUrl(v.name)}
+                target="_blank"
+                rel="noreferrer"
+                className="underline"
+              >
+                Abrir busca na Liga
+              </a>
+            </p>
+          )}
+          {liga && liga.offers.length > 0 && (
+            <ul className="mt-3 flex flex-col gap-2">
+              {liga.offers.map((o) => (
+                <li key={o.url} className="rounded-lg bg-white p-2 text-xs ring-1 ring-black/10">
+                  <a href={o.url} target="_blank" rel="noreferrer" className="font-semibold underline">
+                    {o.name} · {o.edition} #{o.num}
+                  </a>
+                  {o.avg > 0 ? (
+                    <div className="mt-1 flex flex-wrap gap-2">
+                      {(
+                        [
+                          ["Mín", o.min],
+                          ["Médio", o.avg],
+                          ["Máx", o.max],
+                        ] as const
+                      ).map(([t, val]) => (
+                        <button
+                          type="button"
+                          key={t}
+                          onClick={() => applyPrice(o, val)}
+                          className="rounded bg-violet-700 px-2 py-1 font-bold text-white"
+                        >
+                          {t}: {brl(val)}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-1 text-black/60">Sem ofertas no momento.</p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+          <p className="mt-2 text-[11px] text-black/50">
+            Clique em um valor para preencher o preço (a média vira o preço de referência). Confira
+            se é a coleção e o número certos.
+          </p>
+        </div>
         <label className={label}>
           Quantidade
           <input name="quantity" type="number" min="0" defaultValue={card?.quantity ?? 1} className={field} />
@@ -158,7 +259,7 @@ export default function CardForm({ card }: { card?: Card }) {
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" name="featured" defaultChecked={card?.featured} /> Destaque
         </label>
-        <button className="rounded-lg bg-yellow-400 py-3 font-bold text-black sm:col-span-2">
+        <button className="rounded-lg bg-violet-700 py-3 font-bold text-white sm:col-span-2">
           Salvar carta
         </button>
       </form>

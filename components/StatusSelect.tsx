@@ -14,7 +14,7 @@ export default function StatusSelect({ id, status }: { id: string; status: strin
         f.set("status", e.target.value);
         setStatus(f);
       }}
-      className="rounded bg-white/10 px-2 py-1 text-sm [&>option]:text-black"
+      className="rounded bg-black/5 px-2 py-1 text-sm [&>option]:text-black"
     >
       {Object.entries(STATUS).map(([k, v]) => (
         <option key={k} value={k}>

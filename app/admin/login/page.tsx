@@ -13,19 +13,19 @@ export default function LoginPage() {
         type="email"
         required
         placeholder="E-mail"
-        className="rounded-lg bg-white/10 px-3 py-2"
+        className="rounded-lg bg-black/5 px-3 py-2"
       />
       <input
         name="password"
         type="password"
         required
         placeholder="Senha"
-        className="rounded-lg bg-white/10 px-3 py-2"
+        className="rounded-lg bg-black/5 px-3 py-2"
       />
       {error && <p className="text-sm text-red-400">{error}</p>}
       <button
         disabled={pending}
-        className="rounded-lg bg-yellow-400 py-2 font-bold text-black disabled:opacity-50"
+        className="rounded-lg bg-violet-700 py-2 font-bold text-white disabled:opacity-50"
       >
         Entrar
       </button>

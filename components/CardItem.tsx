@@ -2,40 +2,44 @@ import Link from "next/link";
 import { brl } from "@/lib/format";
 import { cardImage, type Card } from "@/lib/types";
 
-const STATUS_LABEL = { available: "", reserved: "Reservada", sold: "Vendida" };
+const STATUS_LABEL = { available: "", reserved: "RESERVADA", sold: "VENDIDA" };
 
 export default function CardItem({ card }: { card: Card }) {
   const unavailable = card.status !== "available" || card.quantity < 1;
   return (
     <Link
       href={`/cartas/${card.id}`}
-      className="group flex flex-col overflow-hidden rounded-xl bg-white/5 ring-1 ring-white/10 transition hover:ring-yellow-400"
+      className="group flex flex-col rounded-md bg-white p-3 shadow-[0_1px_6px_rgba(0,0,0,0.12)] transition hover:shadow-[0_4px_14px_rgba(0,0,0,0.2)]"
     >
-      <div className="relative aspect-[5/7] bg-black/30 p-2">
+      <div className="relative aspect-[5/7]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={cardImage(card)}
           alt={card.name}
           loading="lazy"
-          className={`h-full w-full object-contain transition group-hover:scale-105 ${unavailable ? "opacity-40" : ""}`}
+          className={`h-full w-full rounded-sm object-contain ${unavailable ? "opacity-40" : ""}`}
         />
-        <span className="absolute left-2 top-2 rounded bg-black/70 px-2 py-0.5 text-xs font-bold">
-          {card.condition}
-        </span>
+        {card.is_foil && (
+          <span className="absolute left-0 top-[48%] bg-red-400/90 px-2 py-1 text-xs font-semibold uppercase text-white">
+            Foil
+          </span>
+        )}
         {card.status !== "available" && (
-          <span className="absolute right-2 top-2 rounded bg-red-600 px-2 py-0.5 text-xs font-bold">
+          <span className="absolute right-1 top-1 rounded bg-red-600 px-2 py-0.5 text-xs font-bold text-white">
             {STATUS_LABEL[card.status]}
           </span>
         )}
       </div>
-      <div className="flex flex-1 flex-col gap-1 p-3">
-        <h3 className="line-clamp-2 text-sm font-semibold">{card.name}</h3>
-        <p className="text-xs text-white/60">
-          {card.set_name} {card.number && `· ${card.number}`}
-        </p>
-        <p className="mt-auto pt-2 text-lg font-extrabold text-yellow-400">
-          {brl(card.price)}
-        </p>
+      <h3 className="mt-3 line-clamp-2 min-h-[2.5rem] text-lg leading-tight">
+        {card.name}
+        {card.number && <span className="text-black/60"> (#{card.number})</span>}
+      </h3>
+      <p className="text-xs text-black/50">
+        {card.set_name} · {card.condition} · {card.language}
+      </p>
+      <div className="mt-2 flex items-baseline justify-between">
+        <span className="text-sm">{card.quantity} un.</span>
+        <span className="font-mono text-lg font-bold">{brl(card.price)}</span>
       </div>
     </Link>
   );

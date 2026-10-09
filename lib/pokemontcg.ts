@@ -3,7 +3,7 @@ export interface TcgResult {
   name: string;
   number: string;
   rarity?: string;
-  set: { name: string };
+  set: { name: string; ptcgoCode?: string };
   images: { small: string; large: string };
 }
 

@@ -16,18 +16,18 @@ export default async function AdminList() {
 
   return (
     <div className="flex flex-col gap-2">
-      {cards.length === 0 && <p className="text-white/60">Nenhuma carta cadastrada ainda.</p>}
+      {cards.length === 0 && <p className="text-black/60">Nenhuma carta cadastrada ainda.</p>}
       {cards.map((c) => (
-        <div key={c.id} className="flex items-center gap-3 rounded-xl bg-white/5 p-3 ring-1 ring-white/10">
+        <div key={c.id} className="flex items-center gap-3 rounded-xl bg-black/5 p-3 ring-1 ring-black/10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={cardImage(c)} alt="" className="h-16 w-12 object-contain" />
           <div className="flex-1">
             <p className="font-semibold">{c.name}</p>
-            <p className="text-xs text-white/60">
+            <p className="text-xs text-black/60">
               {c.set_name} · {c.condition} · qtd {c.quantity}
             </p>
           </div>
-          <span className="font-bold text-yellow-400">{brl(c.price)}</span>
+          <span className="font-bold text-violet-700">{brl(c.price)}</span>
           <StatusSelect id={c.id} status={c.status} />
           <Link href={`/admin/${c.id}`} className="text-sm underline">
             Editar
