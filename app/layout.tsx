@@ -27,14 +27,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="pt-BR"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col overflow-x-hidden">
         <CartProvider>
           <Header />
           <div className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6">{children}</div>
-          <footer className="bg-[#313131] py-6 text-center text-xs text-white/70 print:hidden">
+          <footer className="bg-[#313131] px-4 py-6 text-center text-xs text-white/70 print:hidden">
             {STORE_NAME} · Cartas Pokémon ·{" "}
             <Link href="/qr" className="underline">
               QR Code
+            </Link>{" "}
+            ·{" "}
+            <Link href="/admin" className="underline">
+              Área do vendedor
             </Link>
           </footer>
           {process.env.NEXT_PUBLIC_WHATSAPP_NUMBER && (
@@ -42,7 +46,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`}
               target="_blank"
               rel="noreferrer"
-              className="fixed bottom-5 right-5 z-50 print:hidden rounded-full bg-green-500 px-5 py-3 text-sm font-bold text-white shadow-lg hover:bg-green-600"
+              className="fixed bottom-4 right-4 z-50 print:hidden rounded-full bg-green-500 px-4 py-2.5 text-xs font-bold sm:px-5 sm:py-3 sm:text-sm text-white shadow-lg hover:bg-green-600"
             >
               WhatsApp
             </a>

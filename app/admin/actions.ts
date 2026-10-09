@@ -82,3 +82,16 @@ export async function setStatus(form: FormData) {
     .eq("id", String(form.get("id")));
   revalidatePath("/", "layout");
 }
+
+export async function sellOne(form: FormData) {
+  const supabase = await requireUser();
+  const id = String(form.get("id"));
+  const { data } = await supabase.from("cards").select("quantity").eq("id", id).single();
+  if (!data) return;
+  const quantity = Math.max(0, data.quantity - 1);
+  await supabase
+    .from("cards")
+    .update(quantity === 0 ? { quantity, status: "sold" } : { quantity })
+    .eq("id", id);
+  revalidatePath("/", "layout");
+}

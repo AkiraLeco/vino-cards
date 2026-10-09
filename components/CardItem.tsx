@@ -9,7 +9,7 @@ export default function CardItem({ card }: { card: Card }) {
   return (
     <Link
       href={`/cartas/${card.id}`}
-      className="group flex flex-col rounded-md bg-white p-3 shadow-[0_1px_6px_rgba(0,0,0,0.12)] transition hover:shadow-[0_4px_14px_rgba(0,0,0,0.2)]"
+      className="group flex flex-col rounded-md bg-white p-2 sm:p-3 shadow-[0_1px_6px_rgba(0,0,0,0.12)] transition hover:shadow-[0_4px_14px_rgba(0,0,0,0.2)]"
     >
       <div className="relative aspect-[5/7]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -30,16 +30,16 @@ export default function CardItem({ card }: { card: Card }) {
           </span>
         )}
       </div>
-      <h3 className="mt-3 line-clamp-2 min-h-[2.5rem] text-lg leading-tight">
+      <h3 className="mt-2 line-clamp-2 min-h-[2.25rem] text-sm leading-tight sm:mt-3 sm:min-h-[2.5rem] sm:text-lg">
         {card.name}
         {card.number && <span className="text-black/60"> (#{card.number})</span>}
       </h3>
-      <p className="text-xs text-black/50">
+      <p className="line-clamp-1 text-[11px] text-black/50 sm:text-xs">
         {card.set_name} · {card.condition} · {card.language}
       </p>
-      <div className="mt-2 flex items-baseline justify-between">
-        <span className="text-sm">{card.quantity} un.</span>
-        <span className="font-mono text-lg font-bold">{brl(card.price)}</span>
+      <div className="mt-2 flex items-baseline justify-between gap-1">
+        <span className="text-xs sm:text-sm">{card.quantity} un.</span>
+        <span className="font-mono text-base font-bold sm:text-lg">{brl(card.price)}</span>
       </div>
     </Link>
   );

@@ -63,7 +63,7 @@ export default async function Home({
     <div className="mx-auto max-w-[1400px]">
       <Filters opts={{ sets: uniq("set_name"), rarities: uniq("rarity") }} values={sp} />
 
-      <div className="mt-4 flex items-center justify-between border-b border-dotted border-teal-600/50 pb-2 text-lg">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-b border-dotted border-teal-600/50 pb-2 text-base sm:text-lg">
         <span>
           {from}-{to} de <b>{total.toLocaleString("en-US")}</b>
         </span>

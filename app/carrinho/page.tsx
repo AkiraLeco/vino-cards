@@ -24,8 +24,8 @@ export default function CartPage() {
       <h1 className="mb-4 text-2xl font-extrabold">Carrinho</h1>
       <ul className="divide-y divide-black/10 rounded-xl bg-black/5 ring-1 ring-black/10">
         {lines.map((l) => (
-          <li key={l.id} className="flex items-center gap-3 p-4">
-            <div className="flex-1">
+          <li key={l.id} className="flex flex-wrap items-center gap-3 p-4">
+            <div className="min-w-[10rem] flex-1">
               <Link href={`/cartas/${l.id}`} className="font-semibold hover:underline">
                 {l.name}
               </Link>

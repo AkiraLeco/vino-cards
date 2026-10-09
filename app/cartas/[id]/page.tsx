@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import AddToCart from "@/components/AddToCart";
@@ -6,6 +7,29 @@ import { createClient } from "@/lib/supabase/server";
 import { CONDITIONS, cardImage, type Card } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
+
+// Prévia ao compartilhar o link (WhatsApp, Instagram etc.)
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+  const { data } = await supabase.from("cards").select("*").eq("id", id).maybeSingle();
+  if (!data) return {};
+  const c = data as Card;
+  const title = `${c.name} - ${brl(c.price)}`;
+  const description = [c.set_name, c.number, CONDITIONS[c.condition], c.language]
+    .filter(Boolean)
+    .join(" · ");
+  const image = cardImage(c);
+  return {
+    title,
+    description,
+    openGraph: { title, description, images: image.startsWith("http") ? [image] : [] },
+  };
+}
 
 export default async function CardPage({
   params,
