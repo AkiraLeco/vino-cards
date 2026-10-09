@@ -5,7 +5,8 @@ import { cardImage, type Card } from "@/lib/types";
 const STATUS_LABEL = { available: "", reserved: "RESERVADA", sold: "VENDIDA" };
 
 export default function CardItem({ card }: { card: Card }) {
-  const unavailable = card.status !== "available" || card.quantity < 1;
+  const sold = card.status === "sold" || card.quantity < 1;
+  const reserved = card.status === "reserved";
   return (
     <Link
       href={`/cartas/${card.id}`}
@@ -17,7 +18,7 @@ export default function CardItem({ card }: { card: Card }) {
           src={cardImage(card)}
           alt={card.name}
           loading="lazy"
-          className={`h-full w-full rounded-sm object-contain ${unavailable ? "opacity-40" : ""}`}
+          className={`h-full w-full rounded-sm object-contain ${sold ? "opacity-40" : reserved ? "opacity-70" : ""}`}
         />
         {card.is_foil && (
           <span className="absolute left-0 top-[48%] bg-red-400/90 px-2 py-1 text-xs font-semibold uppercase text-white">
@@ -25,7 +26,9 @@ export default function CardItem({ card }: { card: Card }) {
           </span>
         )}
         {card.status !== "available" && (
-          <span className="absolute right-1 top-1 rounded bg-red-600 px-2 py-0.5 text-xs font-bold text-white">
+          <span
+            className={`absolute right-1 top-1 rounded px-2 py-0.5 text-xs font-bold text-white ${reserved ? "bg-amber-500" : "bg-red-600"}`}
+          >
             {STATUS_LABEL[card.status]}
           </span>
         )}

@@ -93,6 +93,16 @@ export default async function CardPage({
             )}
           </dl>
           {card.notes && <p className="text-sm text-black/80">{card.notes}</p>}
+          {card.status === "reserved" && (
+            <p className="rounded-lg bg-amber-100 p-3 text-sm font-semibold text-amber-800">
+              Esta carta está reservada para outro cliente.
+            </p>
+          )}
+          {card.status === "sold" && (
+            <p className="rounded-lg bg-red-100 p-3 text-sm font-semibold text-red-800">
+              Esta carta já foi vendida.
+            </p>
+          )}
           <AddToCart card={card} />
         </div>
       </div>

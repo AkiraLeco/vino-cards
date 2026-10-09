@@ -110,7 +110,7 @@ export default function Filters({
         </label>
         <label className="col-span-2 flex items-center gap-2 text-sm text-white lg:col-span-1 lg:pb-2">
           <input type="checkbox" name="stock" value="1" defaultChecked={stockOnly} className="h-4 w-4" />
-          Com estoque
+          Esconder vendidas
         </label>
         <div className="col-span-2 flex gap-2 lg:col-span-1">
           <button className="flex-1 rounded bg-violet-600 px-6 py-2 text-lg font-bold text-white hover:bg-violet-500">

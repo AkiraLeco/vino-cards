@@ -21,7 +21,7 @@ export default async function Home({
   const stockOnly = !sp.f || sp.stock === "1";
 
   let query = supabase.from("cards").select("*", { count: "exact" });
-  if (stockOnly) query = query.eq("status", "available").gt("quantity", 0);
+  if (stockOnly) query = query.in("status", ["available", "reserved"]);
   if (sp.q) query = query.ilike("name", `%${sp.q}%`);
   if (sp.set) query = query.eq("set_name", sp.set);
   if (sp.rarity) query = query.eq("rarity", sp.rarity);

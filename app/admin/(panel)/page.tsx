@@ -2,7 +2,7 @@ import Link from "next/link";
 import { brl } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { cardImage, type Card } from "@/lib/types";
-import StatusSelect from "@/components/StatusSelect";
+import StatusButtons from "@/components/StatusButtons";
 import { sellOne } from "../actions";
 
 export const dynamic = "force-dynamic";
@@ -55,7 +55,7 @@ export default async function AdminList() {
             </p>
           </div>
           <span className="font-bold text-violet-700">{brl(c.price)}</span>
-          <StatusSelect id={c.id} status={c.status} />
+          <StatusButtons id={c.id} status={c.status} />
           <form action={sellOne}>
             <input type="hidden" name="id" value={c.id} />
             <button

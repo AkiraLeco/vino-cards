@@ -50,7 +50,10 @@ export async function saveCard(form: FormData) {
     is_foil: form.get("is_foil") === "on",
     price: num(form.get("price")) ?? 0,
     ref_price: num(form.get("ref_price")),
-    quantity: num(form.get("quantity")) ?? 1,
+    quantity:
+      String(form.get("status")) === "available"
+        ? Math.max(1, num(form.get("quantity")) ?? 1)
+        : (num(form.get("quantity")) ?? 1),
     status: String(form.get("status")),
     image_api_url: String(form.get("image_api_url") ?? "") || null,
     photo_urls: photos,
@@ -76,10 +79,15 @@ export async function deleteCard(form: FormData) {
 
 export async function setStatus(form: FormData) {
   const supabase = await requireUser();
-  await supabase
-    .from("cards")
-    .update({ status: String(form.get("status")) })
-    .eq("id", String(form.get("id")));
+  const id = String(form.get("id"));
+  const status = String(form.get("status"));
+  const patch: { status: string; quantity?: number } = { status };
+  if (status === "available") {
+    // Voltar a "disponível" sem estoque deixaria a carta invisível: garante 1 unidade.
+    const { data } = await supabase.from("cards").select("quantity").eq("id", id).single();
+    if (data && data.quantity < 1) patch.quantity = 1;
+  }
+  await supabase.from("cards").update(patch).eq("id", id);
   revalidatePath("/", "layout");
 }
 

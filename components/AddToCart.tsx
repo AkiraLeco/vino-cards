@@ -27,7 +27,7 @@ export default function AddToCart({ card }: { card: Card }) {
       }}
       className="w-full rounded-xl bg-violet-700 py-3 font-bold text-white disabled:cursor-not-allowed disabled:bg-black/10 disabled:text-black/50"
     >
-      {disabled ? "Indisponível" : done ? "Adicionada ✓" : "Adicionar ao carrinho"}
+      {disabled ? (card.status === "reserved" ? "Reservada" : card.status === "sold" ? "Vendida" : "Indisponível") : done ? "Adicionada ✓" : "Adicionar ao carrinho"}
     </button>
   );
 }
