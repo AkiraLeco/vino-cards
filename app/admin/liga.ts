@@ -16,7 +16,9 @@ export async function fetchLigaPrice(input: {
 
   try {
     return { offers: await lookupLiga(input) };
-  } catch {
-    return { offers: [], error: "Não consegui consultar a LigaPokémon agora." };
+  } catch (e) {
+    const reason = e instanceof Error ? e.message : "erro desconhecido";
+    console.error("[liga]", reason);
+    return { offers: [], error: `Não consegui consultar a LigaPokémon (${reason}).` };
   }
 }

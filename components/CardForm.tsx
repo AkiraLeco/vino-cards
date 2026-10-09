@@ -217,7 +217,20 @@ export default function CardForm({ card }: { card?: Card }) {
           >
             {ligaLoading ? "Consultando..." : "Ver preço na LigaPokémon"}
           </button>
-          {liga?.error && <p className="mt-2 text-sm text-red-400">{liga.error}</p>}
+          {liga?.error && (
+            <p className="mt-2 text-sm text-red-600">
+              {liga.error}{" "}
+              <a
+                href={ligaSearchUrl(v.name)}
+                target="_blank"
+                rel="noreferrer"
+                className="font-semibold underline"
+              >
+                Abrir busca na Liga
+              </a>{" "}
+              e digite o preço manualmente.
+            </p>
+          )}
           {liga && !liga.error && liga.offers.length === 0 && (
             <p className="mt-2 text-sm text-black/70">
               Não encontrei essa carta na Liga.{" "}

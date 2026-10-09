@@ -37,6 +37,8 @@ async function fetchPage(query: string): Promise<LigaOffer[]> {
   });
   if (!res.ok) throw new Error(`Liga respondeu ${res.status}`);
   const html = await res.text();
+  if (/just a moment|cf-challenge|attention required/i.test(html.slice(0, 4000)))
+    throw new Error("Liga bloqueou o acesso (Cloudflare)");
 
   const offers: LigaOffer[] = [];
   for (const block of html.split('class="mtg-single"').slice(1)) {
