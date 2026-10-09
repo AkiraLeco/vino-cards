@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/CartProvider";
@@ -30,15 +31,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <CartProvider>
           <Header />
           <div className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6">{children}</div>
-          <footer className="bg-[#313131] py-6 text-center text-xs text-white/70">
-            {STORE_NAME} · Cartas Pokémon
+          <footer className="bg-[#313131] py-6 text-center text-xs text-white/70 print:hidden">
+            {STORE_NAME} · Cartas Pokémon ·{" "}
+            <Link href="/qr" className="underline">
+              QR Code
+            </Link>
           </footer>
           {process.env.NEXT_PUBLIC_WHATSAPP_NUMBER && (
             <a
               href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`}
               target="_blank"
               rel="noreferrer"
-              className="fixed bottom-5 right-5 z-50 rounded-full bg-green-500 px-5 py-3 text-sm font-bold text-white shadow-lg hover:bg-green-600"
+              className="fixed bottom-5 right-5 z-50 print:hidden rounded-full bg-green-500 px-5 py-3 text-sm font-bold text-white shadow-lg hover:bg-green-600"
             >
               WhatsApp
             </a>

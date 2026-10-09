@@ -5,6 +5,8 @@ import { saveCard } from "@/app/admin/actions";
 import { fetchLigaPrice, type LigaResult } from "@/app/admin/liga";
 import { ligaSearchUrl, type LigaOffer } from "@/lib/liga";
 import { brl } from "@/lib/format";
+import { compressImage } from "@/lib/image";
+import { createClient } from "@/lib/supabase/client";
 import { searchTcg, type TcgResult } from "@/lib/pokemontcg";
 import { CONDITIONS, LANGUAGES, type Card } from "@/lib/types";
 
@@ -28,6 +30,32 @@ export default function CardForm({ card }: { card?: Card }) {
   const [setCode, setSetCode] = useState("");
   const [liga, setLiga] = useState<LigaResult | null>(null);
   const [ligaLoading, setLigaLoading] = useState(false);
+  const [photos, setPhotos] = useState<string[]>(card?.photo_urls ?? []);
+  const [uploading, setUploading] = useState(false);
+  const [photoError, setPhotoError] = useState("");
+
+  async function uploadPhotos(files: FileList | null) {
+    if (!files?.length) return;
+    setUploading(true);
+    setPhotoError("");
+    const supabase = createClient();
+    const added: string[] = [];
+    for (const f of Array.from(files)) {
+      try {
+        const blob = await compressImage(f);
+        const path = `${crypto.randomUUID()}.jpg`;
+        const { error } = await supabase.storage
+          .from("card-photos")
+          .upload(path, blob, { contentType: "image/jpeg" });
+        if (error) throw error;
+        added.push(supabase.storage.from("card-photos").getPublicUrl(path).data.publicUrl);
+      } catch {
+        setPhotoError(`Não consegui enviar "${f.name}".`);
+      }
+    }
+    setPhotos((p) => [...p, ...added]);
+    setUploading(false);
+  }
 
   async function lookupPrice() {
     setLigaLoading(true);
@@ -105,7 +133,7 @@ export default function CardForm({ card }: { card?: Card }) {
         <input type="hidden" name="id" value={card?.id ?? ""} />
         <input type="hidden" name="api_card_id" value={v.api_card_id} />
         <input type="hidden" name="image_api_url" value={v.image_api_url} />
-        <input type="hidden" name="existing_photos" value={(card?.photo_urls ?? []).join("\n")} />
+        <input type="hidden" name="photo_urls" value={photos.join("\n")} />
 
         {v.image_api_url && (
           // eslint-disable-next-line @next/next/no-img-element
@@ -249,10 +277,40 @@ export default function CardForm({ card }: { card?: Card }) {
           Observações
           <textarea name="notes" rows={3} defaultValue={card?.notes ?? ""} className={field} />
         </label>
-        <label className={`${label} sm:col-span-2`}>
+        <div className={`${label} sm:col-span-2`}>
           Fotos reais da carta
-          <input name="photos" type="file" accept="image/*" multiple className={field} />
-        </label>
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            disabled={uploading}
+            onChange={(e) => {
+              uploadPhotos(e.target.files);
+              e.target.value = "";
+            }}
+            className={field}
+          />
+          {uploading && <span className="text-violet-700">Enviando fotos...</span>}
+          {photoError && <span className="text-red-600">{photoError}</span>}
+          {photos.length > 0 && (
+            <div className="mt-1 flex flex-wrap gap-2">
+              {photos.map((u) => (
+                <div key={u} className="relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={u} alt="" className="h-24 rounded bg-black/5 object-contain" />
+                  <button
+                    type="button"
+                    onClick={() => setPhotos(photos.filter((p) => p !== u))}
+                    className="absolute -right-2 -top-2 rounded-full bg-red-600 px-1.5 text-xs font-bold text-white"
+                    aria-label="Remover foto"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" name="is_foil" defaultChecked={card?.is_foil} /> Foil / Holo
         </label>

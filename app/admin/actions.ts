@@ -34,17 +34,10 @@ export async function saveCard(form: FormData) {
   const supabase = await requireUser();
   const id = String(form.get("id") ?? "");
 
-  const existing = String(form.get("existing_photos") ?? "")
+  // As fotos já foram enviadas ao Storage pelo navegador; aqui chegam só as URLs.
+  const photos = String(form.get("photo_urls") ?? "")
     .split("\n")
     .filter(Boolean);
-  const uploaded: string[] = [];
-  for (const f of form.getAll("photos")) {
-    if (!(f instanceof File) || f.size === 0) continue;
-    const path = `${crypto.randomUUID()}-${f.name.replace(/[^\w.-]/g, "_")}`;
-    const { error } = await supabase.storage.from("card-photos").upload(path, f);
-    if (!error)
-      uploaded.push(supabase.storage.from("card-photos").getPublicUrl(path).data.publicUrl);
-  }
 
   const row = {
     api_card_id: String(form.get("api_card_id") ?? "") || null,
@@ -60,7 +53,7 @@ export async function saveCard(form: FormData) {
     quantity: num(form.get("quantity")) ?? 1,
     status: String(form.get("status")),
     image_api_url: String(form.get("image_api_url") ?? "") || null,
-    photo_urls: [...existing, ...uploaded],
+    photo_urls: photos,
     notes: String(form.get("notes") ?? "") || null,
     featured: form.get("featured") === "on",
   };

@@ -7,7 +7,7 @@ import { STORE_NAME } from "@/lib/format";
 export default function Header() {
   const { count } = useCart();
   return (
-    <header className="sticky top-0 z-40 bg-white shadow-sm">
+    <header className="sticky top-0 z-40 bg-white shadow-sm print:hidden">
       <div className="mx-auto flex max-w-[1400px] items-center gap-4 px-4 py-3">
         <Link href="/" className="text-2xl font-extrabold tracking-tight text-violet-700">
           {STORE_NAME}
@@ -44,6 +44,9 @@ export default function Header() {
           </Link>
           <Link href="/apresentar" className="hover:text-violet-300">
             Mostrar em mãos
+          </Link>
+          <Link href="/qr" className="hover:text-violet-300">
+            QR Code
           </Link>
         </div>
       </nav>
