@@ -35,10 +35,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             {STORE_NAME} · Cartas Pokémon ·{" "}
             <Link href="/qr" className="underline">
               QR Code
-            </Link>{" "}
-            ·{" "}
-            <Link href="/admin" className="underline">
-              Área do vendedor
             </Link>
           </footer>
           {process.env.NEXT_PUBLIC_WHATSAPP_NUMBER && (
