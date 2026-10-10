@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/CartProvider";
@@ -33,7 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <SiteShell
             footer={
           <footer className="mt-10 bg-slate-900 text-white/70 print:hidden">
-            <div className="mx-auto grid max-w-[1400px] gap-8 px-4 py-10 sm:grid-cols-3">
+            <div className="mx-auto grid max-w-[1400px] gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
               <div>
                 <p className="text-lg font-extrabold text-white">{STORE_NAME}</p>
                 <p className="mt-2 text-sm">
@@ -41,19 +40,22 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 </p>
               </div>
               <div className="text-sm">
-                <p className="mb-2 font-semibold text-white">Navegar</p>
-                <ul className="space-y-1.5">
-                  <li><Link href="/pokemon/cartas" className="hover:text-white">Pokémon</Link></li>
-                  <li><Link href="/riftbound/cartas" className="hover:text-white">Riftbound</Link></li>
-                  <li><Link href="/acessorios" className="hover:text-white">Acessórios</Link></li>
-                </ul>
+                <p className="mb-2 font-semibold text-white">Atendimento</p>
+                <p>Presencial e online. Tire dúvidas e reserve itens com a gente.</p>
               </div>
               <div className="text-sm">
-                <p className="mb-2 font-semibold text-white">Compartilhe</p>
-                <ul className="space-y-1.5">
-                  <li><Link href="/qr" className="hover:text-white">QR Code da loja</Link></li>
-                  <li><Link href="/carrinho" className="hover:text-white">Meu carrinho</Link></li>
-                </ul>
+                <p className="mb-2 font-semibold text-white">Contato</p>
+                <p>
+                  {process.env.NEXT_PUBLIC_WHATSAPP_NUMBER
+                    ? `WhatsApp: ${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`
+                    : "WhatsApp: a definir"}
+                </p>
+                <p className="mt-1">E-mail: a definir</p>
+              </div>
+              <div className="text-sm">
+                <p className="mb-2 font-semibold text-white">Endereço e horário</p>
+                <p>Endereço: a definir</p>
+                <p className="mt-1">Horário: a definir</p>
               </div>
             </div>
             <p className="border-t border-white/10 py-4 text-center text-xs text-white/40">

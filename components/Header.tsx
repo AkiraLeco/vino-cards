@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "./CartProvider";
 import { STORE_NAME } from "@/lib/format";
 import { GAMES, type Game } from "@/lib/types";
@@ -12,12 +12,21 @@ const gameLinks = (g: Game) => [
   { href: `/${g}/colecoes`, label: "Coleções", indent: true },
 ];
 
-const navItem =
-  "rounded-lg px-3 py-2 text-sm font-medium text-black/70 transition hover:bg-violet-50 hover:text-violet-700";
+const iconProps = {
+  width: 20,
+  height: 20,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 2,
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  "aria-hidden": true,
+} as const;
 
 function CartIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg {...iconProps}>
       <circle cx="9" cy="21" r="1" />
       <circle cx="20" cy="21" r="1" />
       <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6" />
@@ -25,59 +34,55 @@ function CartIcon() {
   );
 }
 
+function UserIcon() {
+  return (
+    <svg {...iconProps}>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21a8 8 0 0 1 16 0" />
+    </svg>
+  );
+}
+
+function MenuIcon() {
+  return (
+    <svg {...iconProps}>
+      <path d="M3 6h18M3 12h18M3 18h18" />
+    </svg>
+  );
+}
+
+const roundBtn =
+  "relative grid h-10 w-10 shrink-0 place-items-center rounded-full border border-black/10 transition hover:border-violet-300 hover:bg-violet-50";
+
+const sideItem = "block rounded-lg px-3 py-2.5 font-medium hover:bg-violet-50 hover:text-violet-700";
+
 export default function Header() {
   const { count } = useCart();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const close = () => setMenuOpen(false);
+  const [open, setOpen] = useState(false);
+  const close = () => setOpen(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   return (
     <header className="sticky top-0 z-40 border-b border-black/5 bg-white/90 backdrop-blur print:hidden">
-      <div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
-        <Link href="/" className="flex items-center gap-2" onClick={close}>
+      <div className="mx-auto flex max-w-[1400px] items-center gap-2 px-4 py-3 sm:gap-3">
+        <button type="button" onClick={() => setOpen(true)} aria-label="Abrir menu" aria-expanded={open} className={roundBtn}>
+          <MenuIcon />
+        </button>
+
+        <Link href="/" className="flex shrink-0 items-center gap-2" onClick={close}>
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-lg font-black text-white shadow-sm">
             V
           </span>
-          <span className="text-lg font-extrabold tracking-tight sm:text-xl">{STORE_NAME}</span>
+          <span className="hidden text-lg font-extrabold tracking-tight sm:inline sm:text-xl">{STORE_NAME}</span>
         </Link>
 
-        {/* Computador: menus que abrem ao passar o mouse */}
-        <nav className="ml-4 hidden items-center gap-1 lg:flex" aria-label="Principal">
-          <Link href="/" className={navItem}>
-            Início
-          </Link>
-          {(Object.keys(GAMES) as Game[]).map((g) => (
-            <div key={g} className="group relative">
-              <Link href={`/${g}/cartas`} className={`${navItem} flex items-center gap-1 group-hover:bg-violet-50 group-hover:text-violet-700`}>
-                {GAMES[g]}
-                <span className="text-[10px]">▾</span>
-              </Link>
-              <div className="invisible absolute left-0 top-full z-50 pt-2 opacity-0 transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-                <div className="min-w-56 rounded-xl border border-black/5 bg-white p-1.5 shadow-xl">
-                  {gameLinks(g).map((l) => (
-                    <Link
-                      key={l.href}
-                      href={l.href}
-                      className={`block rounded-lg py-2 pr-3 text-sm hover:bg-violet-50 hover:text-violet-700 ${
-                        l.indent ? "pl-8 text-black/55" : "pl-3 font-medium"
-                      }`}
-                    >
-                      {l.indent && "↳ "}
-                      {l.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-          <Link href="/acessorios" className={navItem}>
-            Acessórios
-          </Link>
-          <Link href="/qr" className={navItem}>
-            QR Code
-          </Link>
-        </nav>
-
-        <form action="/busca" className="order-last flex w-full md:order-none md:ml-auto md:w-72 lg:w-80">
+        <form action="/busca" className="mx-1 flex min-w-0 flex-1 sm:mx-3 md:mx-auto md:max-w-xl">
           <input
             name="q"
             placeholder="Buscar pelo nome..."
@@ -89,46 +94,52 @@ export default function Header() {
           </button>
         </form>
 
-        <Link
-          href="/carrinho"
-          onClick={close}
-          className="relative ml-auto flex items-center gap-2 rounded-full border border-black/10 px-4 py-2 text-sm font-semibold transition hover:border-violet-300 hover:bg-violet-50 md:ml-0"
-        >
+        <Link href="/conta" aria-label="Minha conta" className={roundBtn}>
+          <UserIcon />
+        </Link>
+
+        <Link href="/carrinho" aria-label="Carrinho" className={roundBtn}>
           <CartIcon />
-          <span className="hidden sm:inline">Carrinho</span>
           {count > 0 && (
             <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-violet-600 px-1 text-[11px] font-bold text-white">
               {count}
             </span>
           )}
         </Link>
-
-        <button
-          type="button"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-expanded={menuOpen}
-          aria-label="Menu"
-          className="rounded-full border border-black/10 px-3 py-2 text-lg leading-none lg:hidden"
-        >
-          {menuOpen ? "✕" : "☰"}
-        </button>
       </div>
 
-      {/* Celular: lista completa */}
-      {menuOpen && (
-        <nav className="max-h-[70vh] overflow-y-auto border-t border-black/5 bg-white px-4 pb-4 lg:hidden" aria-label="Menu">
-          <Link href="/" onClick={close} className="block py-3 font-medium">
+      {/* Sidebar */}
+      <div className={`fixed inset-0 z-50 ${open ? "" : "pointer-events-none"}`} aria-hidden={!open}>
+        <div
+          onClick={close}
+          className={`absolute inset-0 bg-black/40 transition-opacity ${open ? "opacity-100" : "opacity-0"}`}
+        />
+        <nav
+          aria-label="Menu"
+          className={`absolute left-0 top-0 flex h-full w-72 max-w-[85vw] flex-col overflow-y-auto bg-white p-4 shadow-2xl transition-transform duration-200 ${
+            open ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          <div className="mb-3 flex items-center justify-between">
+            <span className="text-lg font-extrabold">{STORE_NAME}</span>
+            <button type="button" onClick={close} aria-label="Fechar menu" className="rounded-full px-3 py-1.5 text-lg leading-none hover:bg-black/5">
+              ✕
+            </button>
+          </div>
+          <Link href="/" onClick={close} className={sideItem}>
             Início
           </Link>
           {(Object.keys(GAMES) as Game[]).map((g) => (
-            <div key={g} className="border-t border-black/5 py-3">
-              <p className="mb-1 text-xs font-bold uppercase tracking-wide text-violet-600">{GAMES[g]}</p>
+            <div key={g} className="mt-2 border-t border-black/5 pt-3">
+              <p className="px-3 text-xs font-bold uppercase tracking-wide text-violet-600">{GAMES[g]}</p>
               {gameLinks(g).map((l) => (
                 <Link
                   key={l.href}
                   href={l.href}
                   onClick={close}
-                  className={`block py-1.5 ${l.indent ? "pl-6 text-sm text-black/55" : ""}`}
+                  className={`block rounded-lg py-2 hover:bg-violet-50 hover:text-violet-700 ${
+                    l.indent ? "pl-8 pr-3 text-sm text-black/55" : "px-3"
+                  }`}
                 >
                   {l.indent && "↳ "}
                   {l.label}
@@ -136,14 +147,16 @@ export default function Header() {
               ))}
             </div>
           ))}
-          <Link href="/acessorios" onClick={close} className="block border-t border-black/5 py-3 font-medium">
-            Acessórios
-          </Link>
-          <Link href="/qr" onClick={close} className="block border-t border-black/5 py-3 font-medium">
-            QR Code
-          </Link>
+          <div className="mt-2 border-t border-black/5 pt-3">
+            <Link href="/acessorios" onClick={close} className={sideItem}>
+              Acessórios
+            </Link>
+            <Link href="/qr" onClick={close} className={sideItem}>
+              QR Code
+            </Link>
+          </div>
         </nav>
-      )}
+      </div>
     </header>
   );
 }

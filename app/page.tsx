@@ -1,12 +1,40 @@
 import Link from "next/link";
 import CardItem from "@/components/CardItem";
 import { type GameTileData } from "@/components/GameTile";
+import PromoBanner, { type PromoSlide } from "@/components/PromoBanner";
 import TileCarousel from "@/components/TileCarousel";
 import { STORE_NAME } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import type { Card } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
+
+const SLIDES: PromoSlide[] = [
+  {
+    href: "/pokemon/cartas",
+    eyebrow: "Cartas · Selados · Acessórios",
+    title: `Bem-vindo à ${STORE_NAME}`,
+    text: "Estoque atualizado de Pokémon e Riftbound, com preço, estado e disponibilidade de cada item.",
+    cta: "Ver cartas",
+    background: "linear-gradient(135deg,#7138F0 0%,#4F46C9 55%,#171B35 100%)",
+  },
+  {
+    href: "/pokemon/selados",
+    eyebrow: "Produtos selados",
+    title: "Boosters, boxes e decks",
+    text: "Produtos lacrados de Pokémon e Riftbound para abrir ou colecionar.",
+    cta: "Ver selados",
+    background: "linear-gradient(135deg,#F59E0B 0%,#E94B43 100%)",
+  },
+  {
+    href: "/acessorios",
+    eyebrow: "Acessórios",
+    title: "Proteja e organize suas cartas",
+    text: "Playmats, sleeves, deckboxes e mais.",
+    cta: "Ver acessórios",
+    background: "linear-gradient(135deg,#55BE9B 0%,#39AFA9 55%,#428FB9 100%)",
+  },
+];
 
 const TILES: GameTileData[] = [
   {
@@ -41,53 +69,19 @@ const TILES: GameTileData[] = [
 
 export default async function Home() {
   const supabase = await createClient();
-  const [{ data }, { count }] = await Promise.all([
-    supabase
-      .from("cards")
-      .select("*")
-      .in("status", ["available", "reserved"])
-      .order("featured", { ascending: false })
-      .order("created_at", { ascending: false })
-      .limit(10),
-    supabase
-      .from("cards")
-      .select("id", { count: "exact", head: true })
-      .eq("status", "available")
-      .gt("quantity", 0),
-  ]);
+  const { data } = await supabase
+    .from("cards")
+    .select("*")
+    .in("status", ["available", "reserved"])
+    .eq("category", "single")
+    .order("featured", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(10);
   const cards = (data ?? []) as Card[];
 
   return (
     <div className="mx-auto max-w-[1400px]">
-      <section className="relative overflow-hidden rounded-3xl bg-[linear-gradient(135deg,#7138F0_0%,#4F46C9_55%,#171B35_100%)] px-6 py-10 text-white shadow-lg sm:px-12 sm:py-14">
-        <div className="pointer-events-none absolute -right-16 -top-16 h-72 w-72 rounded-full bg-fuchsia-500/30 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-20 left-1/3 h-72 w-72 rounded-full bg-sky-400/20 blur-3xl" />
-        <div className="relative max-w-2xl">
-          <p className="mb-3 inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider">
-            Cartas · Selados · Acessórios
-          </p>
-          <h1 className="text-3xl font-black leading-tight tracking-tight sm:text-5xl">
-            Bem-vindo à {STORE_NAME}
-          </h1>
-          <p className="mt-3 text-base text-white/80 sm:text-lg">
-            Veja o estoque atualizado de Pokémon e Riftbound, com preço, estado e disponibilidade de
-            cada item.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/pokemon/cartas" className="rounded-full bg-white px-6 py-2.5 text-sm font-bold text-violet-700 shadow transition hover:bg-violet-50">
-              Ver cartas
-            </Link>
-            <Link href="/qr" className="rounded-full border border-white/40 px-6 py-2.5 text-sm font-semibold transition hover:bg-white/10">
-              QR Code da loja
-            </Link>
-          </div>
-          {(count ?? 0) > 0 && (
-            <p className="mt-6 text-sm text-white/70">
-              <b className="text-white">{count}</b> {count === 1 ? "item disponível" : "itens disponíveis"} agora
-            </p>
-          )}
-        </div>
-      </section>
+      <PromoBanner slides={SLIDES} />
 
       <section className="mt-6">
         <TileCarousel tiles={TILES} />
@@ -96,8 +90,8 @@ export default async function Home() {
       {cards.length > 0 && (
         <section className="mt-10">
           <div className="mb-4 flex items-end justify-between">
-            <h2 className="text-xl font-extrabold tracking-tight sm:text-2xl">Novidades</h2>
-            <Link href="/busca" className="text-sm font-semibold text-violet-700 hover:underline">
+            <h2 className="text-xl font-extrabold tracking-tight sm:text-2xl">Cartas avulsas</h2>
+            <Link href="/pokemon/cartas" className="text-sm font-semibold text-violet-700 hover:underline">
               Ver todos →
             </Link>
           </div>
