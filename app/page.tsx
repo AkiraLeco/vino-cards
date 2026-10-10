@@ -1,19 +1,22 @@
 import Link from "next/link";
 import CardItem from "@/components/CardItem";
-import SwipeTile from "@/components/SwipeTile";
+import GameTile, { type GameTileData } from "@/components/GameTile";
+import TileCarousel from "@/components/TileCarousel";
 import { STORE_NAME } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import type { Card } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
-const TILES = [
+const TILES: GameTileData[] = [
   {
     href: "/pokemon/cartas",
     title: "Pokémon",
     sub: "Cartas avulsas, selados e coleções",
     icon: "⚡",
-    color: "from-amber-400 via-orange-500 to-red-500",
+    background:
+      "linear-gradient(135deg, rgba(255,189,36,0.98) 0%, rgba(245,124,22,0.96) 55%, rgba(233,75,67,0.96) 100%)",
+    bar: "rgba(120,45,12,0.6)",
     image: "/tiles/pokemon.webp",
     cutout: true,
   },
@@ -22,7 +25,10 @@ const TILES = [
     title: "Riftbound",
     sub: "Cartas avulsas, selados e coleções",
     icon: "⚔️",
-    color: "from-sky-500 via-indigo-500 to-violet-600",
+    background:
+      "linear-gradient(115deg, rgba(57,32,128,0.74) 0%, rgba(98,86,234,0.36) 50%, rgba(87,156,245,0.1) 100%)",
+    shade: "linear-gradient(to top, rgba(40,20,96,0.45) 0%, transparent 50%)",
+    bar: "rgba(36,20,88,0.68)",
     image: "/tiles/riftbound.webp",
     imagePosition: "70% 25%",
   },
@@ -31,7 +37,8 @@ const TILES = [
     title: "Acessórios",
     sub: "Playmats, sleeves, deckboxes e mais",
     icon: "🎴",
-    color: "from-emerald-500 via-teal-500 to-cyan-600",
+    background: "linear-gradient(135deg, #55BE9B 0%, #39AFA9 55%, #428FB9 100%)",
+    bar: "rgba(18,70,76,0.58)",
   },
 ];
 
@@ -55,7 +62,7 @@ export default async function Home() {
 
   return (
     <div className="mx-auto max-w-[1400px]">
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-700 via-indigo-700 to-slate-900 px-6 py-10 text-white shadow-lg sm:px-12 sm:py-14">
+      <section className="relative overflow-hidden rounded-3xl bg-[linear-gradient(135deg,#7138F0_0%,#4F46C9_55%,#171B35_100%)] px-6 py-10 text-white shadow-lg sm:px-12 sm:py-14">
         <div className="pointer-events-none absolute -right-16 -top-16 h-72 w-72 rounded-full bg-fuchsia-500/30 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-20 left-1/3 h-72 w-72 rounded-full bg-sky-400/20 blur-3xl" />
         <div className="relative max-w-2xl">
@@ -85,10 +92,17 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="mt-8 grid gap-4 sm:grid-cols-3">
-        {TILES.map((t) => (
-          <SwipeTile key={t.href} {...t} />
-        ))}
+      <section className="mt-6">
+        <TileCarousel>
+          {TILES.map((t) => (
+            <div
+              key={t.href}
+              className="flex shrink-0 basis-[82%] snap-start sm:basis-[calc((100%-1rem)/2)] lg:basis-[calc((100%-2rem)/3)]"
+            >
+              <GameTile {...t} />
+            </div>
+          ))}
+        </TileCarousel>
       </section>
 
       {cards.length > 0 && (
