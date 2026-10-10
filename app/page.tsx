@@ -1,5 +1,6 @@
 import Link from "next/link";
 import CardItem from "@/components/CardItem";
+import SwipeTile from "@/components/SwipeTile";
 import { STORE_NAME } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import type { Card } from "@/lib/types";
@@ -13,6 +14,8 @@ const TILES = [
     sub: "Cartas avulsas, selados e coleções",
     icon: "⚡",
     color: "from-amber-400 via-orange-500 to-red-500",
+    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
+    imagePosition: "center",
   },
   {
     href: "/riftbound/cartas",
@@ -20,6 +23,8 @@ const TILES = [
     sub: "Cartas avulsas, selados e coleções",
     icon: "⚔️",
     color: "from-sky-500 via-indigo-500 to-violet-600",
+    image: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jinx_0.jpg",
+    imagePosition: "70% 25%",
   },
   {
     href: "/acessorios",
@@ -82,16 +87,7 @@ export default async function Home() {
 
       <section className="mt-8 grid gap-4 sm:grid-cols-3">
         {TILES.map((t) => (
-          <Link
-            key={t.href}
-            href={t.href}
-            className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br ${t.color} p-6 text-white shadow-md transition hover:-translate-y-1 hover:shadow-xl`}
-          >
-            <span className="absolute -right-2 -top-3 text-7xl opacity-25 transition group-hover:scale-110">{t.icon}</span>
-            <h2 className="relative text-2xl font-extrabold">{t.title}</h2>
-            <p className="relative mt-1 text-sm text-white/90">{t.sub}</p>
-            <span className="relative mt-4 inline-block text-sm font-semibold">Explorar →</span>
-          </Link>
+          <SwipeTile key={t.href} {...t} />
         ))}
       </section>
 
