@@ -14,8 +14,8 @@ const TILES = [
     sub: "Cartas avulsas, selados e coleções",
     icon: "⚡",
     color: "from-amber-400 via-orange-500 to-red-500",
-    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
-    imagePosition: "center",
+    image: "/tiles/pokemon.webp",
+    cutout: true,
   },
   {
     href: "/riftbound/cartas",
@@ -23,7 +23,7 @@ const TILES = [
     sub: "Cartas avulsas, selados e coleções",
     icon: "⚔️",
     color: "from-sky-500 via-indigo-500 to-violet-600",
-    image: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jinx_0.jpg",
+    image: "/tiles/riftbound.webp",
     imagePosition: "70% 25%",
   },
   {
