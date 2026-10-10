@@ -10,8 +10,12 @@ import { createClient } from "@/lib/supabase/client";
 import { searchTcg, type TcgResult } from "@/lib/pokemontcg";
 import { CATEGORIES, CONDITIONS, GAMES, LANGUAGES, type Card } from "@/lib/types";
 
-const field = "w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none transition focus:border-violet-500 [&>option]:text-black";
+const field =
+  "w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none transition focus:border-violet-500 [&>option]:text-black";
 const label = "flex flex-col gap-1 text-xs font-medium text-black/60";
+const section = "rounded-2xl border border-black/5 bg-white p-4 shadow-sm sm:p-5";
+const sectionTitle = "mb-3 flex items-center gap-2 text-sm font-bold";
+const num = "grid h-6 w-6 place-items-center rounded-full bg-violet-600 text-xs text-white";
 
 export default function CardForm({ card }: { card?: Card }) {
   const [v, setV] = useState({
@@ -100,72 +104,11 @@ export default function CardForm({ card }: { card?: Card }) {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="mb-4 grid grid-cols-2 gap-3">
-        <label className={label}>
-          Tipo de item
-          <select value={category} onChange={(e) => setCategory(e.target.value)} className={field}>
-            {Object.entries(CATEGORIES).map(([k, t]) => (
-              <option key={k} value={k}>
-                {t}
-              </option>
-            ))}
-          </select>
-        </label>
-        {category !== "accessory" && (
-          <label className={label}>
-            Jogo
-            <select value={game} onChange={(e) => setGame(e.target.value)} className={field}>
-              {Object.entries(GAMES).map(([k, t]) => (
-                <option key={k} value={k}>
-                  {t}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-      </div>
+      <h1 className="mb-4 text-2xl font-extrabold tracking-tight">
+        {card ? "Editar item" : "Novo item"}
+      </h1>
 
-      {isSingle && game === "pokemon" && (
-      <div className="mb-6 rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
-        <p className="mb-2 text-sm font-semibold">Buscar carta na base Pokémon TCG</p>
-        <div className="flex gap-2">
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                search();
-              }
-            }}
-            placeholder="Ex: Charizard (nome em inglês)"
-            className={field}
-          />
-          <button type="button" onClick={search} className="rounded-lg bg-violet-700 px-4 text-sm font-bold text-white">
-            {loading ? "..." : "Buscar"}
-          </button>
-        </div>
-        {results.length > 0 && (
-          <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
-            {results.map((r) => (
-              <button type="button" key={r.id} onClick={() => pick(r)} className="text-left text-xs hover:opacity-80">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={r.images.small} alt={r.name} className="w-full rounded" />
-                <span className="line-clamp-1">{r.set.name} {r.number}</span>
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-      )}
-      {isSingle && game !== "pokemon" && (
-        <p className="mb-6 rounded-xl bg-black/5 p-3 text-sm text-black/70">
-          A busca automática de cartas existe só para Pokémon. Para {GAMES[game as keyof typeof GAMES]},
-          preencha os dados e envie a foto da carta.
-        </p>
-      )}
-
-      <form action={saveCard} encType="multipart/form-data" className="grid gap-3 sm:grid-cols-2">
+      <form action={saveCard} className="flex flex-col gap-4">
         <input type="hidden" name="id" value={card?.id ?? ""} />
         <input type="hidden" name="game" value={game} />
         <input type="hidden" name="category" value={category} />
@@ -173,216 +116,314 @@ export default function CardForm({ card }: { card?: Card }) {
         <input type="hidden" name="image_api_url" value={v.image_api_url} />
         <input type="hidden" name="photo_urls" value={photos.join("\n")} />
 
-        {v.image_api_url && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={v.image_api_url} alt="" className="mx-auto h-48 sm:col-span-2" />
-        )}
-
-        <label className={`${label} sm:col-span-2`}>
-          Nome
-          <input required className={field} {...bind("name")} />
-        </label>
-        <label className={label}>
-          {isSingle ? "Coleção" : "Coleção / linha (opcional)"}
-          <input className={field} {...bind("set_name")} />
-        </label>
-        {isSingle && (
-          <>
+        {/* 1. Tipo */}
+        <section className={section}>
+          <h2 className={sectionTitle}>
+            <span className={num}>1</span> O que você está cadastrando?
+          </h2>
+          <div className="grid grid-cols-2 gap-3">
             <label className={label}>
-              Número
-              <input className={field} {...bind("number")} />
+              Tipo de item
+              <select value={category} onChange={(e) => setCategory(e.target.value)} className={field}>
+                {Object.entries(CATEGORIES).map(([k, t]) => (
+                  <option key={k} value={k}>
+                    {t}
+                  </option>
+                ))}
+              </select>
             </label>
-            <label className={label}>
-              Raridade
-              <input className={field} {...bind("rarity")} />
-            </label>
-          </>
-        )}
-        {category !== "accessory" && (
-          <label className={label}>
-            Idioma
-            <select name="language" defaultValue={card?.language ?? "Português"} className={field}>
-              {LANGUAGES.map((l) => (
-                <option key={l}>{l}</option>
-              ))}
-            </select>
-          </label>
-        )}
-        {isSingle && (
-          <label className={label}>
-            Estado
-            <select name="condition" defaultValue={card?.condition ?? "NM"} className={field}>
-              {Object.entries(CONDITIONS).map(([k, t]) => (
-                <option key={k} value={k}>
-                  {t}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-        <label className={label}>
-          Status
-          <select name="status" defaultValue={card?.status ?? "available"} className={field}>
-            <option value="available">Disponível</option>
-            <option value="reserved">Reservada</option>
-            <option value="sold">Vendida</option>
-          </select>
-        </label>
-        <label className={label}>
-          Preço (R$)
-          <input
-            name="price"
-            type="number"
-            step="0.01"
-            min="0"
-            required
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            className={field}
-          />
-        </label>
-        <label className={label}>
-          Preço de referência (R$, opcional)
-          <input
-            name="ref_price"
-            type="number"
-            step="0.01"
-            min="0"
-            value={refPrice}
-            onChange={(e) => setRefPrice(e.target.value)}
-            className={field}
-          />
-        </label>
+            {category !== "accessory" && (
+              <label className={label}>
+                Jogo
+                <select value={game} onChange={(e) => setGame(e.target.value)} className={field}>
+                  {Object.entries(GAMES).map(([k, t]) => (
+                    <option key={k} value={k}>
+                      {t}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+          </div>
 
-        {isSingle && game === "pokemon" && (
-        <div className="rounded-2xl border border-black/5 bg-white p-3 shadow-sm sm:col-span-2">
-          <button
-            type="button"
-            disabled={!v.name || ligaLoading}
-            onClick={lookupPrice}
-            className="rounded-lg bg-blue-500 px-4 py-2 text-sm font-bold disabled:opacity-50"
-          >
-            {ligaLoading ? "Consultando..." : "Ver preço na LigaPokémon"}
-          </button>
-          {liga?.error && (
-            <p className="mt-2 text-sm text-red-600">
-              {liga.error}{" "}
-              <a
-                href={ligaSearchUrl(v.name)}
-                target="_blank"
-                rel="noreferrer"
-                className="font-semibold underline"
-              >
-                Abrir busca na Liga
-              </a>{" "}
-              e digite o preço manualmente.
-            </p>
-          )}
-          {liga && !liga.error && liga.offers.length === 0 && (
-            <p className="mt-2 text-sm text-black/70">
-              Não encontrei essa carta na Liga.{" "}
-              <a
-                href={ligaSearchUrl(v.name)}
-                target="_blank"
-                rel="noreferrer"
-                className="underline"
-              >
-                Abrir busca na Liga
-              </a>
-            </p>
-          )}
-          {liga && liga.offers.length > 0 && (
-            <ul className="mt-3 flex flex-col gap-2">
-              {liga.offers.map((o) => (
-                <li key={o.url} className="rounded-lg bg-white p-2 text-xs ring-1 ring-black/10">
-                  <a href={o.url} target="_blank" rel="noreferrer" className="font-semibold underline">
-                    {o.name} · {o.edition} #{o.num}
-                  </a>
-                  {o.avg > 0 ? (
-                    <div className="mt-1 flex flex-wrap gap-2">
-                      {(
-                        [
-                          ["Mín", o.min],
-                          ["Médio", o.avg],
-                          ["Máx", o.max],
-                        ] as const
-                      ).map(([t, val]) => (
-                        <button
-                          type="button"
-                          key={t}
-                          onClick={() => applyPrice(o, val)}
-                          className="rounded bg-violet-700 px-2 py-1 font-bold text-white"
-                        >
-                          {t}: {brl(val)}
-                        </button>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="mt-1 text-black/60">Sem ofertas no momento.</p>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
-          <p className="mt-2 text-[11px] text-black/50">
-            Clique em um valor para preencher o preço (a média vira o preço de referência). Confira
-            se é a coleção e o número certos.
-          </p>
-        </div>
-        )}
-        <label className={label}>
-          Quantidade
-          <input name="quantity" type="number" min="0" defaultValue={card?.quantity ?? 1} className={field} />
-        </label>
-        <label className={`${label} sm:col-span-2`}>
-          Observações
-          <textarea name="notes" rows={3} defaultValue={card?.notes ?? ""} className={field} />
-        </label>
-        <div className={`${label} sm:col-span-2`}>
-          Fotos reais do item
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            disabled={uploading}
-            onChange={(e) => {
-              uploadPhotos(e.target.files);
-              e.target.value = "";
-            }}
-            className={field}
-          />
-          {uploading && <span className="text-violet-700">Enviando fotos...</span>}
-          {photoError && <span className="text-red-600">{photoError}</span>}
-          {photos.length > 0 && (
-            <div className="mt-1 flex flex-wrap gap-2">
-              {photos.map((u) => (
-                <div key={u} className="relative">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={u} alt="" className="h-24 rounded bg-black/5 object-contain" />
-                  <button
-                    type="button"
-                    onClick={() => setPhotos(photos.filter((p) => p !== u))}
-                    className="absolute -right-2 -top-2 rounded-full bg-red-600 px-1.5 text-xs font-bold text-white"
-                    aria-label="Remover foto"
-                  >
-                    ✕
-                  </button>
+          {isSingle && game === "pokemon" && (
+            <div className="mt-4 rounded-xl bg-violet-50 p-3">
+              <p className="mb-2 text-sm font-semibold">Buscar na base Pokémon TCG (preenche os dados)</p>
+              <div className="flex gap-2">
+                <input
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      search();
+                    }
+                  }}
+                  placeholder="Ex: Charizard (nome em inglês)"
+                  className={field}
+                />
+                <button
+                  type="button"
+                  onClick={search}
+                  className="rounded-lg bg-violet-600 px-4 text-sm font-bold text-white hover:bg-violet-700"
+                >
+                  {loading ? "..." : "Buscar"}
+                </button>
+              </div>
+              {results.length > 0 && (
+                <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
+                  {results.map((r) => (
+                    <button type="button" key={r.id} onClick={() => pick(r)} className="text-left text-xs hover:opacity-80">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={r.images.small} alt={r.name} className="w-full rounded" />
+                      <span className="line-clamp-1">
+                        {r.set.name} {r.number}
+                      </span>
+                    </button>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
           )}
-        </div>
-        {isSingle && (
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" name="is_foil" defaultChecked={card?.is_foil} /> Foil / Holo
+          {isSingle && game !== "pokemon" && (
+            <p className="mt-4 rounded-xl bg-black/5 p-3 text-sm text-black/70">
+              A busca automática existe só para Pokémon. Para {GAMES[game as keyof typeof GAMES]}, preencha os
+              dados e envie a foto.
+            </p>
+          )}
+        </section>
+
+        {/* 2. Dados */}
+        <section className={section}>
+          <h2 className={sectionTitle}>
+            <span className={num}>2</span> Dados do item
+          </h2>
+          {v.image_api_url && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={v.image_api_url} alt="" className="mx-auto mb-3 h-44" />
+          )}
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className={`${label} sm:col-span-2`}>
+              Nome
+              <input required className={field} {...bind("name")} />
+            </label>
+            <label className={label}>
+              {isSingle ? "Coleção" : "Coleção / linha (opcional)"}
+              <input className={field} {...bind("set_name")} />
+            </label>
+            {isSingle && (
+              <>
+                <label className={label}>
+                  Número
+                  <input className={field} {...bind("number")} />
+                </label>
+                <label className={label}>
+                  Raridade
+                  <input className={field} {...bind("rarity")} />
+                </label>
+                <label className={label}>
+                  Estado
+                  <select name="condition" defaultValue={card?.condition ?? "NM"} className={field}>
+                    {Object.entries(CONDITIONS).map(([k, t]) => (
+                      <option key={k} value={k}>
+                        {t}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </>
+            )}
+            {category !== "accessory" && (
+              <label className={label}>
+                Idioma
+                <select name="language" defaultValue={card?.language ?? "Português"} className={field}>
+                  {LANGUAGES.map((l) => (
+                    <option key={l}>{l}</option>
+                  ))}
+                </select>
+              </label>
+            )}
+            {isSingle && (
+              <label className="flex items-center gap-2 text-sm sm:col-span-2">
+                <input type="checkbox" name="is_foil" defaultChecked={card?.is_foil} className="h-4 w-4 accent-violet-600" />
+                Foil / Holo
+              </label>
+            )}
+          </div>
+        </section>
+
+        {/* 3. Preço e estoque */}
+        <section className={section}>
+          <h2 className={sectionTitle}>
+            <span className={num}>3</span> Preço e estoque
+          </h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className={label}>
+              Preço (R$)
+              <input
+                name="price"
+                type="number"
+                step="0.01"
+                min="0"
+                required
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                className={field}
+              />
+            </label>
+            <label className={label}>
+              Preço de referência (R$, opcional)
+              <input
+                name="ref_price"
+                type="number"
+                step="0.01"
+                min="0"
+                value={refPrice}
+                onChange={(e) => setRefPrice(e.target.value)}
+                className={field}
+              />
+            </label>
+
+            {isSingle && game === "pokemon" && (
+              <div className="rounded-xl bg-violet-50 p-3 sm:col-span-2">
+                <button
+                  type="button"
+                  disabled={!v.name || ligaLoading}
+                  onClick={lookupPrice}
+                  className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
+                >
+                  {ligaLoading ? "Consultando..." : "Ver preço na LigaPokémon"}
+                </button>
+                {liga?.error && (
+                  <p className="mt-2 text-sm text-red-600">
+                    {liga.error}{" "}
+                    <a href={ligaSearchUrl(v.name)} target="_blank" rel="noreferrer" className="font-semibold underline">
+                      Abrir busca na Liga
+                    </a>{" "}
+                    e digite o preço manualmente.
+                  </p>
+                )}
+                {liga && !liga.error && liga.offers.length === 0 && (
+                  <p className="mt-2 text-sm text-black/70">
+                    Não encontrei essa carta na Liga.{" "}
+                    <a href={ligaSearchUrl(v.name)} target="_blank" rel="noreferrer" className="underline">
+                      Abrir busca na Liga
+                    </a>
+                  </p>
+                )}
+                {liga && liga.offers.length > 0 && (
+                  <ul className="mt-3 flex flex-col gap-2">
+                    {liga.offers.map((o) => (
+                      <li key={o.url} className="rounded-lg bg-white p-2 text-xs ring-1 ring-black/10">
+                        <a href={o.url} target="_blank" rel="noreferrer" className="font-semibold underline">
+                          {o.name} · {o.edition} #{o.num}
+                        </a>
+                        {o.avg > 0 ? (
+                          <div className="mt-1 flex flex-wrap gap-2">
+                            {(
+                              [
+                                ["Mín", o.min],
+                                ["Médio", o.avg],
+                                ["Máx", o.max],
+                              ] as const
+                            ).map(([t, val]) => (
+                              <button
+                                type="button"
+                                key={t}
+                                onClick={() => applyPrice(o, val)}
+                                className="rounded bg-violet-600 px-2 py-1 font-bold text-white"
+                              >
+                                {t}: {brl(val)}
+                              </button>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="mt-1 text-black/60">Sem ofertas no momento.</p>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <p className="mt-2 text-[11px] text-black/50">
+                  Clique em um valor para preencher o preço (a média vira o preço de referência). Confira
+                  se é a coleção e o número certos.
+                </p>
+              </div>
+            )}
+
+            <label className={label}>
+              Quantidade
+              <input name="quantity" type="number" min="0" defaultValue={card?.quantity ?? 1} className={field} />
+              <span className="font-normal text-black/45">Quantidade 0 marca o item como vendido.</span>
+            </label>
+            <label className={label}>
+              Status
+              <select name="status" defaultValue={card?.status ?? "available"} className={field}>
+                <option value="available">Disponível</option>
+                <option value="reserved">Reservada</option>
+                <option value="sold">Vendida</option>
+              </select>
+            </label>
+            <label className="flex items-center gap-2 text-sm sm:col-span-2">
+              <input type="checkbox" name="featured" defaultChecked={card?.featured} className="h-4 w-4 accent-violet-600" />
+              Destaque (aparece primeiro nas listas)
+            </label>
+          </div>
+        </section>
+
+        {/* 4. Fotos */}
+        <section className={section}>
+          <h2 className={sectionTitle}>
+            <span className={num}>4</span> Fotos e observações
+          </h2>
+          <div className={label}>
+            Fotos reais do item
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              disabled={uploading}
+              onChange={(e) => {
+                uploadPhotos(e.target.files);
+                e.target.value = "";
+              }}
+              className={field}
+            />
+            {uploading && <span className="text-violet-700">Enviando fotos...</span>}
+            {photoError && <span className="text-red-600">{photoError}</span>}
+            {photos.length > 0 && (
+              <div className="mt-1 flex flex-wrap gap-2">
+                {photos.map((u) => (
+                  <div key={u} className="relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={u} alt="" className="h-24 rounded bg-black/5 object-contain" />
+                    <button
+                      type="button"
+                      onClick={() => setPhotos(photos.filter((p) => p !== u))}
+                      className="absolute -right-2 -top-2 rounded-full bg-red-600 px-1.5 text-xs font-bold text-white"
+                      aria-label="Remover foto"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <label className={`${label} mt-3`}>
+            Observações
+            <textarea name="notes" rows={3} defaultValue={card?.notes ?? ""} className={field} />
           </label>
-        )}
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="featured" defaultChecked={card?.featured} /> Destaque
-        </label>
-        <button className="rounded-lg bg-violet-700 py-3 font-bold text-white sm:col-span-2">
-          Salvar carta
-        </button>
+        </section>
+
+        <div className="sticky bottom-3 z-10">
+          <button
+            disabled={uploading}
+            className="w-full rounded-xl bg-violet-600 py-3.5 font-bold text-white shadow-lg transition hover:bg-violet-700 disabled:opacity-50"
+          >
+            {uploading ? "Aguarde o envio das fotos..." : "Salvar"}
+          </button>
+        </div>
       </form>
     </div>
   );

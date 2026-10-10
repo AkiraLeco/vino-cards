@@ -43,6 +43,9 @@ export async function saveCard(form: FormData) {
   const single = category === "single";
   const game = category === "accessory" ? null : String(form.get("game") ?? "pokemon");
 
+  const quantity = Math.max(0, num(form.get("quantity")) ?? 1);
+  const requestedStatus = String(form.get("status") ?? "available");
+
   const row = {
     game,
     category,
@@ -56,11 +59,8 @@ export async function saveCard(form: FormData) {
     is_foil: single && form.get("is_foil") === "on",
     price: num(form.get("price")) ?? 0,
     ref_price: num(form.get("ref_price")),
-    quantity:
-      String(form.get("status")) === "available"
-        ? Math.max(1, num(form.get("quantity")) ?? 1)
-        : (num(form.get("quantity")) ?? 1),
-    status: String(form.get("status")),
+    quantity,
+    status: quantity < 1 && requestedStatus === "available" ? "sold" : requestedStatus,
     image_api_url: String(form.get("image_api_url") ?? "") || null,
     photo_urls: photos,
     notes: String(form.get("notes") ?? "") || null,
