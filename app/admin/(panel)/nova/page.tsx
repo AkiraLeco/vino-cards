@@ -1,5 +1,8 @@
 import CardForm from "@/components/CardForm";
 
-export default function NovaCarta() {
+import { requireAdmin } from "@/lib/auth";
+
+export default async function NovaCarta() {
+  await requireAdmin();
   return <CardForm />;
 }

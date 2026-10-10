@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { brl } from "@/lib/format";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth";
 import { CATEGORIES, GAMES, cardImage, type Card } from "@/lib/types";
 import StatusButtons from "@/components/StatusButtons";
 import { sellOne } from "../actions";
@@ -14,7 +14,7 @@ const field =
 
 export default async function AdminList({ searchParams }: { searchParams: Promise<SP> }) {
   const sp = await searchParams;
-  const supabase = await createClient();
+  const supabase = await requireAdmin();
 
   // Totais sempre sobre o estoque inteiro; a lista respeita os filtros.
   const { data: all } = await supabase.from("cards").select("status, quantity, price");
