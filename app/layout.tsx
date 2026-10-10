@@ -45,17 +45,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               </div>
               <div className="text-sm">
                 <p className="mb-2 font-semibold text-white">Contato</p>
-                <p>
-                  {process.env.NEXT_PUBLIC_WHATSAPP_NUMBER
-                    ? `WhatsApp: ${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`
-                    : "WhatsApp: a definir"}
-                </p>
-                <p className="mt-1">E-mail: a definir</p>
+                <p>WhatsApp: (11) 90000-0000</p>
+                <p className="mt-1">E-mail: contato@vinocards.exemplo</p>
               </div>
               <div className="text-sm">
                 <p className="mb-2 font-semibold text-white">Endereço e horário</p>
-                <p>Endereço: a definir</p>
-                <p className="mt-1">Horário: a definir</p>
+                <p>Endereço: Rua Exemplo, 123 - Centro, São Paulo/SP</p>
+                <p className="mt-1">Horário: Seg a Sáb, 10h às 19h</p>
               </div>
             </div>
             <p className="border-t border-white/10 py-4 text-center text-xs text-white/40">

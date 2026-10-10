@@ -19,7 +19,7 @@ Resumo para retomar o trabalho depois de um `/clear`. **Leia este arquivo, o `CL
 
 ## 3. Estado atual (tudo no GitHub, último commit conhecido: `58c4f0e`)
 **Público**
-- Topo: sidebar (☰, com Início, Pokémon, Riftbound, Acessórios, QR), logo, busca, conta (`/conta`, placeholder) e carrinho. Home: faixa de anúncios rotativa (`PromoBanner`), carrossel de cards, cartas avulsas e rodapé de atendimento/contato/endereço/horário (endereço, e-mail e horário ainda "a definir" em `app/layout.tsx`).
+- Topo: sidebar (☰, com Início, Pokémon, Riftbound, Acessórios, QR), logo, busca, conta (`/conta`, placeholder) e carrinho. Home: faixa de anúncios rotativa (`PromoBanner`), carrossel de cards, cartas avulsas e rodapé de atendimento/contato/endereço/horário (WhatsApp, e-mail, endereço e horário com dados fictícios (trocar pelos reais) em `app/layout.tsx`).
 - Catálogo com filtros, busca, paginação (30/60/90) e estado vazio. Vendidas ficam escondidas por padrão. Reservadas aparecem com selo.
 - Página do item com galeria, preço, avisos de reservada/vendida e prévia de link (`generateMetadata`).
 - Home com hero, cards de entrada por jogo e Novidades. Os cards de entrada ficam num carrossel horizontal com encaixe e setas (`components/TileCarousel.tsx` + `components/GameTile.tsx`); cada card abre **só por clique** (o deslizar foi removido a pedido do usuário). Imagens locais em `public/tiles/` (`pokemon.webp` = Pikachu, `riftbound.webp` = Jinx, que é arte de League of Legends, não de Riftbound). **Atenção**: são artes de terceiros num repositório público; trocar por arte própria/licenciada quando possível (basta substituir os arquivos).
