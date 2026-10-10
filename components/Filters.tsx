@@ -13,8 +13,8 @@ export interface FilterOptions {
 export type FilterMode = "single" | "sealed" | "other";
 
 const field =
-  "w-full rounded bg-white px-2 py-2 text-sm text-[#313131] outline-none lg:w-auto lg:py-1.5 [&>option]:text-black";
-const lbl = "flex min-w-0 flex-col gap-1 text-xs text-white/80";
+  "w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none transition focus:border-violet-500 lg:w-auto";
+const lbl = "flex min-w-0 flex-col gap-1 text-xs font-medium text-black/55";
 
 export default function Filters({
   opts,
@@ -40,18 +40,21 @@ export default function Filters({
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between rounded-lg bg-[#313131] px-4 py-3 text-left font-semibold text-white lg:hidden"
+        className="flex w-full items-center justify-between rounded-xl border border-black/10 bg-white px-4 py-3 text-left text-sm font-semibold shadow-sm lg:hidden"
         aria-expanded={open}
       >
         <span>
-          Filtros{active > 0 && <span className="ml-2 rounded-full bg-violet-600 px-2 text-xs">{active}</span>}
+          Filtros
+          {active > 0 && (
+            <span className="ml-2 rounded-full bg-violet-600 px-2 py-0.5 text-xs text-white">{active}</span>
+          )}
         </span>
-        <span>{open ? "▲" : "▼"}</span>
+        <span className="text-black/40">{open ? "▲" : "▼"}</span>
       </button>
 
       <form
         action={action}
-        className={`${open ? "grid" : "hidden"} grid-cols-2 gap-3 rounded-b-lg bg-[#313131] p-4 lg:flex lg:flex-wrap lg:items-end lg:rounded-lg lg:shadow`}
+        className={`${open ? "grid" : "hidden"} mt-2 grid-cols-2 gap-3 rounded-2xl border border-black/5 bg-white p-4 shadow-sm lg:mt-0 lg:flex lg:flex-wrap lg:items-end`}
       >
         <input type="hidden" name="f" value="1" />
         {values.q && <input type="hidden" name="q" value={values.q} />}
@@ -67,7 +70,7 @@ export default function Filters({
         {showSet && (
           <label className={lbl}>
             Coleção
-            <select name="set" defaultValue={values.set ?? ""} className={`${field} lg:max-w-44`}>
+            <select name="set" defaultValue={values.set ?? ""} className={`${field} lg:max-w-48`}>
               <option value="">Todas</option>
               {opts.sets.map((s) => (
                 <option key={s}>{s}</option>
@@ -108,6 +111,13 @@ export default function Filters({
             </label>
           </>
         )}
+        <label className={`${lbl} col-span-2 lg:col-span-1`}>
+          Preço (R$)
+          <span className="flex gap-2">
+            <input name="min" type="number" min="0" defaultValue={values.min} placeholder="mín" className={`${field} lg:w-20`} />
+            <input name="max" type="number" min="0" defaultValue={values.max} placeholder="máx" className={`${field} lg:w-20`} />
+          </span>
+        </label>
         <label className={lbl}>
           Exibir
           <select name="per" defaultValue={values.per ?? "30"} className={field}>
@@ -116,22 +126,18 @@ export default function Filters({
             ))}
           </select>
         </label>
-        <label className={`${lbl} col-span-2 lg:col-span-1`}>
-          Preço (R$)
-          <span className="flex gap-2">
-            <input name="min" type="number" min="0" defaultValue={values.min} placeholder="mín" className={`${field} lg:w-20`} />
-            <input name="max" type="number" min="0" defaultValue={values.max} placeholder="máx" className={`${field} lg:w-20`} />
-          </span>
-        </label>
-        <label className="col-span-2 flex items-center gap-2 text-sm text-white lg:col-span-1 lg:pb-2">
-          <input type="checkbox" name="stock" value="1" defaultChecked={stockOnly} className="h-4 w-4" />
+        <label className="col-span-2 flex items-center gap-2 text-sm lg:col-span-1 lg:pb-2">
+          <input type="checkbox" name="stock" value="1" defaultChecked={stockOnly} className="h-4 w-4 accent-violet-600" />
           Esconder vendidas
         </label>
         <div className="col-span-2 flex gap-2 lg:col-span-1">
-          <button className="flex-1 rounded bg-violet-600 px-6 py-2 text-lg font-bold text-white hover:bg-violet-500">
+          <button className="flex-1 rounded-lg bg-violet-600 px-6 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-violet-700">
             Filtrar
           </button>
-          <Link href={action} className="rounded bg-white/10 px-4 py-2 text-sm text-white lg:hidden">
+          <Link
+            href={action}
+            className="rounded-lg border border-black/10 px-4 py-2 text-sm font-medium text-black/60 hover:bg-black/5"
+          >
             Limpar
           </Link>
         </div>

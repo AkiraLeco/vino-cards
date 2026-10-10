@@ -10,7 +10,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
 
   return (
     <div>
-      <nav className="mb-6 flex items-center gap-4 border-b border-black/10 pb-3 text-sm">
+      <nav className="mb-6 flex items-center gap-4 rounded-2xl border border-black/5 bg-white px-4 py-3 text-sm shadow-sm">
         <Link href="/admin" className="font-bold">
           Minhas cartas
         </Link>

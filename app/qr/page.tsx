@@ -18,7 +18,7 @@ export default function QrPage() {
   const url = qr?.url ?? "";
 
   return (
-    <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-6 text-center">
+    <div className="mx-auto flex max-w-md flex-col items-center gap-4 rounded-3xl border border-black/5 bg-white p-8 text-center shadow-sm print:border-0 print:shadow-none">
       <h1 className="text-3xl font-extrabold text-violet-700">{STORE_NAME}</h1>
       <p className="text-lg">Aponte a câmera do celular para ver as cartas</p>
       {png ? (

@@ -31,12 +31,34 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col overflow-x-hidden">
         <CartProvider>
           <Header />
-          <div className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6">{children}</div>
-          <footer className="bg-[#313131] px-4 py-6 text-center text-xs text-white/70 print:hidden">
-            {STORE_NAME} · Cartas Pokémon ·{" "}
-            <Link href="/qr" className="underline">
-              QR Code
-            </Link>
+          <div className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6 sm:py-8">{children}</div>
+          <footer className="mt-10 bg-slate-900 text-white/70 print:hidden">
+            <div className="mx-auto grid max-w-[1400px] gap-8 px-4 py-10 sm:grid-cols-3">
+              <div>
+                <p className="text-lg font-extrabold text-white">{STORE_NAME}</p>
+                <p className="mt-2 text-sm">
+                  Cartas, produtos selados e acessórios de Pokémon e Riftbound.
+                </p>
+              </div>
+              <div className="text-sm">
+                <p className="mb-2 font-semibold text-white">Navegar</p>
+                <ul className="space-y-1.5">
+                  <li><Link href="/pokemon/cartas" className="hover:text-white">Pokémon</Link></li>
+                  <li><Link href="/riftbound/cartas" className="hover:text-white">Riftbound</Link></li>
+                  <li><Link href="/acessorios" className="hover:text-white">Acessórios</Link></li>
+                </ul>
+              </div>
+              <div className="text-sm">
+                <p className="mb-2 font-semibold text-white">Compartilhe</p>
+                <ul className="space-y-1.5">
+                  <li><Link href="/qr" className="hover:text-white">QR Code da loja</Link></li>
+                  <li><Link href="/carrinho" className="hover:text-white">Meu carrinho</Link></li>
+                </ul>
+              </div>
+            </div>
+            <p className="border-t border-white/10 py-4 text-center text-xs text-white/40">
+              © {new Date().getFullYear()} {STORE_NAME}. Projeto independente, sem vínculo com as marcas citadas.
+            </p>
           </footer>
           {FLOATING_WHATSAPP && process.env.NEXT_PUBLIC_WHATSAPP_NUMBER && (
             <a

@@ -29,7 +29,7 @@ export default async function AdminList() {
     <div className="flex flex-col gap-3">
       <div className="grid grid-cols-3 gap-2">
         {stats.map(([k, v]) => (
-          <div key={k} className="rounded-xl bg-violet-50 p-3 text-center ring-1 ring-violet-200">
+          <div key={k} className="rounded-2xl border border-violet-100 bg-white p-3 text-center shadow-sm">
             <p className="text-[11px] text-black/60 sm:text-xs">{k}</p>
             <p className="text-base font-extrabold text-violet-700 sm:text-xl">{v}</p>
           </div>
@@ -44,7 +44,7 @@ export default async function AdminList() {
       {cards.map((c) => (
         <div
           key={c.id}
-          className="flex flex-wrap items-center gap-3 rounded-xl bg-black/5 p-3 ring-1 ring-black/10"
+          className="flex flex-wrap items-center gap-3 rounded-2xl border border-black/5 bg-white p-3 shadow-sm"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={cardImage(c)} alt="" className="h-16 w-12 object-contain" />

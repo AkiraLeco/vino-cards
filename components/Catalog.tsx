@@ -69,9 +69,25 @@ export default async function Catalog({
     return `${basePath}?${params.toString()}`;
   };
 
+  const pageBtn = "grid h-9 min-w-9 place-items-center rounded-lg border px-2 text-sm font-medium transition";
+  const visible = Array.from({ length: pages }, (_, i) => i + 1).slice(
+    Math.max(0, page - 3),
+    page + 2,
+  );
+
   return (
     <div className="mx-auto max-w-[1400px]">
-      <h1 className="mb-3 text-2xl font-extrabold">{title}</h1>
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
+        <div>
+          <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">{title}</h1>
+          <p className="text-sm text-black/55">
+            {total === 0
+              ? "Nenhum item"
+              : `Mostrando ${from}-${to} de ${total.toLocaleString("pt-BR")} ${total === 1 ? "item" : "itens"}`}
+          </p>
+        </div>
+      </div>
+
       <Filters
         opts={{ sets: uniq("set_name"), rarities: uniq("rarity") }}
         values={sp}
@@ -79,48 +95,62 @@ export default async function Catalog({
         mode={mode}
       />
 
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-b border-dotted border-teal-600/50 pb-2 text-base sm:text-lg">
-        <span>
-          {from}-{to} de <b>{total.toLocaleString("en-US")}</b>
-        </span>
-        {pages > 1 && (
-          <span className="flex items-center gap-3 text-base">
-            Páginas:
-            {Array.from({ length: pages }, (_, i) => i + 1)
-              .slice(Math.max(0, page - 3), page + 2)
-              .map((p) =>
-                p === page ? (
-                  <b key={p}>{p}</b>
-                ) : (
-                  <Link key={p} href={pageHref(p)} className="hover:text-violet-700">
-                    {p}
-                  </Link>
-                ),
-              )}
-            {page < pages && (
-              <>
-                <Link href={pageHref(page + 1)}>&gt;</Link>
-                <Link href={pageHref(pages)}>&raquo;</Link>
-              </>
-            )}
-          </span>
-        )}
-      </div>
-
       {error && (
-        <p className="mt-4 rounded-lg bg-red-100 p-3 text-sm text-red-800">
+        <p className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
           Erro ao carregar os itens. Se você acabou de atualizar o site, confirme que o SQL de
           migração foi executado no Supabase.
         </p>
       )}
-      {cards.length === 0 && !error && (
-        <p className="py-10 text-center text-black/60">Nenhum item encontrado.</p>
+
+      {cards.length === 0 && !error ? (
+        <div className="mt-6 rounded-2xl border border-dashed border-black/15 bg-white px-6 py-14 text-center">
+          <p className="text-4xl">🃏</p>
+          <p className="mt-2 font-semibold">Nenhum item encontrado</p>
+          <p className="mt-1 text-sm text-black/55">
+            Tente remover algum filtro ou volte mais tarde, estamos sempre adicionando novidades.
+          </p>
+          <Link href={basePath} className="mt-4 inline-block rounded-full bg-violet-600 px-5 py-2 text-sm font-semibold text-white hover:bg-violet-700">
+            Limpar filtros
+          </Link>
+        </div>
+      ) : (
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+          {cards.map((c) => (
+            <CardItem key={c.id} card={c} />
+          ))}
+        </div>
       )}
-      <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-        {cards.map((c) => (
-          <CardItem key={c.id} card={c} />
-        ))}
-      </div>
+
+      {pages > 1 && (
+        <nav className="mt-8 flex flex-wrap items-center justify-center gap-1.5" aria-label="Páginas">
+          {page > 1 && (
+            <Link href={pageHref(page - 1)} className={`${pageBtn} border-black/10 bg-white hover:bg-violet-50`}>
+              ‹
+            </Link>
+          )}
+          {visible.map((p) =>
+            p === page ? (
+              <span key={p} aria-current="page" className={`${pageBtn} border-violet-600 bg-violet-600 text-white`}>
+                {p}
+              </span>
+            ) : (
+              <Link key={p} href={pageHref(p)} className={`${pageBtn} border-black/10 bg-white hover:bg-violet-50`}>
+                {p}
+              </Link>
+            ),
+          )}
+          {page < pages && (
+            <>
+              <Link href={pageHref(page + 1)} className={`${pageBtn} border-black/10 bg-white hover:bg-violet-50`}>
+                ›
+              </Link>
+              <Link href={pageHref(pages)} className={`${pageBtn} border-black/10 bg-white hover:bg-violet-50`}>
+                »
+              </Link>
+            </>
+          )}
+        </nav>
+      )}
     </div>
   );
 }

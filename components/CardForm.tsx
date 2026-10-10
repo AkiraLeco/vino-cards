@@ -10,8 +10,8 @@ import { createClient } from "@/lib/supabase/client";
 import { searchTcg, type TcgResult } from "@/lib/pokemontcg";
 import { CATEGORIES, CONDITIONS, GAMES, LANGUAGES, type Card } from "@/lib/types";
 
-const field = "w-full rounded-lg bg-black/5 px-3 py-2 text-sm outline-none [&>option]:text-black";
-const label = "flex flex-col gap-1 text-xs text-black/70";
+const field = "w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none transition focus:border-violet-500 [&>option]:text-black";
+const label = "flex flex-col gap-1 text-xs font-medium text-black/60";
 
 export default function CardForm({ card }: { card?: Card }) {
   const [v, setV] = useState({
@@ -126,7 +126,7 @@ export default function CardForm({ card }: { card?: Card }) {
       </div>
 
       {isSingle && game === "pokemon" && (
-      <div className="mb-6 rounded-xl bg-black/5 p-4 ring-1 ring-black/10">
+      <div className="mb-6 rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
         <p className="mb-2 text-sm font-semibold">Buscar carta na base Pokémon TCG</p>
         <div className="flex gap-2">
           <input
@@ -255,7 +255,7 @@ export default function CardForm({ card }: { card?: Card }) {
         </label>
 
         {isSingle && game === "pokemon" && (
-        <div className="rounded-xl bg-black/5 p-3 ring-1 ring-black/10 sm:col-span-2">
+        <div className="rounded-2xl border border-black/5 bg-white p-3 shadow-sm sm:col-span-2">
           <button
             type="button"
             disabled={!v.name || ligaLoading}

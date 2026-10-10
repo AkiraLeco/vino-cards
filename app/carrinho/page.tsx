@@ -12,18 +12,19 @@ export default function CartPage() {
 
   if (lines.length === 0)
     return (
-      <div className="py-20 text-center">
-        <p className="mb-4 text-black/70">Seu carrinho está vazio.</p>
-        <Link href="/" className="rounded-lg bg-violet-700 px-5 py-2 font-bold text-white">
-          Ver cartas
+      <div className="mx-auto max-w-md rounded-2xl border border-dashed border-black/15 bg-white px-6 py-16 text-center">
+        <p className="text-5xl">🛒</p>
+        <p className="mb-4 mt-3 font-semibold">Seu carrinho está vazio</p>
+        <Link href="/" className="rounded-full bg-violet-600 px-6 py-2.5 font-bold text-white hover:bg-violet-700">
+          Ver itens
         </Link>
       </div>
     );
 
   return (
     <div className="mx-auto max-w-2xl">
-      <h1 className="mb-4 text-2xl font-extrabold">Carrinho</h1>
-      <ul className="divide-y divide-black/10 rounded-xl bg-black/5 ring-1 ring-black/10">
+      <h1 className="mb-4 text-2xl font-extrabold tracking-tight sm:text-3xl">Carrinho</h1>
+      <ul className="divide-y divide-black/5 overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm">
         {lines.map((l) => (
           <li key={l.id} className="flex flex-wrap items-center gap-3 p-4">
             <div className="min-w-[10rem] flex-1">
@@ -37,7 +38,7 @@ export default function CartPage() {
               min={1}
               value={l.qty}
               onChange={(e) => setQty(l.id, Number(e.target.value))}
-              className="w-16 rounded bg-black/5 px-2 py-1 text-center"
+              className="w-16 rounded-lg border border-black/10 px-2 py-1 text-center"
             />
             <span className="w-24 text-right font-bold">{brl(l.price * l.qty)}</span>
             <button onClick={() => remove(l.id)} className="text-red-400" aria-label="Remover">
