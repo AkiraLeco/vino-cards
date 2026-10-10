@@ -54,7 +54,8 @@ function MenuIcon() {
 const roundBtn =
   "relative grid h-10 w-10 shrink-0 place-items-center rounded-full border border-black/10 transition hover:border-violet-300 hover:bg-violet-50";
 
-const sideItem = "block rounded-lg px-3 py-2.5 font-medium hover:bg-violet-50 hover:text-violet-700";
+const sideItem =
+  "block rounded-lg px-3 py-2.5 font-medium hover:bg-violet-50 hover:text-violet-700";
 
 export default function Header() {
   const { count } = useCart();
@@ -69,47 +70,67 @@ export default function Header() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-black/5 bg-white/90 backdrop-blur print:hidden">
-      <div className="mx-auto flex max-w-[1400px] items-center gap-2 px-4 py-3 sm:gap-3">
-        <button type="button" onClick={() => setOpen(true)} aria-label="Abrir menu" aria-expanded={open} className={roundBtn}>
-          <MenuIcon />
-        </button>
-
-        <Link href="/" className="flex shrink-0 items-center gap-2" onClick={close}>
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-lg font-black text-white shadow-sm">
-            V
-          </span>
-          <span className="hidden text-lg font-extrabold tracking-tight sm:inline sm:text-xl">{STORE_NAME}</span>
-        </Link>
-
-        <form action="/busca" className="mx-1 flex min-w-0 flex-1 sm:mx-3 md:mx-auto md:max-w-xl">
-          <input
-            name="q"
-            placeholder="Buscar pelo nome..."
-            aria-label="Buscar"
-            className="w-full min-w-0 rounded-l-full border border-r-0 border-black/10 bg-black/[0.03] px-4 py-2 text-sm outline-none transition focus:border-violet-500 focus:bg-white"
-          />
-          <button className="rounded-r-full bg-violet-600 px-4 text-sm font-semibold text-white transition hover:bg-violet-700">
-            Buscar
+    <>
+      <header className="sticky top-0 z-40 border-b border-black/5 bg-white/90 backdrop-blur print:hidden">
+        <div className="mx-auto flex max-w-[1400px] items-center gap-2 px-4 py-3 sm:gap-3">
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            aria-label="Abrir menu"
+            aria-expanded={open}
+            className={roundBtn}
+          >
+            <MenuIcon />
           </button>
-        </form>
 
-        <Link href="/conta" aria-label="Minha conta" className={roundBtn}>
-          <UserIcon />
-        </Link>
-
-        <Link href="/carrinho" aria-label="Carrinho" className={roundBtn}>
-          <CartIcon />
-          {count > 0 && (
-            <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-violet-600 px-1 text-[11px] font-bold text-white">
-              {count}
+          <Link
+            href="/"
+            className="flex shrink-0 items-center gap-2"
+            onClick={close}
+          >
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-lg font-black text-white shadow-sm">
+              V
             </span>
-          )}
-        </Link>
-      </div>
+            <span className="hidden text-lg font-extrabold tracking-tight sm:inline sm:text-xl">
+              {STORE_NAME}
+            </span>
+          </Link>
 
-      {/* Sidebar */}
-      <div className={`fixed inset-0 z-50 ${open ? "" : "pointer-events-none"}`} aria-hidden={!open}>
+          <form
+            action="/busca"
+            className="mx-1 flex min-w-0 flex-1 sm:mx-3 md:mx-auto md:max-w-xl"
+          >
+            <input
+              name="q"
+              placeholder="Buscar pelo nome..."
+              aria-label="Buscar"
+              className="w-full min-w-0 rounded-l-full border border-r-0 border-black/10 bg-black/[0.03] px-4 py-2 text-sm outline-none transition focus:border-violet-500 focus:bg-white"
+            />
+            <button className="rounded-r-full bg-violet-600 px-4 text-sm font-semibold text-white transition hover:bg-violet-700">
+              Buscar
+            </button>
+          </form>
+
+          <Link href="/conta" aria-label="Minha conta" className={roundBtn}>
+            <UserIcon />
+          </Link>
+
+          <Link href="/carrinho" aria-label="Carrinho" className={roundBtn}>
+            <CartIcon />
+            {count > 0 && (
+              <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-violet-600 px-1 text-[11px] font-bold text-white">
+                {count}
+              </span>
+            )}
+          </Link>
+        </div>
+      </header>
+
+      {/* Sidebar (fora do header: o backdrop-blur dele prenderia o position:fixed) */}
+      <div
+        className={`fixed inset-0 z-50 ${open ? "" : "pointer-events-none"}`}
+        aria-hidden={!open}
+      >
         <div
           onClick={close}
           className={`absolute inset-0 bg-black/40 transition-opacity ${open ? "opacity-100" : "opacity-0"}`}
@@ -122,7 +143,12 @@ export default function Header() {
         >
           <div className="mb-3 flex items-center justify-between">
             <span className="text-lg font-extrabold">{STORE_NAME}</span>
-            <button type="button" onClick={close} aria-label="Fechar menu" className="rounded-full px-3 py-1.5 text-lg leading-none hover:bg-black/5">
+            <button
+              type="button"
+              onClick={close}
+              aria-label="Fechar menu"
+              className="rounded-full px-3 py-1.5 text-lg leading-none hover:bg-black/5"
+            >
               ✕
             </button>
           </div>
@@ -131,7 +157,9 @@ export default function Header() {
           </Link>
           {(Object.keys(GAMES) as Game[]).map((g) => (
             <div key={g} className="mt-2 border-t border-black/5 pt-3">
-              <p className="px-3 text-xs font-bold uppercase tracking-wide text-violet-600">{GAMES[g]}</p>
+              <p className="px-3 text-xs font-bold uppercase tracking-wide text-violet-600">
+                {GAMES[g]}
+              </p>
               {gameLinks(g).map((l) => (
                 <Link
                   key={l.href}
@@ -157,6 +185,6 @@ export default function Header() {
           </div>
         </nav>
       </div>
-    </header>
+    </>
   );
 }
