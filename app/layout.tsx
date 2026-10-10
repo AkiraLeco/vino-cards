@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/CartProvider";
-import Header from "@/components/Header";
+import SiteShell from "@/components/SiteShell";
 import { FLOATING_WHATSAPP } from "@/lib/features";
 import { STORE_NAME } from "@/lib/format";
 
@@ -30,8 +30,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col overflow-x-hidden">
         <CartProvider>
-          <Header />
-          <div className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6 sm:py-8">{children}</div>
+          <SiteShell
+            footer={
           <footer className="mt-10 bg-slate-900 text-white/70 print:hidden">
             <div className="mx-auto grid max-w-[1400px] gap-8 px-4 py-10 sm:grid-cols-3">
               <div>
@@ -60,7 +60,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               © {new Date().getFullYear()} {STORE_NAME}. Projeto independente, sem vínculo com as marcas citadas.
             </p>
           </footer>
-          {FLOATING_WHATSAPP && process.env.NEXT_PUBLIC_WHATSAPP_NUMBER && (
+            }
+            floating={
+          FLOATING_WHATSAPP && process.env.NEXT_PUBLIC_WHATSAPP_NUMBER && (
             <a
               href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`}
               target="_blank"
@@ -69,7 +71,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             >
               WhatsApp
             </a>
-          )}
+          )
+            }
+          >
+            {children}
+          </SiteShell>
         </CartProvider>
       </body>
     </html>

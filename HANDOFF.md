@@ -25,6 +25,7 @@ Resumo para retomar o trabalho depois de um `/clear`. **Leia este arquivo, o `CL
 - Home com hero, cards de entrada por jogo e Novidades. Os cards de entrada ficam num carrossel horizontal com encaixe e setas (`components/TileCarousel.tsx` + `components/GameTile.tsx`); cada card abre **só por clique** (o deslizar foi removido a pedido do usuário). Imagens locais em `public/tiles/` (`pokemon.webp` = Pikachu, `riftbound.webp` = Jinx, que é arte de League of Legends, não de Riftbound). **Atenção**: são artes de terceiros num repositório público; trocar por arte própria/licenciada quando possível (basta substituir os arquivos).
 - `/qr`: QR do site com baixar PNG e imprimir. Rodapé sem link para o admin.
 - Layout responsivo para celular e desktop.
+- `components/SiteShell.tsx` esconde topo, rodapé e WhatsApp da loja em `/admin/*`; o admin tem o próprio topo (logo → `/admin`, Produtos, + Novo produto, Sair) e nenhum link para a loja.
 
 **Admin** (`/admin`, login por e-mail e senha; cadastro público desativado)
 - Lista com totais (itens, unidades, valor em estoque), busca e filtros por jogo, tipo e status, botões de status em um toque (Disponível/Reservada/Vendida), "Vendi 1", editar, excluir e exportar CSV.

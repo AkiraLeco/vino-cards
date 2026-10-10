@@ -1,6 +1,6 @@
 import Link from "next/link";
 import CardItem from "@/components/CardItem";
-import GameTile, { type GameTileData } from "@/components/GameTile";
+import { type GameTileData } from "@/components/GameTile";
 import TileCarousel from "@/components/TileCarousel";
 import { STORE_NAME } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
@@ -16,7 +16,6 @@ const TILES: GameTileData[] = [
     icon: "⚡",
     background:
       "linear-gradient(135deg, rgba(255,189,36,0.98) 0%, rgba(245,124,22,0.96) 55%, rgba(233,75,67,0.96) 100%)",
-    bar: "rgba(120,45,12,0.6)",
     image: "/tiles/pokemon.webp",
     cutout: true,
   },
@@ -28,7 +27,6 @@ const TILES: GameTileData[] = [
     background:
       "linear-gradient(115deg, rgba(57,32,128,0.74) 0%, rgba(98,86,234,0.36) 50%, rgba(87,156,245,0.1) 100%)",
     shade: "linear-gradient(to top, rgba(40,20,96,0.45) 0%, transparent 50%)",
-    bar: "rgba(36,20,88,0.68)",
     image: "/tiles/riftbound.webp",
     imagePosition: "70% 25%",
   },
@@ -38,7 +36,6 @@ const TILES: GameTileData[] = [
     sub: "Playmats, sleeves, deckboxes e mais",
     icon: "🎴",
     background: "linear-gradient(135deg, #55BE9B 0%, #39AFA9 55%, #428FB9 100%)",
-    bar: "rgba(18,70,76,0.58)",
   },
 ];
 
@@ -93,16 +90,7 @@ export default async function Home() {
       </section>
 
       <section className="mt-6">
-        <TileCarousel>
-          {TILES.map((t) => (
-            <div
-              key={t.href}
-              className="flex shrink-0 basis-[82%] snap-start sm:basis-[calc((100%-1rem)/2)] lg:basis-[calc((100%-2rem)/3)]"
-            >
-              <GameTile {...t} />
-            </div>
-          ))}
-        </TileCarousel>
+        <TileCarousel tiles={TILES} />
       </section>
 
       {cards.length > 0 && (

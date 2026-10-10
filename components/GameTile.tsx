@@ -9,8 +9,6 @@ export type GameTileData = {
   background: string;
   /** Escurecimento extra de uma extremidade (opcional, RGBA). */
   shade?: string;
-  /** Fundo escuro da barra inferior, derivado da paleta do card. */
-  bar: string;
   image?: string;
   imagePosition?: string;
   /** Imagem recortada (WebP transparente): aparece inteira sobre o degradê. */
@@ -18,23 +16,25 @@ export type GameTileData = {
 };
 
 export default function GameTile({
+  hidden = false,
   href,
   title,
   sub,
   icon,
   background,
   shade,
-  bar,
   image,
   imagePosition = "center",
   cutout = false,
-}: GameTileData) {
+}: GameTileData & { hidden?: boolean }) {
   const art = image && !cutout;
 
   return (
     <Link
       href={href}
-      className="group relative flex h-full w-full min-h-[210px] flex-col justify-between overflow-hidden rounded-2xl p-6 text-white shadow-[0_8px_24px_-10px_rgba(23,27,53,0.45)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_14px_30px_-10px_rgba(23,27,53,0.5)]"
+      aria-hidden={hidden || undefined}
+      tabIndex={hidden ? -1 : undefined}
+      className="group relative flex h-full w-full min-h-[170px] flex-col justify-between overflow-hidden rounded-2xl p-6 text-white shadow-[0_8px_24px_-10px_rgba(23,27,53,0.45)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_14px_30px_-10px_rgba(23,27,53,0.5)]"
       style={{ background: art ? undefined : background }}
     >
       {art && (
@@ -54,7 +54,7 @@ export default function GameTile({
         <img
           src={image}
           alt=""
-          className="pointer-events-none absolute right-0 top-0 bottom-[88px] w-[42%] object-contain object-right-bottom p-2 drop-shadow-[0_8px_16px_rgba(0,0,0,0.3)] transition duration-200 group-hover:scale-105"
+          className="pointer-events-none absolute right-0 top-0 bottom-2 w-[38%] object-contain object-right-bottom p-2 drop-shadow-[0_8px_16px_rgba(0,0,0,0.3)] transition duration-200 group-hover:scale-105"
         />
       ) : (
         !image && (
@@ -75,15 +75,10 @@ export default function GameTile({
         </p>
       </div>
 
-      <div
-        className="relative mt-4 flex h-[52px] items-center gap-3 rounded-full p-1 pr-5 shadow-inner transition duration-200 group-hover:brightness-110"
-        style={{ background: bar }}
-      >
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-lg font-bold text-slate-800 shadow-md transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none">
-          →
-        </span>
-        <span className="text-xs font-bold uppercase tracking-wider text-white">Explorar</span>
-      </div>
+      <span className="relative mt-6 inline-flex items-center gap-1 text-sm font-bold">
+        Explorar
+        <span className="transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none">→</span>
+      </span>
     </Link>
   );
 }

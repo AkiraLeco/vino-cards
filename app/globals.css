@@ -26,6 +26,17 @@ body {
   background: #ddd6fe;
 }
 
+/* Faixa animada dos cards da home: 4 cópias, anda 1 cópia (-25%) e recomeça sem emenda */
+@keyframes tile-marquee {
+  to { transform: translateX(-25%); }
+}
+.tile-track { animation: tile-marquee 28s linear infinite; }
+.tile-marquee:hover .tile-track,
+.tile-marquee:focus-within .tile-track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .tile-track { animation: none; }
+}
+
 /* Foco visível e consistente para teclado */
 :focus-visible {
   outline: 2px solid #7c3aed;
