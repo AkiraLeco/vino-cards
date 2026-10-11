@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { saveCard } from "@/app/admin/actions";
 import { fetchLigaPrice, type LigaResult } from "@/app/admin/liga";
 import { ligaSearchUrl, type LigaOffer } from "@/lib/liga";
@@ -18,6 +18,7 @@ const sectionTitle = "mb-3 flex items-center gap-2 text-sm font-bold";
 const num = "grid h-6 w-6 place-items-center rounded-full bg-violet-600 text-xs text-white";
 
 export default function CardForm({ card }: { card?: Card }) {
+  const [saveError, formAction, saving] = useActionState(saveCard, null);
   const [v, setV] = useState({
     api_card_id: card?.api_card_id ?? "",
     name: card?.name ?? "",
@@ -108,7 +109,7 @@ export default function CardForm({ card }: { card?: Card }) {
         {card ? "Editar item" : "Novo item"}
       </h1>
 
-      <form action={saveCard} className="flex flex-col gap-4">
+      <form action={formAction} className="flex flex-col gap-4">
         <input type="hidden" name="id" value={card?.id ?? ""} />
         <input type="hidden" name="game" value={game} />
         <input type="hidden" name="category" value={category} />
@@ -417,11 +418,16 @@ export default function CardForm({ card }: { card?: Card }) {
         </section>
 
         <div className="sticky bottom-3 z-10">
+          {saveError && (
+            <p role="alert" className="mb-2 rounded-xl border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-800">
+              {saveError}
+            </p>
+          )}
           <button
-            disabled={uploading}
+            disabled={uploading || saving}
             className="w-full rounded-xl bg-violet-600 py-3.5 font-bold text-white shadow-lg transition hover:bg-violet-700 disabled:opacity-50"
           >
-            {uploading ? "Aguarde o envio das fotos..." : "Salvar"}
+            {uploading ? "Aguarde o envio das fotos..." : saving ? "Salvando..." : "Salvar"}
           </button>
         </div>
       </form>

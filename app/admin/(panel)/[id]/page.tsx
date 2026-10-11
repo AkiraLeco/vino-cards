@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import CardForm from "@/components/CardForm";
+import DeleteCardForm from "@/components/DeleteCardForm";
 import { requireAdmin } from "@/lib/auth";
 import type { Card } from "@/lib/types";
-import { deleteCard } from "../../actions";
 
 export const dynamic = "force-dynamic";
 
@@ -15,10 +15,7 @@ export default async function EditCard({ params }: { params: Promise<{ id: strin
   return (
     <div>
       <CardForm card={data as Card} />
-      <form action={deleteCard} className="mx-auto mt-4 max-w-2xl">
-        <input type="hidden" name="id" value={id} />
-        <button className="text-sm text-red-400 hover:underline">Excluir carta</button>
-      </form>
+      <DeleteCardForm id={id} />
     </div>
   );
 }

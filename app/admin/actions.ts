@@ -26,35 +26,58 @@ export async function logout() {
 const num = (v: FormDataEntryValue | null) =>
   v === null || v === "" ? null : Number(String(v).replace(",", "."));
 
-export async function saveCard(form: FormData) {
+const STATUSES = ["available", "reserved", "sold"];
+const CATEGORY_KEYS = ["single", "sealed", "accessory"];
+const GAME_KEYS = ["pokemon", "riftbound"];
+const CONDITION_KEYS = ["M", "NM", "SP", "MP", "HP", "D"];
+
+/** Devolve a mensagem de erro (mostrada no formulário) ou redireciona ao salvar. */
+export async function saveCard(_: string | null, form: FormData): Promise<string | null> {
   const supabase = await requireUser();
   const id = String(form.get("id") ?? "");
+
+  const name = String(form.get("name") ?? "").trim();
+  if (!name) return "Informe o nome do item.";
+
+  const price = num(form.get("price")) ?? 0;
+  if (!Number.isFinite(price) || price < 0) return "O preço precisa ser um número maior ou igual a zero.";
+  const refPrice = num(form.get("ref_price"));
+  if (refPrice !== null && (!Number.isFinite(refPrice) || refPrice < 0)) return "O preço de referência é inválido.";
+  const rawQty = num(form.get("quantity")) ?? 1;
+  if (!Number.isFinite(rawQty)) return "A quantidade precisa ser um número.";
+
+  const category = String(form.get("category") ?? "single");
+  if (!CATEGORY_KEYS.includes(category)) return "Tipo de item inválido.";
+  const gameValue = String(form.get("game") ?? "pokemon");
+  if (category !== "accessory" && !GAME_KEYS.includes(gameValue)) return "Jogo inválido.";
+  const requestedStatus = String(form.get("status") ?? "available");
+  if (!STATUSES.includes(requestedStatus)) return "Status inválido.";
+  const condition = String(form.get("condition") ?? "NM");
+  if (category === "single" && !CONDITION_KEYS.includes(condition)) return "Condição inválida.";
 
   // As fotos já foram enviadas ao Storage pelo navegador; aqui chegam só as URLs.
   const photos = String(form.get("photo_urls") ?? "")
     .split("\n")
     .filter(Boolean);
 
-  const category = String(form.get("category") ?? "single");
   const single = category === "single";
-  const game = category === "accessory" ? null : String(form.get("game") ?? "pokemon");
+  const game = category === "accessory" ? null : gameValue;
 
-  const quantity = Math.max(0, num(form.get("quantity")) ?? 1);
-  const requestedStatus = String(form.get("status") ?? "available");
+  const quantity = Math.max(0, Math.floor(rawQty));
 
   const row = {
     game,
     category,
     api_card_id: single ? String(form.get("api_card_id") ?? "") || null : null,
-    name: String(form.get("name")),
+    name,
     set_name: String(form.get("set_name") ?? "") || null,
     number: single ? String(form.get("number") ?? "") || null : null,
     rarity: single ? String(form.get("rarity") ?? "") || null : null,
     language: String(form.get("language") ?? "Português"),
-    condition: single ? String(form.get("condition") ?? "NM") : "NM",
+    condition: single ? condition : "NM",
     is_foil: single && form.get("is_foil") === "on",
-    price: num(form.get("price")) ?? 0,
-    ref_price: num(form.get("ref_price")),
+    price,
+    ref_price: refPrice,
     quantity,
     status: quantity < 1 && requestedStatus === "available" ? "sold" : requestedStatus,
     image_api_url: String(form.get("image_api_url") ?? "") || null,
@@ -66,7 +89,7 @@ export async function saveCard(form: FormData) {
   const { error } = id
     ? await supabase.from("cards").update(row).eq("id", id)
     : await supabase.from("cards").insert(row);
-  if (error) throw new Error(error.message);
+  if (error) return `Não foi possível salvar: ${error.message}`;
 
   revalidatePath("/", "layout");
   redirect("/admin");
@@ -74,7 +97,8 @@ export async function saveCard(form: FormData) {
 
 export async function deleteCard(form: FormData) {
   const supabase = await requireUser();
-  await supabase.from("cards").delete().eq("id", String(form.get("id")));
+  const { error } = await supabase.from("cards").delete().eq("id", String(form.get("id")));
+  if (error) throw new Error(`Não foi possível excluir: ${error.message}`);
   revalidatePath("/", "layout");
   redirect("/admin");
 }
@@ -83,13 +107,15 @@ export async function setStatus(form: FormData) {
   const supabase = await requireUser();
   const id = String(form.get("id"));
   const status = String(form.get("status"));
+  if (!STATUSES.includes(status)) throw new Error("Status inválido.");
   const patch: { status: string; quantity?: number } = { status };
   if (status === "available") {
     // Voltar a "disponível" sem estoque deixaria a carta invisível: garante 1 unidade.
     const { data } = await supabase.from("cards").select("quantity").eq("id", id).single();
     if (data && data.quantity < 1) patch.quantity = 1;
   }
-  await supabase.from("cards").update(patch).eq("id", id);
+  const { error } = await supabase.from("cards").update(patch).eq("id", id);
+  if (error) throw new Error(`Não foi possível alterar o status: ${error.message}`);
   revalidatePath("/", "layout");
 }
 
@@ -99,9 +125,10 @@ export async function sellOne(form: FormData) {
   const { data } = await supabase.from("cards").select("quantity").eq("id", id).single();
   if (!data) return;
   const quantity = Math.max(0, data.quantity - 1);
-  await supabase
+  const { error } = await supabase
     .from("cards")
     .update(quantity === 0 ? { quantity, status: "sold" } : { quantity })
     .eq("id", id);
+  if (error) throw new Error(`Não foi possível registrar a venda: ${error.message}`);
   revalidatePath("/", "layout");
 }

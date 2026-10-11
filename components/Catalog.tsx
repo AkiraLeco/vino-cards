@@ -24,7 +24,10 @@ export default async function Catalog({
   const supabase = await createClient();
 
   const per = [30, 60, 90].includes(Number(sp.per)) ? Number(sp.per) : 30;
-  const page = Math.max(1, Number(sp.page) || 1);
+  const page = Math.max(1, Math.floor(Number(sp.page)) || 1);
+  const price = (v?: string) => (v && v.trim() !== "" && Number.isFinite(Number(v)) ? Number(v) : null);
+  const min = price(sp.min);
+  const max = price(sp.max);
   const hideSold = !sp.f || sp.stock === "1";
 
   let query = supabase.from("cards").select("*", { count: "exact" });
@@ -36,8 +39,8 @@ export default async function Catalog({
   if (sp.rarity) query = query.eq("rarity", sp.rarity);
   if (sp.cond) query = query.eq("condition", sp.cond);
   if (sp.lang) query = query.eq("language", sp.lang);
-  if (sp.min) query = query.gte("price", Number(sp.min));
-  if (sp.max) query = query.lte("price", Number(sp.max));
+  if (min !== null) query = query.gte("price", min);
+  if (max !== null) query = query.lte("price", max);
   query =
     sp.sort === "price_asc"
       ? query.order("price", { ascending: true })
