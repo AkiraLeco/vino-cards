@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCart } from "./CartProvider";
 import { STORE_NAME } from "@/lib/format";
 import { GAMES, type Game } from "@/lib/types";
@@ -61,12 +61,36 @@ export default function Header() {
   const { count } = useCart();
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
+  const menuBtn = useRef<HTMLButtonElement>(null);
+  const panel = useRef<HTMLElement>(null);
 
+  // Sidebar aberta: foco entra no painel, Tab fica preso nele, Esc fecha e o foco volta ao botão.
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const btn = menuBtn.current;
+    const focusables = () =>
+      Array.from(panel.current?.querySelectorAll<HTMLElement>("a[href], button") ?? []);
+    focusables()[0]?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") return setOpen(false);
+      if (e.key !== "Tab") return;
+      const items = focusables();
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      setTimeout(() => btn?.focus(), 0);
+    };
   }, [open]);
 
   return (
@@ -74,6 +98,7 @@ export default function Header() {
       <header className="sticky top-0 z-40 border-b border-black/5 bg-white/90 backdrop-blur print:hidden">
         <div className="mx-auto flex max-w-[1400px] items-center gap-2 px-4 py-3 sm:gap-3">
           <button
+            ref={menuBtn}
             type="button"
             onClick={() => setOpen(true)}
             aria-label="Abrir menu"
@@ -129,13 +154,14 @@ export default function Header() {
       {/* Sidebar (fora do header: o backdrop-blur dele prenderia o position:fixed) */}
       <div
         className={`fixed inset-0 z-50 ${open ? "" : "pointer-events-none"}`}
-        aria-hidden={!open}
+        inert={!open}
       >
         <div
           onClick={close}
           className={`absolute inset-0 bg-black/40 transition-opacity ${open ? "opacity-100" : "opacity-0"}`}
         />
         <nav
+          ref={panel}
           aria-label="Menu"
           className={`absolute left-0 top-0 flex h-full w-72 max-w-[85vw] flex-col overflow-y-auto bg-white p-4 shadow-2xl transition-transform duration-200 ${
             open ? "translate-x-0" : "-translate-x-full"

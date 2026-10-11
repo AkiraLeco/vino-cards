@@ -44,9 +44,7 @@ const TILES: GameTileData[] = [
     sub: "Cartas avulsas, selados e coleções",
     icon: "⚡",
     background:
-      "linear-gradient(135deg, rgba(255,189,36,0.98) 0%, rgba(245,124,22,0.96) 55%, rgba(233,75,67,0.96) 100%)",
-    image: "/tiles/pokemon.webp",
-    cutout: true,
+      "linear-gradient(135deg, #FFBD24 0%, #F57C16 55%, #E94B43 100%)",
   },
   {
     href: "/riftbound/cartas",
@@ -54,10 +52,7 @@ const TILES: GameTileData[] = [
     sub: "Cartas avulsas, selados e coleções",
     icon: "⚔️",
     background:
-      "linear-gradient(115deg, rgba(57,32,128,0.74) 0%, rgba(98,86,234,0.36) 50%, rgba(87,156,245,0.1) 100%)",
-    shade: "linear-gradient(to top, rgba(40,20,96,0.45) 0%, transparent 50%)",
-    image: "/tiles/riftbound.webp",
-    imagePosition: "70% 25%",
+      "linear-gradient(135deg, #392080 0%, #5B54D6 55%, #579CF5 100%)",
   },
   {
     href: "/acessorios",

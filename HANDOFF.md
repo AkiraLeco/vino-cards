@@ -22,7 +22,7 @@ Resumo para retomar o trabalho depois de um `/clear`. **Leia este arquivo, o `CL
 - Topo: sidebar (☰, com Início, Pokémon, Riftbound, Acessórios, QR), logo, busca, conta (`/conta`, placeholder) e carrinho. Home: faixa de anúncios rotativa (`PromoBanner`), carrossel de cards, cartas avulsas e rodapé de atendimento/contato/endereço/horário (WhatsApp, e-mail, endereço e horário com dados fictícios (trocar pelos reais) em `app/layout.tsx`).
 - Catálogo com filtros, busca, paginação (30/60/90) e estado vazio. Vendidas ficam escondidas por padrão. Reservadas aparecem com selo.
 - Página do item com galeria, preço, avisos de reservada/vendida e prévia de link (`generateMetadata`).
-- Home com hero, cards de entrada por jogo e Novidades. Os cards de entrada ficam num carrossel horizontal com encaixe e setas (`components/TileCarousel.tsx` + `components/GameTile.tsx`); cada card abre **só por clique** (o deslizar foi removido a pedido do usuário). Imagens locais em `public/tiles/` (`pokemon.webp` = Pikachu, `riftbound.webp` = Jinx, que é arte de League of Legends, não de Riftbound). **Atenção**: são artes de terceiros num repositório público; trocar por arte própria/licenciada quando possível (basta substituir os arquivos).
+- Home com hero, cards de entrada por jogo e Novidades. Os cards de entrada ficam num carrossel horizontal com encaixe e setas (`components/TileCarousel.tsx` + `components/GameTile.tsx`); cada card abre **só por clique** (o deslizar foi removido a pedido do usuário). As imagens de terceiros (Pikachu, Jinx) foram **removidas** (direitos autorais); os cards usam só degradê e ícone até o usuário enviar artes próprias/licenciadas (`image`/`imagePosition`/`cutout` em `TILES` de `app/page.tsx`, arquivos em `public/tiles/`).
 - `/qr`: QR do site com baixar PNG e imprimir. Rodapé sem link para o admin.
 - Layout responsivo para celular e desktop.
 - `components/SiteShell.tsx` esconde topo, rodapé e WhatsApp da loja em `/admin/*`; o admin tem o próprio topo (logo → `/admin`, Produtos, + Novo produto, Sair) e nenhum link para a loja.
@@ -61,6 +61,8 @@ Resumo para retomar o trabalho depois de um `/clear`. **Leia este arquivo, o `CL
 - Se aparecerem erros de tipos antigos (`LayoutProps`, rotas removidas), apagar `.next` e rebuildar.
 
 ## 6. Pendências e próximos passos
+- Aguardando o usuário enviar as artes dos cards da home (Pokémon, Riftbound, Acessórios).
+- Definir `NEXT_PUBLIC_SITE_URL` na Vercel (sitemap/robots usam `lib/site.ts`).
 - Rodar `002_fix_empty_stock.sql` no SQL Editor do Supabase (ou editar à mão o Pikachu ex, que está "disponível" com quantidade 0). Ainda não confirmado.
 - **O admin logado não foi testado por mim** (não consigo autenticar no meu ambiente). Pedir ao usuário que teste cadastrar e editar um item após o deploy.
 - **Decisão do usuário (2026-10-10): as compras não serão mais por WhatsApp; serão por pagamento via banco (a integração fica para o final).** O carrinho segue com o envio desativado até lá.

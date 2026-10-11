@@ -20,18 +20,22 @@ const INTERVAL_MS = 5000;
 export default function PromoBanner({ slides }: { slides: PromoSlide[] }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [manual, setManual] = useState(false);
 
   useEffect(() => {
-    if (paused || slides.length < 2) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (paused || manual || reduce || slides.length < 2) return;
     const id = setInterval(() => setIndex((i) => (i + 1) % slides.length), INTERVAL_MS);
     return () => clearInterval(id);
-  }, [paused, slides.length]);
+  }, [paused, manual, slides.length]);
 
   return (
     <section
       className="relative overflow-hidden rounded-3xl text-white shadow-lg"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
       aria-roledescription="carrossel"
       aria-label="Anúncios"
     >
@@ -62,6 +66,17 @@ export default function PromoBanner({ slides }: { slides: PromoSlide[] }) {
           </Link>
         ))}
       </div>
+
+      {slides.length > 1 && (
+        <button
+          type="button"
+          onClick={() => setManual(!manual)}
+          aria-pressed={manual}
+          className="absolute right-3 top-3 rounded-full bg-black/30 px-3 py-1 text-xs font-semibold backdrop-blur hover:bg-black/50"
+        >
+          {manual ? "▶ Retomar" : "⏸ Pausar"}
+        </button>
+      )}
 
       {slides.length > 1 && (
         <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2">

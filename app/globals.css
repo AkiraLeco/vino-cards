@@ -31,6 +31,7 @@ body {
   to { transform: translateX(-25%); }
 }
 .tile-track { animation: tile-marquee 28s linear infinite; }
+.tile-marquee[data-paused="true"] .tile-track,
 .tile-marquee:hover .tile-track,
 .tile-marquee:focus-within .tile-track { animation-play-state: paused; }
 @media (prefers-reduced-motion: reduce) {

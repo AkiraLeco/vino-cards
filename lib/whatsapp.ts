@@ -6,6 +6,8 @@ export interface CartLine {
   condition: string;
   price: number;
   qty: number;
+  /** Estoque no momento em que entrou no carrinho (limite da quantidade). */
+  max?: number;
 }
 
 export function whatsappUrl(lines: CartLine[], origin: string) {

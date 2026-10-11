@@ -6,7 +6,7 @@ import type { CartLine } from "@/lib/whatsapp";
 interface Ctx {
   lines: CartLine[];
   count: number;
-  add: (l: Omit<CartLine, "qty">, max: number) => void;
+  add: (l: Omit<CartLine, "qty" | "max">, max: number) => void;
   setQty: (id: string, qty: number) => void;
   remove: (id: string) => void;
   clear: () => void;
@@ -41,16 +41,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       persist(
         found
           ? lines.map((x) =>
-              x.id === l.id ? { ...x, qty: Math.min(max, x.qty + 1) } : x,
+              x.id === l.id ? { ...x, max, qty: Math.min(max, x.qty + 1) } : x,
             )
-          : [...lines, { ...l, qty: 1 }],
+          : [...lines, { ...l, qty: 1, max }],
       );
     },
     setQty: (id, qty) =>
       persist(
         qty <= 0
           ? lines.filter((x) => x.id !== id)
-          : lines.map((x) => (x.id === id ? { ...x, qty } : x)),
+          : lines.map((x) => (x.id === id ? { ...x, qty: Math.min(x.max ?? Infinity, Math.floor(qty) || 1) } : x)),
       ),
     remove: (id) => persist(lines.filter((x) => x.id !== id)),
     clear: () => persist([]),

@@ -36,6 +36,7 @@ export default function CartPage() {
             <input
               type="number"
               min={1}
+              max={l.max}
               value={l.qty}
               onChange={(e) => setQty(l.id, Number(e.target.value))}
               className="w-16 rounded-lg border border-black/10 px-2 py-1 text-center"
