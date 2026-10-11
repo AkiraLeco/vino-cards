@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: `${STORE_NAME} | Cartas Pokémon`,
-  description: "Cartas Pokémon à venda: veja estado, coleção e preço.",
+  title: `${STORE_NAME} | Cartas, selados e acessórios de Pokémon e Riftbound`,
+  description: "Cartas avulsas, produtos selados e acessórios de Pokémon e Riftbound: veja estado, coleção, preço e disponibilidade.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

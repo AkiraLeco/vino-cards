@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { startTransition, useActionState, useState } from "react";
 import { saveCard } from "@/app/admin/actions";
 import { fetchLigaPrice, type LigaResult } from "@/app/admin/liga";
 import { ligaSearchUrl, type LigaOffer } from "@/lib/liga";
@@ -109,7 +109,15 @@ export default function CardForm({ card }: { card?: Card }) {
         {card ? "Editar item" : "Novo item"}
       </h1>
 
-      <form action={formAction} className="flex flex-col gap-4">
+      {/* onSubmit em vez de action={...}: o React limparia os campos não controlados quando houver erro de validação. */}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          const data = new FormData(e.currentTarget);
+          startTransition(() => formAction(data));
+        }}
+        className="flex flex-col gap-4"
+      >
         <input type="hidden" name="id" value={card?.id ?? ""} />
         <input type="hidden" name="game" value={game} />
         <input type="hidden" name="category" value={category} />
