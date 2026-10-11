@@ -4,10 +4,11 @@ import { type GameTileData } from "@/components/GameTile";
 import PromoBanner, { type PromoSlide } from "@/components/PromoBanner";
 import TileCarousel from "@/components/TileCarousel";
 import { STORE_NAME } from "@/lib/format";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { Card } from "@/lib/types";
 
-export const dynamic = "force-dynamic";
+// Dados públicos: a página é gerada e renovada a cada 60 s (o admin também a renova ao salvar).
+export const revalidate = 60;
 
 const SLIDES: PromoSlide[] = [
   {
@@ -68,7 +69,7 @@ const TILES: GameTileData[] = [
 ];
 
 export default async function Home() {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data } = await supabase
     .from("cards")
     .select("*")

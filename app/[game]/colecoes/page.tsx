@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CardImage from "@/components/CardImage";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { GAMES, cardImage, isGame } from "@/lib/types";
@@ -51,9 +52,8 @@ export default async function Colecoes({ params }: { params: Promise<{ game: str
             className="group flex flex-col overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-violet-900/10"
           >
             <div className="bg-gradient-to-b from-violet-50 to-white p-4">
-              <div className="aspect-[5/7]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={info.image} alt={name} loading="lazy" className="h-full w-full object-contain drop-shadow-md transition duration-300 group-hover:scale-[1.03]" />
+              <div className="relative aspect-[5/7]">
+                <CardImage src={info.image} alt={name} sizes="(min-width:1280px) 260px, (min-width:1024px) 22vw, (min-width:640px) 30vw, 46vw" className="object-contain drop-shadow-md transition duration-300 group-hover:scale-[1.03]" />
               </div>
             </div>
             <div className="px-4 pb-4 pt-2">

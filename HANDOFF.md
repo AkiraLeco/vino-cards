@@ -50,6 +50,7 @@ Resumo para retomar o trabalho depois de um `/clear`. **Leia este arquivo, o `CL
 - `supabase/schema.sql`, `supabase/migrations/001_game_category.sql` (já executada), `supabase/migrations/002_fix_empty_stock.sql` (opcional).
 
 ## 5. Decisões e armadilhas
+- **Desempenho**: imagens de cartas usam `components/CardImage.tsx` (`next/image`; hosts liberados em `next.config.ts`: images.pokemontcg.io e o host do Supabase; outros hosts caem em `unoptimized`). A home é estática com `revalidate = 60` e usa `lib/supabase/public.ts` (sem cookies); o admin renova ao salvar.
 - **Admin e redirecionamento**: layout e página renderizam em paralelo, e com `app/loading.tsx` o redirect chega depois do HTML. Por isso **toda página do admin chama `requireAdmin()` antes de buscar dados**. Manter assim em páginas novas.
 - **WhatsApp desativado**: para reativar, editar `lib/features.ts` (`FLOATING_WHATSAPP` e `WHATSAPP_ORDER` para `true`) e dar push. Precisa de `NEXT_PUBLIC_WHATSAPP_NUMBER` só com dígitos (ex.: `5511932506668`) na Vercel. Com a flag desligada, o carrinho mostra "O envio de pedidos está indisponível no momento".
 - **Liga**: a consulta é raspagem não oficial e provavelmente é bloqueada pelo Cloudflare nos IPs da Vercel. O erro mostra o motivo e há link para busca manual. Alternativas: preço manual ou rodar o admin localmente.
@@ -62,7 +63,7 @@ Resumo para retomar o trabalho depois de um `/clear`. **Leia este arquivo, o `CL
 ## 6. Pendências e próximos passos
 - Rodar `002_fix_empty_stock.sql` no SQL Editor do Supabase (ou editar à mão o Pikachu ex, que está "disponível" com quantidade 0). Ainda não confirmado.
 - **O admin logado não foi testado por mim** (não consigo autenticar no meu ambiente). Pedir ao usuário que teste cadastrar e editar um item após o deploy.
-- Reativar o WhatsApp do carrinho (maior pendência funcional).
+- **Decisão do usuário (2026-10-10): as compras não serão mais por WhatsApp; serão por pagamento via banco (a integração fica para o final).** O carrinho segue com o envio desativado até lá.
 - Logo e cores da marca do cliente.
 - Otimização das demais imagens, itens relacionados, SEO/sitemap, domínio próprio, testes automatizados.
 - Fonte de dados para cartas de Riftbound (hoje cadastro manual) e alternativa estável à Liga.
