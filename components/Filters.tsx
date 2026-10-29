@@ -35,6 +35,29 @@ export default function Filters({
   const showSet = mode !== "other";
   const isSingle = mode === "single";
 
+  const labels: Record<string, string> = {
+    set: "Coleção",
+    rarity: "Raridade",
+    cond: "Estado",
+    lang: "Idioma",
+  };
+  const chips = [
+    ...["set", "rarity", "cond", "lang"]
+      .filter((k) => values[k])
+      .map((k) => [k, `${labels[k]}: ${k === "cond" ? (CONDITIONS as Record<string, string>)[values[k]!] ?? values[k] : values[k]}`]),
+    ...(values.min || values.max ? [["price", `Preço: ${values.min || "0"} – ${values.max || "∞"}`]] : []),
+    ...(values.sort ? [["sort", "Ordem personalizada"]] : []),
+  ];
+  const without = (key: string) => {
+    const p = new URLSearchParams();
+    for (const [k, v] of Object.entries(values)) {
+      if (!v || k === "page") continue;
+      if (key === "price" ? k === "min" || k === "max" : k === key) continue;
+      p.set(k, v);
+    }
+    return `${action}?${p.toString()}`;
+  };
+
   return (
     <div>
       <button
@@ -142,6 +165,22 @@ export default function Filters({
           </Link>
         </div>
       </form>
+
+      {chips.length > 0 && (
+        <ul className="mt-3 flex flex-wrap items-center gap-2" aria-label="Filtros ativos">
+          {chips.map(([k, label]) => (
+            <li key={k}>
+              <Link
+                href={without(k)}
+                aria-label={`Remover filtro ${label}`}
+                className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-violet-50 px-3 py-1 text-xs font-medium text-ink transition hover:border-gold hover:bg-violet-100"
+              >
+                {label} <span aria-hidden className="text-black/40">✕</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

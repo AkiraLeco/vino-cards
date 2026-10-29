@@ -37,6 +37,12 @@ const SLIDES: PromoSlide[] = [
   },
 ];
 
+const PERKS = [
+  { icon: "✦", title: "Estado transparente", text: "Cada carta com condição, idioma e coleção informados." },
+  { icon: "◆", title: "Estoque real", text: "Disponibilidade atualizada a cada venda e reserva." },
+  { icon: "❖", title: "Atendimento direto", text: "Dúvidas e reservas pelo WhatsApp, sem burocracia." },
+];
+
 const TILES: GameTileData[] = [
   {
     href: "/pokemon/cartas",
@@ -65,6 +71,15 @@ const TILES: GameTileData[] = [
 
 export default async function Home() {
   const supabase = createPublicClient();
+  const { data: sealedData } = await supabase
+    .from("cards")
+    .select("*")
+    .in("status", ["available", "reserved"])
+    .eq("category", "sealed")
+    .order("featured", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(5);
+  const sealed = (sealedData ?? []) as Card[];
   const { data } = await supabase
     .from("cards")
     .select("*")
@@ -99,6 +114,54 @@ export default async function Home() {
               <CardItem key={c.id} card={c} />
             ))}
           </div>
+        </section>
+      )}
+
+      {sealed.length > 0 && (
+        <section className="mt-14">
+          <div className="mb-6 flex items-end justify-between gap-4 border-b border-gold/30 pb-3">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-deep">Lacrados</p>
+              <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">Produtos selados</h2>
+            </div>
+            <Link href="/pokemon/selados" className="text-sm font-semibold text-ink underline-offset-4 hover:text-gold-deep hover:underline">
+              Ver todos →
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+            {sealed.map((c) => (
+              <CardItem key={c.id} card={c} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section className="mt-16 grid gap-px overflow-hidden rounded-3xl bg-gold/30 ring-1 ring-gold/30 sm:grid-cols-3">
+        {PERKS.map((p) => (
+          <div key={p.title} className="bg-white px-6 py-8 text-center">
+            <p className="font-display text-4xl text-gold">{p.icon}</p>
+            <h3 className="mt-2 font-display text-2xl font-bold">{p.title}</h3>
+            <p className="mt-1 text-sm text-black/60">{p.text}</p>
+          </div>
+        ))}
+      </section>
+
+      {process.env.NEXT_PUBLIC_WHATSAPP_NUMBER && (
+        <section className="relative mt-10 overflow-hidden rounded-3xl bg-ink px-6 py-12 text-center text-white ring-1 ring-gold/40 sm:px-12">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(217,189,122,0.25),transparent_60%)]" />
+          <p className="relative text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-soft">Atendimento</p>
+          <h2 className="relative mt-2 font-display text-4xl font-bold sm:text-5xl">Procurando uma carta específica?</h2>
+          <p className="relative mx-auto mt-3 max-w-xl text-white/70">
+            Fale com a gente: encomendamos, reservamos e avisamos quando chegar.
+          </p>
+          <a
+            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`}
+            target="_blank"
+            rel="noreferrer"
+            className="relative mt-6 inline-block rounded-full bg-gradient-to-r from-gold-soft to-gold px-8 py-3 text-sm font-bold uppercase tracking-wider text-ink shadow-lg transition hover:brightness-110"
+          >
+            Chamar no WhatsApp
+          </a>
         </section>
       )}
     </div>

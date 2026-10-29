@@ -1,5 +1,6 @@
 import Link from "next/link";
 import CardImage from "./CardImage";
+import QuickAdd from "./QuickAdd";
 import { brl } from "@/lib/format";
 import { GAMES, cardImage, type Card } from "@/lib/types";
 
@@ -19,10 +20,15 @@ export default function CardItem({ card }: { card: Card }) {
         ? ["SEM ESTOQUE", "bg-slate-600"]
         : null;
 
+  const canBuy = !sold && !reserved && !outOfStock;
+  const lowStock = canBuy && card.quantity <= 2;
+  const showRef = card.ref_price != null && card.ref_price > card.price;
+
   return (
+    <div className="group/card relative flex">
     <Link
       href={`/cartas/${card.id}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-gold/50 hover:shadow-2xl hover:shadow-ink/15"
+      className="group flex w-full flex-col overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-gold/50 hover:shadow-2xl hover:shadow-ink/15"
     >
       <div className="relative bg-gradient-to-b from-violet-50 via-white to-white p-3 sm:p-4">
         <div className="card-shine relative aspect-[5/7] rounded-md">
@@ -63,12 +69,21 @@ export default function CardItem({ card }: { card: Card }) {
           {single && card.number && <span className="font-normal text-black/45"> #{card.number}</span>}
         </h3>
         <div className="mt-auto flex items-end justify-between gap-2 pt-2">
-          <span className="font-display text-2xl font-bold tracking-tight text-ink sm:text-[1.7rem]">{brl(card.price)}</span>
-          <span className="rounded-full bg-black/5 px-2 py-0.5 text-[11px] font-medium text-black/60 sm:text-xs">
-            {card.quantity} un.
+          <span className="flex flex-col leading-none">
+            {showRef && <span className="mb-0.5 text-[11px] text-black/40 line-through">{brl(card.ref_price!)}</span>}
+            <span className="font-display text-2xl font-bold tracking-tight text-ink sm:text-[1.7rem]">{brl(card.price)}</span>
+          </span>
+          <span
+            className={`rounded-full px-2 py-0.5 text-[11px] font-medium sm:text-xs ${
+              lowStock ? "bg-amber-100 text-amber-800" : "bg-black/5 text-black/60"
+            }`}
+          >
+            {lowStock ? (card.quantity === 1 ? "Última unidade" : "Últimas unidades") : `${card.quantity} un.`}
           </span>
         </div>
       </div>
     </Link>
+    {canBuy && <QuickAdd card={card} />}
+    </div>
   );
 }

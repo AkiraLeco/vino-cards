@@ -121,6 +121,22 @@ export default function Header() {
             </span>
           </Link>
 
+          <nav aria-label="Principal" className="ml-2 hidden items-center gap-1 xl:flex">
+            {[
+              ["/pokemon/cartas", "Pokémon"],
+              ["/riftbound/cartas", "Riftbound"],
+              ["/acessorios", "Acessórios"],
+            ].map(([href, label]) => (
+              <Link
+                key={href}
+                href={href}
+                className="rounded-full px-3 py-1.5 text-sm font-semibold text-ink/75 transition hover:bg-violet-50 hover:text-gold-deep"
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+
           <form
             action="/busca"
             className="mx-1 flex min-w-0 flex-1 sm:mx-3 md:mx-auto md:max-w-xl"
