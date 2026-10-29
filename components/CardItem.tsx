@@ -68,17 +68,17 @@ export default function CardItem({ card }: { card: Card }) {
           {card.name}
           {single && card.number && <span className="font-normal text-black/45"> #{card.number}</span>}
         </h3>
-        <div className="mt-auto flex items-end justify-between gap-2 pt-2">
+        <div className="mt-auto flex flex-wrap items-end justify-between gap-x-2 gap-y-1 pt-2">
           <span className="flex flex-col leading-none">
             {showRef && <span className="mb-0.5 text-[11px] text-black/40 line-through">{brl(card.ref_price!)}</span>}
             <span className="font-display text-2xl font-bold tracking-tight text-ink sm:text-[1.7rem]">{brl(card.price)}</span>
           </span>
           <span
-            className={`rounded-full px-2 py-0.5 text-[11px] font-medium sm:text-xs ${
+            className={`whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-medium sm:text-xs ${
               lowStock ? "bg-amber-100 text-amber-800" : "bg-black/5 text-black/60"
             }`}
           >
-            {lowStock ? (card.quantity === 1 ? "Última unidade" : "Últimas unidades") : `${card.quantity} un.`}
+            {lowStock ? (card.quantity === 1 ? "Última un." : `Restam ${card.quantity}`) : `${card.quantity} un.`}
           </span>
         </div>
       </div>
