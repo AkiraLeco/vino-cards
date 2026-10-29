@@ -31,7 +31,7 @@ export default function TileCarousel({ tiles }: { tiles: GameTileData[] }) {
         type="button"
         onClick={() => setPaused(!paused)}
         aria-pressed={paused}
-        className="absolute -top-1 right-0 rounded-full bg-white px-3 py-1 text-xs font-semibold text-black/60 shadow ring-1 ring-black/5 hover:text-violet-700 motion-reduce:hidden"
+        className="absolute -top-1 right-0 rounded-full bg-white px-3 py-1 text-xs font-semibold text-black/60 shadow ring-1 ring-black/5 hover:text-gold-deep motion-reduce:hidden"
       >
         {paused ? "▶ Retomar" : "⏸ Pausar"}
       </button>

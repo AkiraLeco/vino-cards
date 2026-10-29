@@ -17,7 +17,7 @@ const SLIDES: PromoSlide[] = [
     title: `Bem-vindo à ${STORE_NAME}`,
     text: "Estoque atualizado de Pokémon e Riftbound, com preço, estado e disponibilidade de cada item.",
     cta: "Ver cartas",
-    background: "linear-gradient(135deg,#7138F0 0%,#4F46C9 55%,#171B35 100%)",
+    background: "linear-gradient(135deg,#2a2457 0%,#16132e 60%,#0a0918 100%)",
   },
   {
     href: "/pokemon/selados",
@@ -25,7 +25,7 @@ const SLIDES: PromoSlide[] = [
     title: "Boosters, boxes e decks",
     text: "Produtos lacrados de Pokémon e Riftbound para abrir ou colecionar.",
     cta: "Ver selados",
-    background: "linear-gradient(135deg,#F59E0B 0%,#E94B43 100%)",
+    background: "linear-gradient(135deg,#8a3a22 0%,#4a1d2c 60%,#170d1a 100%)",
   },
   {
     href: "/acessorios",
@@ -33,7 +33,7 @@ const SLIDES: PromoSlide[] = [
     title: "Proteja e organize suas cartas",
     text: "Playmats, sleeves, deckboxes e mais.",
     cta: "Ver acessórios",
-    background: "linear-gradient(135deg,#55BE9B 0%,#39AFA9 55%,#428FB9 100%)",
+    background: "linear-gradient(135deg,#1f6f66 0%,#16444f 60%,#0b1d2b 100%)",
   },
 ];
 
@@ -44,7 +44,7 @@ const TILES: GameTileData[] = [
     sub: "Cartas avulsas, selados e coleções",
     icon: "⚡",
     background:
-      "linear-gradient(135deg, #FFBD24 0%, #F57C16 55%, #E94B43 100%)",
+      "linear-gradient(135deg, #d99a1c 0%, #b4541a 55%, #6e2430 100%)",
   },
   {
     href: "/riftbound/cartas",
@@ -52,14 +52,14 @@ const TILES: GameTileData[] = [
     sub: "Cartas avulsas, selados e coleções",
     icon: "⚔️",
     background:
-      "linear-gradient(135deg, #392080 0%, #5B54D6 55%, #579CF5 100%)",
+      "linear-gradient(135deg, #1e1458 0%, #3a3a9e 60%, #3f6fb8 100%)",
   },
   {
     href: "/acessorios",
     title: "Acessórios",
     sub: "Playmats, sleeves, deckboxes e mais",
     icon: "🎴",
-    background: "linear-gradient(135deg, #55BE9B 0%, #39AFA9 55%, #428FB9 100%)",
+    background: "linear-gradient(135deg, #2f8f80 0%, #1f6a6e 55%, #164a5e 100%)",
   },
 ];
 
@@ -84,10 +84,13 @@ export default async function Home() {
       </section>
 
       {cards.length > 0 && (
-        <section className="mt-10">
-          <div className="mb-4 flex items-end justify-between">
-            <h2 className="text-xl font-extrabold tracking-tight sm:text-2xl">Cartas avulsas</h2>
-            <Link href="/pokemon/cartas" className="text-sm font-semibold text-violet-700 hover:underline">
+        <section className="mt-14">
+          <div className="mb-6 flex items-end justify-between gap-4 border-b border-gold/30 pb-3">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-deep">Seleção da casa</p>
+              <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">Cartas avulsas</h2>
+            </div>
+            <Link href="/pokemon/cartas" className="text-sm font-semibold text-ink underline-offset-4 hover:text-gold-deep hover:underline">
               Ver todos →
             </Link>
           </div>

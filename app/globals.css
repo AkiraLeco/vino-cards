@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f6f5fb;
-  --foreground: #1f1b2e;
+  --background: #faf8f3;
+  --foreground: #1a1829;
 }
 
 @theme inline {
@@ -10,6 +10,26 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-cormorant), Georgia, serif;
+}
+
+/* Paleta premium: "violet-*" passa a ser tinta escura (botões, preços, links) com marfim e dourado nos detalhes.
+   Assim todas as telas (loja e admin) herdam o tema sem trocar cada classe. */
+@theme {
+  --color-violet-50: #f7f4ec;
+  --color-violet-100: #ece6d4;
+  --color-violet-200: #ddd2b3;
+  --color-violet-300: #cdb06a;
+  --color-violet-500: #b08d3c;
+  --color-violet-600: #1b1830;
+  --color-violet-700: #14122a;
+  --color-violet-800: #0e0c1e;
+  --color-violet-900: #08071a;
+  --color-indigo-600: #2c2750;
+  --color-gold: #b08d3c;
+  --color-gold-soft: #d9bd7a;
+  --color-gold-deep: #86672a;
+  --color-ink: #14122a;
 }
 
 html {
@@ -23,7 +43,7 @@ body {
 }
 
 ::selection {
-  background: #ddd6fe;
+  background: #ecdcae;
 }
 
 /* Faixa animada dos cards da home: 4 cópias, anda 1 cópia (-25%) e recomeça sem emenda */
@@ -40,6 +60,33 @@ body {
 
 /* Foco visível e consistente para teclado */
 :focus-visible {
-  outline: 2px solid #7c3aed;
+  outline: 2px solid #b08d3c;
   outline-offset: 2px;
 }
+
+/* Detalhes premium */
+.gold-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #b08d3c 50%, transparent);
+}
+.card-shine { position: relative; overflow: hidden; }
+.card-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.55) 50%, transparent 65%);
+  transform: translateX(-120%);
+  transition: transform 0.7s ease;
+  pointer-events: none;
+}
+.group:hover .card-shine::after { transform: translateX(120%); }
+@media (prefers-reduced-motion: reduce) {
+  .card-shine::after { display: none; }
+  html { scroll-behavior: auto; }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.fade-up { animation: fade-up 0.5s ease both; }
+@media (prefers-reduced-motion: reduce) { .fade-up { animation: none; } }

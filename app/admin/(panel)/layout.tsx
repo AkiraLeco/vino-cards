@@ -13,7 +13,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
     <div>
       <nav className="mb-6 flex items-center gap-4 rounded-2xl border border-black/5 bg-white px-4 py-3 text-sm shadow-sm">
         <Link href="/admin" className="flex items-center gap-2">
-          <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-base font-black text-white">
+          <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-ink to-indigo-600 text-base font-black text-white">
             V
           </span>
           <span className="font-extrabold">

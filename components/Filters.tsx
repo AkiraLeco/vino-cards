@@ -13,8 +13,8 @@ export interface FilterOptions {
 export type FilterMode = "single" | "sealed" | "other";
 
 const field =
-  "w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none transition focus:border-violet-500 lg:w-auto";
-const lbl = "flex min-w-0 flex-col gap-1 text-xs font-medium text-black/55";
+  "w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none transition focus:border-gold lg:w-auto";
+const lbl = "flex min-w-0 flex-col gap-1 text-[11px] font-semibold uppercase tracking-wider text-black/50";
 
 export default function Filters({
   opts,
@@ -40,13 +40,13 @@ export default function Filters({
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between rounded-xl border border-black/10 bg-white px-4 py-3 text-left text-sm font-semibold shadow-sm lg:hidden"
+        className="flex w-full items-center justify-between rounded-xl border border-gold/30 bg-white px-4 py-3 text-left text-sm font-semibold shadow-sm lg:hidden"
         aria-expanded={open}
       >
         <span>
           Filtros
           {active > 0 && (
-            <span className="ml-2 rounded-full bg-violet-600 px-2 py-0.5 text-xs text-white">{active}</span>
+            <span className="ml-2 rounded-full bg-gold px-2 py-0.5 text-xs text-white">{active}</span>
           )}
         </span>
         <span className="text-black/40">{open ? "▲" : "▼"}</span>
@@ -54,7 +54,7 @@ export default function Filters({
 
       <form
         action={action}
-        className={`${open ? "grid" : "hidden"} mt-2 grid-cols-2 gap-3 rounded-2xl border border-black/5 bg-white p-4 shadow-sm lg:mt-0 lg:flex lg:flex-wrap lg:items-end`}
+        className={`${open ? "grid" : "hidden"} mt-2 grid-cols-2 gap-3 rounded-2xl border border-gold/20 bg-white p-4 shadow-sm lg:mt-0 lg:flex lg:flex-wrap lg:items-end`}
       >
         <input type="hidden" name="f" value="1" />
         {values.q && <input type="hidden" name="q" value={values.q} />}
@@ -127,11 +127,11 @@ export default function Filters({
           </select>
         </label>
         <label className="col-span-2 flex items-center gap-2 text-sm lg:col-span-1 lg:pb-2">
-          <input type="checkbox" name="stock" value="1" defaultChecked={stockOnly} className="h-4 w-4 accent-violet-600" />
+          <input type="checkbox" name="stock" value="1" defaultChecked={stockOnly} className="h-4 w-4 accent-[#b08d3c]" />
           Esconder vendidas
         </label>
         <div className="col-span-2 flex gap-2 lg:col-span-1">
-          <button className="flex-1 rounded-lg bg-violet-600 px-6 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-violet-700">
+          <button className="flex-1 rounded-lg bg-ink px-6 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-gold-deep">
             Filtrar
           </button>
           <Link

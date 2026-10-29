@@ -9,7 +9,7 @@ export default function Gallery({ images, alt }: { images: string[]; alt: string
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="rounded-3xl border border-black/5 bg-gradient-to-b from-violet-50 to-white p-4 shadow-sm sm:p-8">
+      <div className="rounded-3xl border border-gold/20 bg-gradient-to-b from-violet-50 to-white p-4 shadow-sm sm:p-8">
         <div className="relative mx-auto aspect-[5/7] w-full max-w-[480px]">
           <CardImage
             src={current}
@@ -29,7 +29,7 @@ export default function Gallery({ images, alt }: { images: string[]; alt: string
               onClick={() => setI(idx)}
               aria-label={`Ver foto ${idx + 1}`}
               className={`overflow-hidden rounded-lg border-2 bg-white p-1 transition ${
-                idx === i ? "border-violet-600" : "border-transparent opacity-70 hover:opacity-100"
+                idx === i ? "border-gold" : "border-transparent opacity-70 hover:opacity-100"
               }`}
             >
               <div className="relative h-20 w-14">

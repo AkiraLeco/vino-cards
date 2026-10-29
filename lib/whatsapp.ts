@@ -8,6 +8,8 @@ export interface CartLine {
   qty: number;
   /** Estoque no momento em que entrou no carrinho (limite da quantidade). */
   max?: number;
+  /** Miniatura exibida no carrinho. */
+  image?: string;
 }
 
 export function whatsappUrl(lines: CartLine[], origin: string) {

@@ -31,7 +31,7 @@ export default function PromoBanner({ slides }: { slides: PromoSlide[] }) {
 
   return (
     <section
-      className="relative overflow-hidden rounded-3xl text-white shadow-lg"
+      className="relative overflow-hidden rounded-3xl text-white shadow-2xl shadow-ink/20 ring-1 ring-gold/40"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
@@ -46,20 +46,21 @@ export default function PromoBanner({ slides }: { slides: PromoSlide[] }) {
             href={s.href}
             aria-hidden={i !== index}
             tabIndex={i === index ? 0 : -1}
-            className="relative block w-full shrink-0 px-6 py-10 sm:px-12 sm:py-14"
+            className="relative block w-full shrink-0 px-6 py-14 sm:px-16 sm:py-24"
             style={{ background: s.background }}
           >
             {s.image && (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={s.image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-40" />
             )}
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_20%,rgba(217,189,122,0.28),transparent_45%)]" />
             <div className="relative max-w-2xl">
-              <p className="mb-3 inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider">
+              <p className="mb-4 inline-block rounded-full border border-gold-soft/60 bg-white/10 px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-soft">
                 {s.eyebrow}
               </p>
-              <h2 className="text-3xl font-black leading-tight tracking-tight sm:text-5xl">{s.title}</h2>
+              <h2 className="font-display text-4xl font-bold leading-[1.05] sm:text-6xl">{s.title}</h2>
               <p className="mt-3 text-base text-white/85 sm:text-lg">{s.text}</p>
-              <span className="mt-6 inline-block rounded-full bg-white px-6 py-2.5 text-sm font-bold text-violet-700 shadow">
+              <span className="mt-8 inline-block rounded-full bg-gradient-to-r from-gold-soft to-gold px-8 py-3 text-sm font-bold uppercase tracking-wider text-ink shadow-lg transition hover:brightness-110">
                 {s.cta}
               </span>
             </div>

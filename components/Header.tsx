@@ -52,7 +52,7 @@ function MenuIcon() {
 }
 
 const roundBtn =
-  "relative grid h-10 w-10 shrink-0 place-items-center rounded-full border border-black/10 transition hover:border-violet-300 hover:bg-violet-50";
+  "relative grid h-10 w-10 shrink-0 place-items-center rounded-full border border-black/10 transition hover:border-gold hover:bg-violet-50";
 
 const sideItem =
   "block rounded-lg px-3 py-2.5 font-medium hover:bg-violet-50 hover:text-violet-700";
@@ -95,7 +95,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-black/5 bg-white/90 backdrop-blur print:hidden">
+      <header className="sticky top-0 z-40 border-b border-gold/20 bg-white/85 backdrop-blur-xl print:hidden">
         <div className="mx-auto flex max-w-[1400px] items-center gap-2 px-4 py-3 sm:gap-3">
           <button
             ref={menuBtn}
@@ -113,10 +113,10 @@ export default function Header() {
             className="flex shrink-0 items-center gap-2"
             onClick={close}
           >
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-lg font-black text-white shadow-sm">
+            <span className="grid h-9 w-9 place-items-center rounded-full bg-ink font-display text-xl font-bold text-gold-soft shadow-sm ring-1 ring-gold/60">
               V
             </span>
-            <span className="hidden text-lg font-extrabold tracking-tight sm:inline sm:text-xl">
+            <span className="hidden font-display text-2xl font-semibold tracking-wide sm:inline">
               {STORE_NAME}
             </span>
           </Link>
@@ -129,9 +129,9 @@ export default function Header() {
               name="q"
               placeholder="Buscar pelo nome..."
               aria-label="Buscar"
-              className="w-full min-w-0 rounded-l-full border border-r-0 border-black/10 bg-black/[0.03] px-4 py-2 text-sm outline-none transition focus:border-violet-500 focus:bg-white"
+              className="w-full min-w-0 rounded-l-full border border-r-0 border-black/10 bg-black/[0.03] px-5 py-2 text-sm outline-none transition focus:border-gold focus:bg-white"
             />
-            <button className="rounded-r-full bg-violet-600 px-4 text-sm font-semibold text-white transition hover:bg-violet-700">
+            <button className="rounded-r-full bg-ink px-5 text-sm font-semibold text-white transition hover:bg-gold-deep">
               Buscar
             </button>
           </form>
@@ -143,7 +143,7 @@ export default function Header() {
           <Link href="/carrinho" aria-label="Carrinho" className={roundBtn}>
             <CartIcon />
             {count > 0 && (
-              <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-violet-600 px-1 text-[11px] font-bold text-white">
+              <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-gold px-1 text-[11px] font-bold text-white">
                 {count}
               </span>
             )}
@@ -158,7 +158,7 @@ export default function Header() {
       >
         <div
           onClick={close}
-          className={`absolute inset-0 bg-black/40 transition-opacity ${open ? "opacity-100" : "opacity-0"}`}
+          className={`absolute inset-0 bg-ink/50 backdrop-blur-sm transition-opacity ${open ? "opacity-100" : "opacity-0"}`}
         />
         <nav
           ref={panel}
@@ -168,7 +168,7 @@ export default function Header() {
           }`}
         >
           <div className="mb-3 flex items-center justify-between">
-            <span className="text-lg font-extrabold">{STORE_NAME}</span>
+            <span className="font-display text-2xl font-semibold tracking-wide">{STORE_NAME}</span>
             <button
               type="button"
               onClick={close}
@@ -183,7 +183,7 @@ export default function Header() {
           </Link>
           {(Object.keys(GAMES) as Game[]).map((g) => (
             <div key={g} className="mt-2 border-t border-black/5 pt-3">
-              <p className="px-3 text-xs font-bold uppercase tracking-wide text-violet-600">
+              <p className="px-3 text-xs font-bold uppercase tracking-[0.18em] text-gold-deep">
                 {GAMES[g]}
               </p>
               {gameLinks(g).map((l) => (

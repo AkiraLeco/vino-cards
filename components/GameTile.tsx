@@ -34,7 +34,7 @@ export default function GameTile({
       href={href}
       aria-hidden={hidden || undefined}
       tabIndex={hidden ? -1 : undefined}
-      className="group relative flex h-full w-full min-h-[170px] flex-col justify-between overflow-hidden rounded-2xl p-6 text-white shadow-[0_8px_24px_-10px_rgba(23,27,53,0.45)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_14px_30px_-10px_rgba(23,27,53,0.5)]"
+      className="group relative flex h-full w-full min-h-[170px] flex-col justify-between overflow-hidden rounded-2xl p-6 text-white shadow-[0_8px_24px_-10px_rgba(23,27,53,0.45)] ring-1 ring-gold/30 transition duration-300 hover:-translate-y-1 hover:ring-gold/80 hover:shadow-[0_18px_34px_-10px_rgba(23,27,53,0.6)]"
       style={{ background: art ? undefined : background }}
     >
       {art && (
@@ -65,7 +65,7 @@ export default function GameTile({
       )}
 
       <div className="relative">
-        <h2 className="text-2xl font-extrabold [text-shadow:0_1px_6px_rgba(0,0,0,0.35)]">{title}</h2>
+        <h2 className="font-display text-3xl font-bold tracking-wide [text-shadow:0_1px_6px_rgba(0,0,0,0.35)]">{title}</h2>
         <p
           className={`mt-1 text-sm text-white/95 [text-shadow:0_1px_4px_rgba(0,0,0,0.35)] ${
             image ? "max-w-[70%]" : ""
@@ -75,7 +75,7 @@ export default function GameTile({
         </p>
       </div>
 
-      <span className="relative mt-6 inline-flex items-center gap-1 text-sm font-bold">
+      <span className="relative mt-6 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-[0.18em]">
         Explorar
         <span className="transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none">→</span>
       </span>

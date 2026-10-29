@@ -80,9 +80,10 @@ export default async function Catalog({
 
   return (
     <div className="mx-auto max-w-[1400px]">
-      <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-2 border-b border-gold/30 pb-4">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">{title}</h1>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-deep">Catálogo</p>
+          <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl">{title}</h1>
           <p className="text-sm text-black/55">
             {total === 0
               ? "Nenhum item"
@@ -107,12 +108,12 @@ export default async function Catalog({
 
       {cards.length === 0 && !error ? (
         <div className="mt-6 rounded-2xl border border-dashed border-black/15 bg-white px-6 py-14 text-center">
-          <p className="text-4xl">🃏</p>
+          <p className="font-display text-5xl text-gold">♠</p>
           <p className="mt-2 font-semibold">Nenhum item encontrado</p>
           <p className="mt-1 text-sm text-black/55">
             Tente remover algum filtro ou volte mais tarde, estamos sempre adicionando novidades.
           </p>
-          <Link href={basePath} className="mt-4 inline-block rounded-full bg-violet-600 px-5 py-2 text-sm font-semibold text-white hover:bg-violet-700">
+          <Link href={basePath} className="mt-4 inline-block rounded-full bg-ink px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-gold-deep">
             Limpar filtros
           </Link>
         </div>
@@ -127,27 +128,27 @@ export default async function Catalog({
       {pages > 1 && (
         <nav className="mt-8 flex flex-wrap items-center justify-center gap-1.5" aria-label="Páginas">
           {page > 1 && (
-            <Link href={pageHref(page - 1)} className={`${pageBtn} border-black/10 bg-white hover:bg-violet-50`}>
+            <Link href={pageHref(page - 1)} className={`${pageBtn} border-black/10 bg-white hover:border-gold hover:bg-violet-50`}>
               ‹
             </Link>
           )}
           {visible.map((p) =>
             p === page ? (
-              <span key={p} aria-current="page" className={`${pageBtn} border-violet-600 bg-violet-600 text-white`}>
+              <span key={p} aria-current="page" className={`${pageBtn} border-ink bg-ink text-white`}>
                 {p}
               </span>
             ) : (
-              <Link key={p} href={pageHref(p)} className={`${pageBtn} border-black/10 bg-white hover:bg-violet-50`}>
+              <Link key={p} href={pageHref(p)} className={`${pageBtn} border-black/10 bg-white hover:border-gold hover:bg-violet-50`}>
                 {p}
               </Link>
             ),
           )}
           {page < pages && (
             <>
-              <Link href={pageHref(page + 1)} className={`${pageBtn} border-black/10 bg-white hover:bg-violet-50`}>
+              <Link href={pageHref(page + 1)} className={`${pageBtn} border-black/10 bg-white hover:border-gold hover:bg-violet-50`}>
                 ›
               </Link>
-              <Link href={pageHref(pages)} className={`${pageBtn} border-black/10 bg-white hover:bg-violet-50`}>
+              <Link href={pageHref(pages)} className={`${pageBtn} border-black/10 bg-white hover:border-gold hover:bg-violet-50`}>
                 »
               </Link>
             </>

@@ -81,7 +81,7 @@ export default async function CardPage({
       <nav className="mb-4 flex flex-wrap items-center gap-1.5 text-sm text-black/50" aria-label="Você está em">
         {crumbs.map(([label, href]) => (
           <span key={href} className="flex items-center gap-1.5">
-            <Link href={href} className="hover:text-violet-700">
+            <Link href={href} className="hover:text-gold-deep">
               {label}
             </Link>
             <span>›</span>
@@ -95,26 +95,26 @@ export default async function CardPage({
 
         <div className="flex flex-col gap-4">
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-violet-600">
+            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-gold-deep">
               {[card.game ? GAMES[card.game] : null, CATEGORIES[card.category]].filter(Boolean).join(" · ")}
             </p>
-            <h1 className="mt-1 text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">{card.name}</h1>
+            <h1 className="mt-1 font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl">{card.name}</h1>
           </div>
 
-          <div className="rounded-2xl border border-black/5 bg-white p-5 shadow-sm">
-            <p className="text-sm text-black/50">Preço</p>
-            <p className="text-4xl font-black tracking-tight text-violet-700">{brl(card.price)}</p>
+          <div className="rounded-2xl border border-gold/30 bg-white p-5 shadow-lg shadow-ink/5">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-black/45">Preço</p>
+            <p className="font-display text-5xl font-bold tracking-tight text-ink">{brl(card.price)}</p>
             {card.ref_price != null && (
               <p className="mt-1 text-sm text-black/50">Referência de mercado: {brl(card.ref_price)}</p>
             )}
             <div className="mt-4 flex flex-wrap gap-2">
               {single && (
-                <span className="rounded-full bg-violet-100 px-3 py-1 text-xs font-bold text-violet-800">
+                <span className="rounded-full bg-violet-100 px-3 py-1 text-xs font-bold text-gold-deep ring-1 ring-gold/30">
                   {CONDITIONS[card.condition]}
                 </span>
               )}
               {single && card.is_foil && (
-                <span className="rounded-full bg-gradient-to-r from-fuchsia-500 to-amber-400 px-3 py-1 text-xs font-bold text-white">
+                <span className="rounded-full bg-gradient-to-r from-gold-deep to-gold-soft px-3 py-1 text-xs font-bold text-white">
                   FOIL
                 </span>
               )}

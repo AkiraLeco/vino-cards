@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/CartProvider";
 import SiteShell from "@/components/SiteShell";
@@ -16,6 +16,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const display = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: `${STORE_NAME} | Cartas, selados e acessórios de Pokémon e Riftbound`,
   description: "Cartas avulsas, produtos selados e acessórios de Pokémon e Riftbound: veja estado, coleção, preço e disponibilidade.",
@@ -25,31 +31,32 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="pt-BR"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${display.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col overflow-x-hidden">
         <CartProvider>
           <SiteShell
             footer={
-          <footer className="mt-10 bg-slate-900 text-white/70 print:hidden">
+          <footer className="mt-16 bg-ink text-white/70 print:hidden">
+            <div className="gold-rule" />
             <div className="mx-auto grid max-w-[1400px] gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
               <div>
-                <p className="text-lg font-extrabold text-white">{STORE_NAME}</p>
+                <p className="font-display text-2xl font-semibold tracking-wide text-white">{STORE_NAME}</p>
                 <p className="mt-2 text-sm">
                   Cartas, produtos selados e acessórios de Pokémon e Riftbound.
                 </p>
               </div>
               <div className="text-sm">
-                <p className="mb-2 font-semibold text-white">Atendimento</p>
+                <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-gold-soft">Atendimento</p>
                 <p>Presencial e online. Tire dúvidas e reserve itens com a gente.</p>
               </div>
               <div className="text-sm">
-                <p className="mb-2 font-semibold text-white">Contato</p>
+                <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-gold-soft">Contato</p>
                 <p>WhatsApp: (11) 90000-0000</p>
                 <p className="mt-1">E-mail: contato@vinocards.exemplo</p>
               </div>
               <div className="text-sm">
-                <p className="mb-2 font-semibold text-white">Endereço e horário</p>
+                <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-gold-soft">Endereço e horário</p>
                 <p>Endereço: Rua Exemplo, 123 - Centro, São Paulo/SP</p>
                 <p className="mt-1">Horário: Seg a Sáb, 10h às 19h</p>
               </div>
@@ -65,7 +72,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`}
               target="_blank"
               rel="noreferrer"
-              className="fixed bottom-4 right-4 z-50 print:hidden rounded-full bg-green-500 px-4 py-2.5 text-xs font-bold sm:px-5 sm:py-3 sm:text-sm text-white shadow-lg hover:bg-green-600"
+              className="fixed bottom-4 right-4 z-50 print:hidden rounded-full bg-[#1faa59] px-4 py-2.5 text-xs font-bold sm:px-5 sm:py-3 sm:text-sm text-white shadow-xl shadow-black/20 ring-1 ring-white/30 transition hover:bg-[#178a47] hover:-translate-y-0.5"
             >
               WhatsApp
             </a>

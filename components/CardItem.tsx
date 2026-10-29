@@ -12,7 +12,7 @@ export default function CardItem({ card }: { card: Card }) {
 
   const kicker = [card.game ? GAMES[card.game] : null, card.set_name].filter(Boolean).join(" · ");
   const badge = sold
-    ? ["VENDIDA", "bg-red-600"]
+    ? ["VENDIDA", "bg-red-700"]
     : reserved
       ? ["RESERVADA", "bg-amber-500"]
       : outOfStock
@@ -22,10 +22,10 @@ export default function CardItem({ card }: { card: Card }) {
   return (
     <Link
       href={`/cartas/${card.id}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-violet-900/10"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-gold/50 hover:shadow-2xl hover:shadow-ink/15"
     >
-      <div className="relative bg-gradient-to-b from-violet-50 to-white p-3 sm:p-4">
-        <div className="relative aspect-[5/7]">
+      <div className="relative bg-gradient-to-b from-violet-50 via-white to-white p-3 sm:p-4">
+        <div className="card-shine relative aspect-[5/7] rounded-md">
           <CardImage
             src={cardImage(card)}
             alt={card.name}
@@ -40,7 +40,7 @@ export default function CardItem({ card }: { card: Card }) {
             </span>
           )}
           {single && card.is_foil && (
-            <span className="rounded-md bg-gradient-to-r from-fuchsia-500 to-amber-400 px-1.5 py-0.5 text-[11px] font-bold uppercase text-white shadow-sm">
+            <span className="rounded-md bg-gradient-to-r from-gold-deep via-gold to-gold-soft px-1.5 py-0.5 text-[11px] font-bold uppercase text-white shadow-sm">
               Foil
             </span>
           )}
@@ -54,7 +54,7 @@ export default function CardItem({ card }: { card: Card }) {
 
       <div className="flex flex-1 flex-col gap-1 px-3 pb-3 pt-2 sm:px-4 sm:pb-4">
         {kicker && (
-          <p className="line-clamp-1 text-[10px] font-semibold uppercase tracking-wider text-violet-600 sm:text-[11px]">
+          <p className="line-clamp-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-deep sm:text-[11px]">
             {kicker}
           </p>
         )}
@@ -63,7 +63,7 @@ export default function CardItem({ card }: { card: Card }) {
           {single && card.number && <span className="font-normal text-black/45"> #{card.number}</span>}
         </h3>
         <div className="mt-auto flex items-end justify-between gap-2 pt-2">
-          <span className="text-lg font-extrabold tracking-tight text-violet-700 sm:text-xl">{brl(card.price)}</span>
+          <span className="font-display text-2xl font-bold tracking-tight text-ink sm:text-[1.7rem]">{brl(card.price)}</span>
           <span className="rounded-full bg-black/5 px-2 py-0.5 text-[11px] font-medium text-black/60 sm:text-xs">
             {card.quantity} un.
           </span>
