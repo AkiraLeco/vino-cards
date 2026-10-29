@@ -19,7 +19,7 @@ Resumo para retomar o trabalho depois de um `/clear`. **Leia este arquivo, o `CL
 
 ## 3. Estado atual (tudo no GitHub, último commit conhecido: `58c4f0e`)
 **Público**
-- Topo: sidebar (☰, com Início, Pokémon, Riftbound, Acessórios, QR), logo, busca, conta (`/conta`, placeholder) e carrinho. Home: faixa de anúncios rotativa (`PromoBanner`), carrossel de cards, cartas avulsas e rodapé de atendimento/contato/endereço/horário (WhatsApp, e-mail, endereço e horário com dados fictícios (trocar pelos reais) em `app/layout.tsx`).
+- Topo: sidebar (☰, com Início, Pokémon, Riftbound, Acessórios, QR), logo, busca, conta (`/conta`, placeholder) e carrinho. Home: faixa de anúncios rotativa (`PromoBanner`), carrossel de cards, cartas avulsas e rodapé de atendimento/contato/endereço/horário (WhatsApp, e-mail, endereço e horário com dados fictícios (trocar pelos reais) em `lib/site.ts`, `CONTACT`).
 - Catálogo com filtros, busca, paginação (30/60/90) e estado vazio. Vendidas ficam escondidas por padrão. Reservadas aparecem com selo.
 - Página do item com galeria, preço, avisos de reservada/vendida e prévia de link (`generateMetadata`).
 - Home com hero, cards de entrada por jogo e Novidades. Os cards de entrada ficam num carrossel horizontal com encaixe e setas (`components/TileCarousel.tsx` + `components/GameTile.tsx`); cada card abre **só por clique** (o deslizar foi removido a pedido do usuário). As imagens de terceiros (Pikachu, Jinx) foram **removidas** (direitos autorais); os cards usam só degradê e ícone até o usuário enviar artes próprias/licenciadas (`image`/`imagePosition`/`cutout` em `TILES` de `app/page.tsx`, arquivos em `public/tiles/`).
@@ -39,7 +39,7 @@ Resumo para retomar o trabalho depois de um `/clear`. **Leia este arquivo, o `CL
 
 ## 4. Mapa de arquivos
 - `lib/types.ts` — tipos `Card`, `Game`, `Category`, `Status`, `cardImage()`.
-- `lib/features.ts` — flags `FLOATING_WHATSAPP` e `WHATSAPP_ORDER` (ambas `false`).
+- `lib/features.ts` — flags `FLOATING_WHATSAPP` e `WHATSAPP_ORDER` (ambas `true`).
 - `lib/auth.ts` — `requireAdmin()`.
 - `lib/liga.ts`, `app/admin/liga.ts` — consulta de preço na Liga.
 - `lib/pokemontcg.ts`, `lib/image.ts`, `lib/format.ts`, `lib/whatsapp.ts`, `lib/supabase/{client,server}.ts`.
@@ -75,3 +75,10 @@ Resumo para retomar o trabalho depois de um `/clear`. **Leia este arquivo, o `CL
 2. `git status` e `git log --oneline -5` para ver se algo mudou depois de 2026-10-10.
 3. Perguntar ao usuário qual pendência da seção 6 atacar, ou seguir o que ele pedir.
 4. Atualizar este arquivo ao final de cada bloco grande de trabalho.
+
+## Tema premium (tinta + dourado)
+- `app/globals.css` remapeia a escala `violet-*` do Tailwind para tinta escura/marfim e define `gold`, `gold-soft`, `gold-deep` e `ink`. Títulos usam `font-display` (Cormorant Garamond).
+- Textos institucionais (contato e diferenciais da home) ficam em `lib/site.ts`; rodapé em `components/Footer.tsx`.
+- Cards têm adicionar rápido (`QuickAdd`) e selo de estoque baixo; o carrinho mostra aviso (toast) ao adicionar; a página da carta tem zoom, relacionadas, barra de compra fixa no celular e JSON-LD.
+- Após atualizar o Next, reinicie o `npm run dev` (servidor antigo dá erro 500).
+- `npm test` roda testes simples de `lib/` (node:test).

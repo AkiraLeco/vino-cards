@@ -69,14 +69,33 @@ export default function PromoBanner({ slides }: { slides: PromoSlide[] }) {
       </div>
 
       {slides.length > 1 && (
-        <button
-          type="button"
-          onClick={() => setManual(!manual)}
-          aria-pressed={manual}
-          className="absolute right-3 top-3 rounded-full bg-black/30 px-3 py-1 text-xs font-semibold backdrop-blur hover:bg-black/50"
-        >
-          {manual ? "▶ Retomar" : "⏸ Pausar"}
-        </button>
+        <>
+          <button
+            type="button"
+            onClick={() => setIndex((i) => (i - 1 + slides.length) % slides.length)}
+            aria-label="Anúncio anterior"
+            className="absolute left-3 top-1/2 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-black/30 text-xl backdrop-blur transition hover:bg-black/55 sm:grid"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            onClick={() => setIndex((i) => (i + 1) % slides.length)}
+            aria-label="Próximo anúncio"
+            className="absolute right-3 top-1/2 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-black/30 text-xl backdrop-blur transition hover:bg-black/55 sm:grid"
+          >
+            ›
+          </button>
+          <button
+            type="button"
+            onClick={() => setManual(!manual)}
+            aria-pressed={manual}
+            aria-label={manual ? "Retomar troca automática" : "Pausar troca automática"}
+            className="absolute bottom-2.5 right-3 grid h-8 w-8 place-items-center rounded-full bg-black/30 text-[10px] backdrop-blur transition hover:bg-black/55"
+          >
+            {manual ? "▶" : "❚❚"}
+          </button>
+        </>
       )}
 
       {slides.length > 1 && (

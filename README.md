@@ -41,7 +41,7 @@ Vitrine online para um vendedor de cartas de **Pokémon TCG** e **Riftbound**, p
 | Pokémon + Riftbound, selados e acessórios | ✅ Funcionando |
 | Busca automática de cartas | ⚠️ Só Pokémon (Riftbound é manual) |
 | Consulta de preço na LigaPokémon | ⚠️ Instável: pode ser bloqueada em servidores (ex.: Vercel) |
-| Botão flutuante e envio de pedido por WhatsApp | ⏸️ Desativados temporariamente (veja `lib/features.ts`) |
+| Botão flutuante e envio de pedido por WhatsApp | ✅ Ativos (interruptores em `lib/features.ts`) |
 | Testes automatizados | ❌ Ainda não existem |
 | Pagamento online | ❌ Fora do escopo por enquanto |
 
@@ -96,7 +96,7 @@ Importe o repositório na Vercel, cadastre as mesmas variáveis de ambiente e pu
 
 ### Roadmap
 
-- [ ] Reativar o envio de pedido por WhatsApp
+- [x] Reativar o envio de pedido por WhatsApp
 - [ ] Domínio próprio
 - [ ] Testes automatizados
 - [ ] Fonte de dados para cartas de Riftbound
@@ -135,7 +135,7 @@ An online storefront for a seller of **Pokémon TCG** and **Riftbound** cards, s
 | Pokémon + Riftbound, sealed products and accessories | ✅ Working |
 | Automatic card lookup | ⚠️ Pokémon only (Riftbound is manual) |
 | LigaPokémon price lookup | ⚠️ Unreliable: may be blocked from servers (e.g. Vercel) |
-| Floating WhatsApp button and WhatsApp order | ⏸️ Temporarily disabled (see `lib/features.ts`) |
+| Floating WhatsApp button and WhatsApp order | ✅ Enabled (switches in `lib/features.ts`) |
 | Automated tests | ❌ None yet |
 | Online payments | ❌ Out of scope for now |
 
@@ -190,7 +190,7 @@ Import the repository into Vercel, add the same environment variables and deploy
 
 ### Roadmap
 
-- [ ] Re-enable WhatsApp ordering
+- [x] Re-enable WhatsApp ordering
 - [ ] Custom domain
 - [ ] Automated tests
 - [ ] Data source for Riftbound cards

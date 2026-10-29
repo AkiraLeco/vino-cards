@@ -13,7 +13,7 @@ export interface FilterOptions {
 export type FilterMode = "single" | "sealed" | "other";
 
 const field =
-  "w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none transition focus:border-gold lg:w-auto";
+  "w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none transition focus:border-gold";
 const lbl = "flex min-w-0 flex-col gap-1 text-[11px] font-semibold uppercase tracking-wider text-black/50";
 
 export default function Filters({
@@ -77,7 +77,7 @@ export default function Filters({
 
       <form
         action={action}
-        className={`${open ? "grid" : "hidden"} mt-2 grid-cols-2 gap-3 rounded-2xl border border-gold/20 bg-white p-4 shadow-sm lg:mt-0 lg:flex lg:flex-wrap lg:items-end`}
+        className={`${open ? "grid" : "hidden"} mt-2 grid-cols-2 gap-3 rounded-2xl border border-gold/20 bg-white p-4 shadow-sm lg:mt-0 lg:flex lg:flex-col lg:items-stretch`}
       >
         <input type="hidden" name="f" value="1" />
         {values.q && <input type="hidden" name="q" value={values.q} />}
@@ -93,7 +93,7 @@ export default function Filters({
         {showSet && (
           <label className={lbl}>
             Coleção
-            <select name="set" defaultValue={values.set ?? ""} className={`${field} lg:max-w-48`}>
+            <select name="set" defaultValue={values.set ?? ""} className={field}>
               <option value="">Todas</option>
               {opts.sets.map((s) => (
                 <option key={s}>{s}</option>
@@ -137,8 +137,8 @@ export default function Filters({
         <label className={`${lbl} col-span-2 lg:col-span-1`}>
           Preço (R$)
           <span className="flex gap-2">
-            <input name="min" type="number" min="0" defaultValue={values.min} placeholder="mín" className={`${field} lg:w-20`} />
-            <input name="max" type="number" min="0" defaultValue={values.max} placeholder="máx" className={`${field} lg:w-20`} />
+            <input name="min" type="number" min="0" defaultValue={values.min} placeholder="mín" className={`${field} min-w-0 flex-1`} />
+            <input name="max" type="number" min="0" defaultValue={values.max} placeholder="máx" className={`${field} min-w-0 flex-1`} />
           </span>
         </label>
         <label className={lbl}>
@@ -149,7 +149,7 @@ export default function Filters({
             ))}
           </select>
         </label>
-        <label className="col-span-2 flex items-center gap-2 text-sm lg:col-span-1 lg:pb-2">
+        <label className="col-span-2 flex items-center gap-2 text-sm lg:col-span-1">
           <input type="checkbox" name="stock" value="1" defaultChecked={stockOnly} className="h-4 w-4 accent-[#b08d3c]" />
           Esconder vendidas
         </label>

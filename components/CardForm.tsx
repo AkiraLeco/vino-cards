@@ -11,11 +11,11 @@ import { searchTcg, type TcgResult } from "@/lib/pokemontcg";
 import { CATEGORIES, CONDITIONS, GAMES, LANGUAGES, type Card } from "@/lib/types";
 
 const field =
-  "w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none transition focus:border-violet-500 [&>option]:text-black";
-const label = "flex flex-col gap-1 text-xs font-medium text-black/60";
-const section = "rounded-2xl border border-black/5 bg-white p-4 shadow-sm sm:p-5";
-const sectionTitle = "mb-3 flex items-center gap-2 text-sm font-bold";
-const num = "grid h-6 w-6 place-items-center rounded-full bg-violet-600 text-xs text-white";
+  "w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none transition focus:border-gold [&>option]:text-black";
+const label = "flex flex-col gap-1 text-[11px] font-semibold uppercase tracking-wider text-black/55";
+const section = "rounded-2xl border border-gold/20 bg-white p-4 shadow-sm sm:p-5";
+const sectionTitle = "mb-3 flex items-center gap-2 font-display text-xl font-bold";
+const num = "grid h-6 w-6 place-items-center rounded-full bg-ink text-xs text-gold-soft";
 
 export default function CardForm({ card }: { card?: Card }) {
   const [saveError, formAction, saving] = useActionState(saveCard, null);
@@ -174,7 +174,7 @@ export default function CardForm({ card }: { card?: Card }) {
                 <button
                   type="button"
                   onClick={search}
-                  className="rounded-lg bg-violet-600 px-4 text-sm font-bold text-white hover:bg-violet-700"
+                  className="rounded-lg bg-ink px-4 text-sm font-bold text-white hover:bg-gold-deep"
                 >
                   {loading ? "..." : "Buscar"}
                 </button>
@@ -254,7 +254,7 @@ export default function CardForm({ card }: { card?: Card }) {
             )}
             {isSingle && (
               <label className="flex items-center gap-2 text-sm sm:col-span-2">
-                <input type="checkbox" name="is_foil" defaultChecked={card?.is_foil} className="h-4 w-4 accent-violet-600" />
+                <input type="checkbox" name="is_foil" defaultChecked={card?.is_foil} className="h-4 w-4 accent-[#b08d3c]" />
                 Foil / Holo
               </label>
             )}
@@ -374,7 +374,7 @@ export default function CardForm({ card }: { card?: Card }) {
               </select>
             </label>
             <label className="flex items-center gap-2 text-sm sm:col-span-2">
-              <input type="checkbox" name="featured" defaultChecked={card?.featured} className="h-4 w-4 accent-violet-600" />
+              <input type="checkbox" name="featured" defaultChecked={card?.featured} className="h-4 w-4 accent-[#b08d3c]" />
               Destaque (aparece primeiro nas listas)
             </label>
           </div>
@@ -433,7 +433,7 @@ export default function CardForm({ card }: { card?: Card }) {
           )}
           <button
             disabled={uploading || saving}
-            className="w-full rounded-xl bg-violet-600 py-3.5 font-bold text-white shadow-lg transition hover:bg-violet-700 disabled:opacity-50"
+            className="w-full rounded-xl bg-ink py-4 text-sm font-bold uppercase tracking-[0.16em] text-white shadow-lg shadow-ink/20 transition hover:bg-gold-deep disabled:opacity-50"
           >
             {uploading ? "Aguarde o envio das fotos..." : saving ? "Salvando..." : "Salvar"}
           </button>

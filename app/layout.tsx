@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/CartProvider";
+import Footer from "@/components/Footer";
 import SiteShell from "@/components/SiteShell";
 import { FLOATING_WHATSAPP } from "@/lib/features";
 import { STORE_NAME } from "@/lib/format";
+import { siteUrl } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,7 +25,12 @@ const display = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: `${STORE_NAME} | Cartas, selados e acessórios de Pokémon e Riftbound`,
+  metadataBase: new URL(siteUrl()),
+  title: {
+    default: `${STORE_NAME} | Cartas, selados e acessórios de Pokémon e Riftbound`,
+    template: `%s | ${STORE_NAME}`,
+  },
+  openGraph: { siteName: STORE_NAME, type: "website", locale: "pt_BR" },
   description: "Cartas avulsas, produtos selados e acessórios de Pokémon e Riftbound: veja estado, coleção, preço e disponibilidade.",
 };
 
@@ -37,34 +44,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <CartProvider>
           <SiteShell
             footer={
-          <footer className="mt-16 bg-ink text-white/70 print:hidden">
-            <div className="gold-rule" />
-            <div className="mx-auto grid max-w-[1400px] gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
-              <div>
-                <p className="font-display text-2xl font-semibold tracking-wide text-white">{STORE_NAME}</p>
-                <p className="mt-2 text-sm">
-                  Cartas, produtos selados e acessórios de Pokémon e Riftbound.
-                </p>
-              </div>
-              <div className="text-sm">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-gold-soft">Atendimento</p>
-                <p>Presencial e online. Tire dúvidas e reserve itens com a gente.</p>
-              </div>
-              <div className="text-sm">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-gold-soft">Contato</p>
-                <p>WhatsApp: (11) 90000-0000</p>
-                <p className="mt-1">E-mail: contato@vinocards.exemplo</p>
-              </div>
-              <div className="text-sm">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-gold-soft">Endereço e horário</p>
-                <p>Endereço: Rua Exemplo, 123 - Centro, São Paulo/SP</p>
-                <p className="mt-1">Horário: Seg a Sáb, 10h às 19h</p>
-              </div>
-            </div>
-            <p className="border-t border-white/10 py-4 text-center text-xs text-white/40">
-              © {new Date().getFullYear()} {STORE_NAME}. Projeto independente, sem vínculo com as marcas citadas.
-            </p>
-          </footer>
+            <Footer />
             }
             floating={
           FLOATING_WHATSAPP && process.env.NEXT_PUBLIC_WHATSAPP_NUMBER && (

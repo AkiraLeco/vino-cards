@@ -4,10 +4,13 @@ import { notFound } from "next/navigation";
 import AddToCart from "@/components/AddToCart";
 import Gallery from "@/components/Gallery";
 import { brl } from "@/lib/format";
-import { createClient } from "@/lib/supabase/server";
+import CardItem from "@/components/CardItem";
+import { createPublicClient } from "@/lib/supabase/public";
+import { siteUrl } from "@/lib/site";
 import { CATEGORIES, CONDITIONS, GAMES, cardImage, type Card } from "@/lib/types";
 
-export const dynamic = "force-dynamic";
+// Dados públicos: página em cache, renovada a cada 60 s (o admin também a renova ao salvar).
+export const revalidate = 60;
 
 // Prévia ao compartilhar o link (WhatsApp, Instagram etc.)
 export async function generateMetadata({
@@ -16,7 +19,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data } = await supabase.from("cards").select("*").eq("id", id).maybeSingle();
   if (!data) return {};
   const c = data as Card;
@@ -43,7 +46,7 @@ export default async function CardPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data } = await supabase.from("cards").select("*").eq("id", id).maybeSingle();
   if (!data) notFound();
   const card = data as Card;
@@ -61,6 +64,38 @@ export default async function CardPage({
     ["Em estoque", String(card.quantity)],
   ];
 
+  let relatedQuery = supabase
+    .from("cards")
+    .select("*")
+    .neq("id", card.id)
+    .eq("category", card.category)
+    .in("status", ["available", "reserved"])
+    .order("featured", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(5);
+  if (card.set_name) relatedQuery = relatedQuery.eq("set_name", card.set_name);
+  else if (card.game) relatedQuery = relatedQuery.eq("game", card.game);
+  const { data: relatedData } = await relatedQuery;
+  const related = (relatedData ?? []) as Card[];
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: card.name,
+    image: cardImage(card).startsWith("http") ? cardImage(card) : undefined,
+    description: [card.set_name, single ? CONDITIONS[card.condition] : null].filter(Boolean).join(" · ") || card.name,
+    offers: {
+      "@type": "Offer",
+      url: `${siteUrl()}/cartas/${card.id}`,
+      priceCurrency: "BRL",
+      price: card.price,
+      availability:
+        card.status === "available" && card.quantity > 0
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+    },
+  };
+
   const images = [...card.photo_urls, ...(card.image_api_url ? [card.image_api_url] : [])];
   if (images.length === 0) images.push(cardImage(card));
   const unavailable = card.status !== "available" || card.quantity < 1;
@@ -77,7 +112,11 @@ export default async function CardPage({
   }
 
   return (
-    <div className="mx-auto max-w-6xl">
+    <div className="mx-auto max-w-6xl pb-24 md:pb-0">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+      />
       <nav className="mb-4 flex flex-wrap items-center gap-1.5 text-sm text-black/50" aria-label="Você está em">
         {crumbs.map(([label, href]) => (
           <span key={href} className="flex items-center gap-1.5">
@@ -160,6 +199,30 @@ export default async function CardPage({
           )}
         </div>
       </div>
+      {related.length > 0 && (
+        <section className="mt-14">
+          <div className="mb-6 border-b border-gold/30 pb-3">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-deep">Continue explorando</p>
+            <h2 className="font-display text-3xl font-bold tracking-tight">
+              {card.set_name ? `Mais de ${card.set_name}` : "Itens parecidos"}
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
+            {related.map((c) => (
+              <CardItem key={c.id} card={c} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {!unavailable && (
+        <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-gold/30 bg-white/95 px-4 py-3 pr-20 shadow-[0_-8px_24px_-12px_rgba(20,18,42,0.3)] backdrop-blur md:hidden print:hidden">
+          <span className="font-display text-2xl font-bold text-ink">{brl(card.price)}</span>
+          <div className="min-w-0 flex-1">
+            <AddToCart card={card} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

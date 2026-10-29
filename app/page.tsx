@@ -4,6 +4,7 @@ import { type GameTileData } from "@/components/GameTile";
 import PromoBanner, { type PromoSlide } from "@/components/PromoBanner";
 import TileCarousel from "@/components/TileCarousel";
 import { STORE_NAME } from "@/lib/format";
+import { PERKS } from "@/lib/site";
 import { createPublicClient } from "@/lib/supabase/public";
 import type { Card } from "@/lib/types";
 
@@ -35,12 +36,6 @@ const SLIDES: PromoSlide[] = [
     cta: "Ver acessórios",
     background: "linear-gradient(135deg,#1f6f66 0%,#16444f 60%,#0b1d2b 100%)",
   },
-];
-
-const PERKS = [
-  { icon: "✦", title: "Estado transparente", text: "Cada carta com condição, idioma e coleção informados." },
-  { icon: "◆", title: "Estoque real", text: "Disponibilidade atualizada a cada venda e reserva." },
-  { icon: "❖", title: "Atendimento direto", text: "Dúvidas e reservas pelo WhatsApp, sem burocracia." },
 ];
 
 const TILES: GameTileData[] = [

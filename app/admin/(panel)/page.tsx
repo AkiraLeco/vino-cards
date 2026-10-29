@@ -1,20 +1,24 @@
 import Link from "next/link";
-import { brl } from "@/lib/format";
-import { requireAdmin } from "@/lib/auth";
-import { CATEGORIES, GAMES, cardImage, type Card } from "@/lib/types";
+import CardImage from "@/components/CardImage";
+import SellOneForm from "@/components/SellOneForm";
 import StatusButtons from "@/components/StatusButtons";
-import { sellOne } from "../actions";
+import { requireAdmin } from "@/lib/auth";
+import { brl } from "@/lib/format";
+import { CATEGORIES, GAMES, cardImage, type Card } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
 type SP = Record<string, string | undefined>;
 
+const PER_PAGE = 50;
+
 const field =
-  "rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-violet-500";
+  "rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-gold";
 
 export default async function AdminList({ searchParams }: { searchParams: Promise<SP> }) {
   const sp = await searchParams;
   const supabase = await requireAdmin();
+  const page = Math.max(1, Math.floor(Number(sp.page)) || 1);
 
   // Totais sempre sobre o estoque inteiro; a lista respeita os filtros.
   const { data: all } = await supabase.from("cards").select("status, quantity, price");
@@ -22,14 +26,27 @@ export default async function AdminList({ searchParams }: { searchParams: Promis
   const units = inStock.reduce((s, c) => s + c.quantity, 0);
   const value = inStock.reduce((s, c) => s + c.quantity * Number(c.price), 0);
 
-  let query = supabase.from("cards").select("*").order("created_at", { ascending: false }).limit(300);
+  let query = supabase
+    .from("cards")
+    .select("*", { count: "exact" })
+    .order("created_at", { ascending: false })
+    .range((page - 1) * PER_PAGE, page * PER_PAGE - 1);
   if (sp.q) query = query.ilike("name", `%${sp.q}%`);
   if (sp.game) query = query.eq("game", sp.game);
   if (sp.category) query = query.eq("category", sp.category);
   if (sp.status) query = query.eq("status", sp.status);
-  const { data } = await query;
+  const { data, count } = await query;
   const cards = (data ?? []) as Card[];
+  const total = count ?? cards.length;
+  const pages = Math.max(1, Math.ceil(total / PER_PAGE));
   const filtered = Boolean(sp.q || sp.game || sp.category || sp.status);
+
+  const pageHref = (p: number) => {
+    const params = new URLSearchParams();
+    for (const [k, v] of Object.entries(sp)) if (v && k !== "page") params.set(k, v);
+    params.set("page", String(p));
+    return `/admin?${params.toString()}`;
+  };
 
   const stats = [
     ["Itens diferentes", String(inStock.length)],
@@ -41,9 +58,9 @@ export default async function AdminList({ searchParams }: { searchParams: Promis
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-3 gap-2 sm:gap-3">
         {stats.map(([k, v]) => (
-          <div key={k} className="rounded-2xl border border-violet-100 bg-white p-3 text-center shadow-sm sm:p-4">
-            <p className="text-[11px] text-black/55 sm:text-xs">{k}</p>
-            <p className="text-base font-extrabold text-violet-700 sm:text-2xl">{v}</p>
+          <div key={k} className="rounded-2xl border border-gold/25 bg-white p-3 text-center shadow-sm sm:p-5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-black/50 sm:text-[11px]">{k}</p>
+            <p className="font-display text-2xl font-bold text-ink sm:text-4xl">{v}</p>
           </div>
         ))}
       </div>
@@ -75,7 +92,7 @@ export default async function AdminList({ searchParams }: { searchParams: Promis
           <option value="reserved">Reservada</option>
           <option value="sold">Vendida</option>
         </select>
-        <button className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-bold text-white hover:bg-violet-700">
+        <button className="rounded-lg bg-ink px-5 py-2 text-sm font-bold text-white transition hover:bg-gold-deep">
           Filtrar
         </button>
         {filtered && (
@@ -87,20 +104,21 @@ export default async function AdminList({ searchParams }: { searchParams: Promis
 
       <div className="flex items-center justify-between text-sm text-black/55">
         <span>
-          {cards.length} {cards.length === 1 ? "item" : "itens"}
+          {total} {total === 1 ? "item" : "itens"}
           {filtered && " encontrados"}
+          {pages > 1 && ` · página ${page} de ${pages}`}
         </span>
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-        <a href="/admin/export" className="font-medium text-violet-700 underline">
+        <a href="/admin/export" className="font-semibold text-ink underline underline-offset-4 hover:text-gold-deep">
           Exportar planilha (CSV)
         </a>
       </div>
 
       {cards.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-black/15 bg-white px-6 py-12 text-center">
+        <div className="rounded-2xl border border-dashed border-gold/40 bg-white px-6 py-12 text-center">
           <p className="font-semibold">{filtered ? "Nada encontrado com esses filtros" : "Nenhum item cadastrado ainda"}</p>
           {!filtered && (
-            <Link href="/admin/nova" className="mt-3 inline-block rounded-full bg-violet-600 px-5 py-2 text-sm font-semibold text-white">
+            <Link href="/admin/nova" className="mt-3 inline-block rounded-full bg-ink px-6 py-2.5 text-sm font-semibold text-white hover:bg-gold-deep">
               + Cadastrar o primeiro
             </Link>
           )}
@@ -110,14 +128,15 @@ export default async function AdminList({ searchParams }: { searchParams: Promis
       {cards.map((c) => (
         <div
           key={c.id}
-          className="flex flex-wrap items-center gap-3 rounded-2xl border border-black/5 bg-white p-3 shadow-sm"
+          className="flex flex-wrap items-center gap-3 rounded-2xl border border-black/5 bg-white p-3 shadow-sm transition hover:border-gold/40"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={cardImage(c)} alt="" className="h-16 w-12 object-contain" />
+          <div className="relative h-16 w-12 shrink-0">
+            <CardImage src={cardImage(c)} alt={c.name} sizes="48px" className="object-contain" />
+          </div>
           <div className="min-w-[8rem] flex-1">
             <p className="font-semibold">{c.name}</p>
             <p className="text-xs text-black/60">
-              <span className="mr-1 rounded bg-violet-100 px-1.5 py-0.5 font-semibold text-violet-800">
+              <span className="mr-1 rounded bg-violet-100 px-1.5 py-0.5 font-semibold text-gold-deep">
                 {[c.game ? GAMES[c.game] : null, CATEGORIES[c.category]].filter(Boolean).join(" · ")}
               </span>
               {[c.set_name, c.category === "single" ? c.condition : null, `qtd ${c.quantity}`]
@@ -125,22 +144,29 @@ export default async function AdminList({ searchParams }: { searchParams: Promis
                 .join(" · ")}
             </p>
           </div>
-          <span className="font-bold text-violet-700">{brl(c.price)}</span>
+          <span className="font-display text-xl font-bold text-ink">{brl(c.price)}</span>
           <StatusButtons id={c.id} status={c.status} />
-          <form action={sellOne}>
-            <input type="hidden" name="id" value={c.id} />
-            <button
-              disabled={c.quantity < 1}
-              className="rounded-lg bg-violet-600 px-3 py-1.5 text-sm font-bold text-white disabled:opacity-40"
-            >
-              Vendi 1
-            </button>
-          </form>
-          <Link href={`/admin/${c.id}`} className="text-sm font-medium underline">
+          <SellOneForm id={c.id} disabled={c.quantity < 1} />
+          <Link href={`/admin/${c.id}`} className="text-sm font-medium underline underline-offset-4 hover:text-gold-deep">
             Editar
           </Link>
         </div>
       ))}
+
+      {pages > 1 && (
+        <nav className="mt-2 flex items-center justify-center gap-3 text-sm" aria-label="Páginas">
+          {page > 1 && (
+            <Link href={pageHref(page - 1)} className="rounded-lg border border-black/10 bg-white px-4 py-2 font-medium hover:border-gold">
+              ‹ Anterior
+            </Link>
+          )}
+          {page < pages && (
+            <Link href={pageHref(page + 1)} className="rounded-lg border border-black/10 bg-white px-4 py-2 font-medium hover:border-gold">
+              Próxima ›
+            </Link>
+          )}
+        </nav>
+      )}
     </div>
   );
 }

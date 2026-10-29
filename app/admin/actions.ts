@@ -8,11 +8,12 @@ import { requireAdmin } from "@/lib/auth";
 const requireUser = requireAdmin;
 
 export async function login(_: string | null, form: FormData) {
+  const email = String(form.get("email") ?? "").trim();
+  const password = String(form.get("password") ?? "");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) return "Informe um e-mail válido.";
+  if (!password || password.length > 200) return "Informe a senha.";
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({
-    email: String(form.get("email")),
-    password: String(form.get("password")),
-  });
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return "E-mail ou senha inválidos.";
   redirect("/admin");
 }
@@ -39,7 +40,9 @@ export async function saveCard(_: string | null, form: FormData): Promise<string
   const name = String(form.get("name") ?? "").trim();
   if (!name) return "Informe o nome do item.";
 
-  const price = num(form.get("price")) ?? 0;
+  const rawPrice = num(form.get("price"));
+  if (rawPrice === null) return "Informe o preço do item.";
+  const price = rawPrice;
   if (!Number.isFinite(price) || price < 0) return "O preço precisa ser um número maior ou igual a zero.";
   const refPrice = num(form.get("ref_price"));
   if (refPrice !== null && (!Number.isFinite(refPrice) || refPrice < 0)) return "O preço de referência é inválido.";
@@ -95,19 +98,19 @@ export async function saveCard(_: string | null, form: FormData): Promise<string
   redirect("/admin");
 }
 
-export async function deleteCard(form: FormData) {
+export async function deleteCard(_: string | null, form: FormData): Promise<string | null> {
   const supabase = await requireUser();
   const { error } = await supabase.from("cards").delete().eq("id", String(form.get("id")));
-  if (error) throw new Error(`Não foi possível excluir: ${error.message}`);
+  if (error) return `Não foi possível excluir: ${error.message}`;
   revalidatePath("/", "layout");
   redirect("/admin");
 }
 
-export async function setStatus(form: FormData) {
+export async function setStatus(form: FormData): Promise<string | null> {
   const supabase = await requireUser();
   const id = String(form.get("id"));
   const status = String(form.get("status"));
-  if (!STATUSES.includes(status)) throw new Error("Status inválido.");
+  if (!STATUSES.includes(status)) return "Status inválido.";
   const patch: { status: string; quantity?: number } = { status };
   if (status === "available") {
     // Voltar a "disponível" sem estoque deixaria a carta invisível: garante 1 unidade.
@@ -115,20 +118,22 @@ export async function setStatus(form: FormData) {
     if (data && data.quantity < 1) patch.quantity = 1;
   }
   const { error } = await supabase.from("cards").update(patch).eq("id", id);
-  if (error) throw new Error(`Não foi possível alterar o status: ${error.message}`);
+  if (error) return `Não foi possível alterar o status: ${error.message}`;
   revalidatePath("/", "layout");
+  return null;
 }
 
-export async function sellOne(form: FormData) {
+export async function sellOne(_: string | null, form: FormData): Promise<string | null> {
   const supabase = await requireUser();
   const id = String(form.get("id"));
   const { data } = await supabase.from("cards").select("quantity").eq("id", id).single();
-  if (!data) return;
+  if (!data) return "Item não encontrado.";
   const quantity = Math.max(0, data.quantity - 1);
   const { error } = await supabase
     .from("cards")
     .update(quantity === 0 ? { quantity, status: "sold" } : { quantity })
     .eq("id", id);
-  if (error) throw new Error(`Não foi possível registrar a venda: ${error.message}`);
+  if (error) return `Não foi possível registrar a venda: ${error.message}`;
   revalidatePath("/", "layout");
+  return null;
 }

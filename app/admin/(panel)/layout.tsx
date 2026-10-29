@@ -11,19 +11,19 @@ export default async function PanelLayout({ children }: { children: React.ReactN
 
   return (
     <div>
-      <nav className="mb-6 flex items-center gap-4 rounded-2xl border border-black/5 bg-white px-4 py-3 text-sm shadow-sm">
+      <nav className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-2xl border border-gold/25 bg-white px-4 py-3 text-sm shadow-sm">
         <Link href="/admin" className="flex items-center gap-2">
-          <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-ink to-indigo-600 text-base font-black text-white">
+          <span className="grid h-9 w-9 place-items-center rounded-full bg-ink font-display text-xl font-bold text-gold-soft ring-1 ring-gold/60">
             V
           </span>
-          <span className="font-extrabold">
+          <span className="font-display text-xl font-semibold tracking-wide">
             {STORE_NAME} <span className="font-medium text-black/50">· Admin</span>
           </span>
         </Link>
         <Link href="/admin" className="ml-2 font-bold">
           Produtos
         </Link>
-        <Link href="/admin/nova" className="text-violet-700">
+        <Link href="/admin/nova" className="font-semibold text-gold-deep hover:underline">
           + Novo produto
         </Link>
         <form action={logout} className="ml-auto">

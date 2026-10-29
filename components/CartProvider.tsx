@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import Link from "next/link";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { CartLine } from "@/lib/whatsapp";
 
 interface Ctx {
@@ -17,6 +18,8 @@ const KEY = "vino-cart";
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
+  const [toast, setToast] = useState<string | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     try {
@@ -37,6 +40,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     lines,
     count: lines.reduce((s, l) => s + l.qty, 0),
     add: (l, max) => {
+      setToast(l.name);
+      clearTimeout(timer.current);
+      timer.current = setTimeout(() => setToast(null), 3500);
       const found = lines.find((x) => x.id === l.id);
       persist(
         found
@@ -56,7 +62,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     clear: () => persist([]),
   };
 
-  return <CartCtx.Provider value={value}>{children}</CartCtx.Provider>;
+  return (
+    <CartCtx.Provider value={value}>
+      {children}
+      <div aria-live="polite" role="status" className="pointer-events-none fixed inset-x-4 bottom-20 z-[60] mx-auto max-w-sm print:hidden">
+        {toast && (
+          <div className="fade-up pointer-events-auto flex items-center gap-3 rounded-2xl bg-ink px-4 py-3 text-sm text-white shadow-2xl ring-1 ring-gold/50">
+            <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gold text-xs font-bold text-ink">✓</span>
+            <span className="min-w-0 flex-1 truncate">{toast} adicionada</span>
+            <Link href="/carrinho" onClick={() => setToast(null)} className="shrink-0 font-semibold text-gold-soft underline underline-offset-4">
+              Ver carrinho
+            </Link>
+          </div>
+        )}
+      </div>
+    </CartCtx.Provider>
+  );
 }
 
 export const useCart = () => {

@@ -159,7 +159,7 @@ export default function Header() {
           <Link href="/carrinho" aria-label="Carrinho" className={roundBtn}>
             <CartIcon />
             {count > 0 && (
-              <span className="absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-gold px-1 text-[11px] font-bold text-white">
+              <span key={count} className="cart-bump absolute -right-1.5 -top-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-gold px-1 text-[11px] font-bold text-white">
                 {count}
               </span>
             )}

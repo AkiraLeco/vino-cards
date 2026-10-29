@@ -92,12 +92,16 @@ export default async function Catalog({
         </div>
       </div>
 
+      <div className="lg:grid lg:grid-cols-[260px_minmax(0,1fr)] lg:items-start lg:gap-8">
+      <aside className="lg:sticky lg:top-24">
       <Filters
         opts={{ sets: uniq("set_name"), rarities: uniq("rarity") }}
         values={sp}
         action={basePath}
         mode={mode}
       />
+      </aside>
+      <div>
 
       {error && (
         <p className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
@@ -118,7 +122,7 @@ export default async function Catalog({
           </Link>
         </div>
       ) : (
-        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:mt-0 xl:grid-cols-4">
           {cards.map((c) => (
             <CardItem key={c.id} card={c} />
           ))}
@@ -155,6 +159,8 @@ export default async function Catalog({
           )}
         </nav>
       )}
+      </div>
+      </div>
     </div>
   );
 }
