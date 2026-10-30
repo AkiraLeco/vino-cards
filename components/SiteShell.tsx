@@ -16,13 +16,25 @@ export default function SiteShell({
   const isAdmin = usePathname().startsWith("/admin");
 
   if (isAdmin) {
-    return <div className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6 sm:py-8">{children}</div>;
+    return (
+      <main id="conteudo" tabIndex={-1} className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6 outline-none sm:py-8">
+        {children}
+      </main>
+    );
   }
 
   return (
     <>
+      <a
+        href="#conteudo"
+        className="sr-only z-[100] rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-white focus:not-sr-only focus:fixed focus:left-3 focus:top-3"
+      >
+        Pular para o conteúdo
+      </a>
       <Header />
-      <div className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6 sm:py-8">{children}</div>
+      <main id="conteudo" tabIndex={-1} className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6 outline-none sm:py-8">
+        {children}
+      </main>
       {footer}
       {floating}
     </>

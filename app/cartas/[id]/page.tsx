@@ -125,7 +125,7 @@ export default async function CardPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
-      <nav className="mb-4 flex flex-wrap items-center gap-1.5 text-sm text-black/50" aria-label="Você está em">
+      <nav className="mb-4 flex flex-wrap items-center gap-1.5 text-sm text-black/60" aria-label="Você está em">
         {crumbs.map(([label, href]) => (
           <span key={href} className="flex items-center gap-1.5">
             <Link href={href} className="hover:text-gold-deep">
@@ -149,10 +149,10 @@ export default async function CardPage({
           </div>
 
           <div className="rounded-2xl border border-gold/30 bg-white p-5 shadow-lg shadow-ink/5">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-black/45">Preço</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-black/60">Preço</p>
             <p className="font-display text-5xl font-bold tracking-tight text-ink">{brl(card.price)}</p>
             {card.ref_price != null && (
-              <p className="mt-1 text-sm text-black/50">Referência de mercado: {brl(card.ref_price)}</p>
+              <p className="mt-1 text-sm text-black/60">Referência de mercado: {brl(card.ref_price)}</p>
             )}
             <div className="mt-4 flex flex-wrap gap-2">
               {single && (
@@ -184,7 +184,7 @@ export default async function CardPage({
               <AddToCart card={card} />
             </div>
             {unavailable && card.status === "available" && (
-              <p className="mt-2 text-center text-xs text-black/50">Sem estoque no momento.</p>
+              <p className="mt-2 text-center text-xs text-black/60">Sem estoque no momento.</p>
             )}
           </div>
 
@@ -192,7 +192,7 @@ export default async function CardPage({
             {rows.map(([k, v]) =>
               v ? (
                 <div key={k} className="flex justify-between gap-4 px-4 py-2.5 text-sm">
-                  <dt className="text-black/50">{k}</dt>
+                  <dt className="text-black/60">{k}</dt>
                   <dd className="text-right font-semibold">{v}</dd>
                 </div>
               ) : null,
@@ -201,7 +201,7 @@ export default async function CardPage({
 
           {card.notes && (
             <div className="rounded-2xl border border-black/5 bg-white p-4 text-sm leading-relaxed text-black/75 shadow-sm">
-              <p className="mb-1 text-xs font-bold uppercase tracking-wide text-black/40">Observações</p>
+              <p className="mb-1 text-xs font-bold uppercase tracking-wide text-black/60">Observações</p>
               {card.notes}
             </div>
           )}

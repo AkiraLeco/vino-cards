@@ -66,11 +66,11 @@ export default function CardItem({ card }: { card: Card }) {
         )}
         <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-snug sm:text-base">
           {card.name}
-          {single && card.number && <span className="font-normal text-black/45"> #{card.number}</span>}
+          {single && card.number && <span className="font-normal text-black/60"> #{card.number}</span>}
         </h3>
         <div className="mt-auto flex flex-wrap items-end justify-between gap-x-2 gap-y-1 pt-2">
           <span className="flex flex-col leading-none">
-            {showRef && <span className="mb-0.5 text-[11px] text-black/40 line-through">{brl(card.ref_price!)}</span>}
+            {showRef && <span className="mb-0.5 text-[11px] text-black/60 line-through">{brl(card.ref_price!)}</span>}
             <span className="font-display text-2xl font-bold tracking-tight text-ink sm:text-[1.7rem]">{brl(card.price)}</span>
           </span>
           <span

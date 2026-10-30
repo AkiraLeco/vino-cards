@@ -14,7 +14,7 @@ export type FilterMode = "single" | "sealed" | "other";
 
 const field =
   "w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none transition focus:border-gold";
-const lbl = "flex min-w-0 flex-col gap-1 text-[11px] font-semibold uppercase tracking-wider text-black/50";
+const lbl = "flex min-w-0 flex-col gap-1 text-[11px] font-semibold uppercase tracking-wider text-black/60";
 
 export default function Filters({
   opts,
@@ -72,7 +72,7 @@ export default function Filters({
             <span className="ml-2 rounded-full bg-gold px-2 py-0.5 text-xs text-white">{active}</span>
           )}
         </span>
-        <span className="text-black/40">{open ? "▲" : "▼"}</span>
+        <span className="text-black/60">{open ? "▲" : "▼"}</span>
       </button>
 
       <form
@@ -175,7 +175,7 @@ export default function Filters({
                 aria-label={`Remover filtro ${label}`}
                 className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-violet-50 px-3 py-1 text-xs font-medium text-ink transition hover:border-gold hover:bg-violet-100"
               >
-                {label} <span aria-hidden className="text-black/40">✕</span>
+                {label} <span aria-hidden className="text-black/60">✕</span>
               </Link>
             </li>
           ))}

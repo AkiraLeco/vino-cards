@@ -12,7 +12,7 @@ import { CATEGORIES, CONDITIONS, GAMES, LANGUAGES, type Card } from "@/lib/types
 
 const field =
   "w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none transition focus:border-gold [&>option]:text-black";
-const label = "flex flex-col gap-1 text-[11px] font-semibold uppercase tracking-wider text-black/55";
+const label = "flex flex-col gap-1 text-[11px] font-semibold uppercase tracking-wider text-black/60";
 const section = "rounded-2xl border border-gold/20 bg-white p-4 shadow-sm sm:p-5";
 const sectionTitle = "mb-3 flex items-center gap-2 font-display text-xl font-bold";
 const num = "grid h-6 w-6 place-items-center rounded-full bg-ink text-xs text-gold-soft";
@@ -304,7 +304,7 @@ export default function CardForm({ card }: { card?: Card }) {
                   {ligaLoading ? "Consultando..." : "Ver preço na LigaPokémon"}
                 </button>
                 {liga?.error && (
-                  <p className="mt-2 text-sm text-red-600">
+                  <p role="alert" className="mt-2 text-sm text-red-700">
                     {liga.error}{" "}
                     <a href={ligaSearchUrl(v.name)} target="_blank" rel="noreferrer" className="font-semibold underline">
                       Abrir busca na Liga
@@ -353,7 +353,7 @@ export default function CardForm({ card }: { card?: Card }) {
                     ))}
                   </ul>
                 )}
-                <p className="mt-2 text-[11px] text-black/50">
+                <p className="mt-2 text-[11px] text-black/60">
                   Clique em um valor para preencher o preço (a média vira o preço de referência). Confira
                   se é a coleção e o número certos.
                 </p>
@@ -363,7 +363,7 @@ export default function CardForm({ card }: { card?: Card }) {
             <label className={label}>
               Quantidade
               <input name="quantity" type="number" min="0" defaultValue={card?.quantity ?? 1} className={field} />
-              <span className="font-normal text-black/45">Quantidade 0 marca o item como vendido.</span>
+              <span className="font-normal text-black/60">Quantidade 0 marca o item como vendido.</span>
             </label>
             <label className={label}>
               Status
@@ -399,7 +399,7 @@ export default function CardForm({ card }: { card?: Card }) {
               className={field}
             />
             {uploading && <span className="text-violet-700">Enviando fotos...</span>}
-            {photoError && <span className="text-red-600">{photoError}</span>}
+            {photoError && <span role="alert" className="text-red-700">{photoError}</span>}
             {photos.length > 0 && (
               <div className="mt-1 flex flex-wrap gap-2">
                 {photos.map((u) => (

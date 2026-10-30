@@ -54,7 +54,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`}
               target="_blank"
               rel="noreferrer"
-              className="fixed bottom-4 right-4 z-50 print:hidden rounded-full bg-[#1faa59] px-4 py-2.5 text-xs font-bold sm:px-5 sm:py-3 sm:text-sm text-white shadow-xl shadow-black/20 ring-1 ring-white/30 transition hover:bg-[#178a47] hover:-translate-y-0.5"
+              aria-label="Conversar no WhatsApp (abre em nova aba)"
+              className="fixed bottom-4 right-4 z-50 print:hidden rounded-full bg-[#15803d] px-4 py-2.5 text-xs font-bold sm:px-5 sm:py-3 sm:text-sm text-white shadow-xl shadow-black/20 ring-1 ring-white/30 transition hover:bg-[#12733a] hover:-translate-y-0.5"
             >
               WhatsApp
             </a>

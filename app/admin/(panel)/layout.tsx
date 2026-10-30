@@ -17,7 +17,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             V
           </span>
           <span className="font-display text-xl font-semibold tracking-wide">
-            {STORE_NAME} <span className="font-medium text-black/50">· Admin</span>
+            {STORE_NAME} <span className="font-medium text-black/60">· Admin</span>
           </span>
         </Link>
         <Link href="/admin" className="ml-2 font-bold">

@@ -26,7 +26,7 @@ export default function AddToCart({ card }: { card: Card }) {
         setDone(true);
         setTimeout(() => setDone(false), 1500);
       }}
-      className="w-full rounded-xl bg-ink py-4 text-sm font-bold uppercase tracking-[0.16em] text-white shadow-lg shadow-ink/20 transition hover:bg-gold-deep active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-black/10 disabled:text-black/50 disabled:shadow-none"
+      className="w-full rounded-xl bg-ink py-4 text-sm font-bold uppercase tracking-[0.16em] text-white shadow-lg shadow-ink/20 transition hover:bg-gold-deep active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-black/10 disabled:text-black/60 disabled:shadow-none"
     >
       {disabled ? (card.status === "reserved" ? "Reservada" : card.status === "sold" ? "Vendida" : "Indisponível") : done ? "Adicionada ✓" : "Adicionar ao carrinho"}
     </button>

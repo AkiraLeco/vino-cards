@@ -208,7 +208,7 @@ export default function Header() {
                   href={l.href}
                   onClick={close}
                   className={`block rounded-lg py-2 hover:bg-violet-50 hover:text-violet-700 ${
-                    l.indent ? "pl-8 pr-3 text-sm text-black/55" : "px-3"
+                    l.indent ? "pl-8 pr-3 text-sm text-black/60" : "px-3"
                   }`}
                 >
                   {l.indent && "↳ "}

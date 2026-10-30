@@ -53,7 +53,7 @@ export default function CartPage() {
       <div className="mx-auto max-w-md rounded-3xl border border-dashed border-gold/40 bg-white px-6 py-16 text-center">
         <p className="font-display text-6xl text-gold">♦</p>
         <h1 className="mt-3 font-display text-3xl font-bold">Seu carrinho está vazio</h1>
-        <p className="mb-6 mt-2 text-sm text-black/55">Explore o catálogo e adicione suas cartas favoritas.</p>
+        <p className="mb-6 mt-2 text-sm text-black/60">Explore o catálogo e adicione suas cartas favoritas.</p>
         <Link href="/" className="rounded-full bg-ink px-8 py-3 text-sm font-bold text-white transition hover:bg-gold-deep">
           Ver itens
         </Link>
@@ -80,7 +80,7 @@ export default function CartPage() {
                 <Link href={`/cartas/${l.id}`} className="line-clamp-2 font-semibold leading-snug hover:text-gold-deep">
                   {l.name}
                 </Link>
-                <p className="mt-0.5 text-xs text-black/55">
+                <p className="mt-0.5 text-xs text-black/60">
                   {l.condition} · {brl(l.price)} cada
                 </p>
                 <div className="mt-2 flex items-center gap-2">
@@ -99,12 +99,12 @@ export default function CartPage() {
                   >
                     +
                   </button>
-                  {l.max != null && l.qty >= l.max && <span className="text-[11px] text-black/45">máx. em estoque</span>}
+                  {l.max != null && l.qty >= l.max && <span className="text-[11px] text-black/60">máx. em estoque</span>}
                 </div>
               </div>
               <div className="flex flex-col items-end gap-2">
                 <span className="font-display text-2xl font-bold">{brl(l.price * l.qty)}</span>
-                <button onClick={() => remove(l.id)} className="text-xs text-black/45 underline-offset-2 hover:text-red-700 hover:underline">
+                <button onClick={() => remove(l.id)} className="text-xs text-black/60 underline-offset-2 hover:text-red-700 hover:underline">
                   Remover
                 </button>
               </div>
@@ -162,23 +162,23 @@ export default function CartPage() {
               )}
               <button
                 disabled={busy}
-                className="rounded-xl bg-[#1faa59] py-3.5 text-center text-sm font-bold uppercase tracking-[0.14em] text-white shadow-lg shadow-black/10 transition hover:bg-[#178a47] disabled:opacity-60"
+                className="rounded-xl bg-[#15803d] py-3.5 text-center text-sm font-bold uppercase tracking-[0.14em] text-white shadow-lg shadow-black/10 transition hover:bg-[#12733a] disabled:opacity-60"
               >
                 {busy ? "Enviando..." : "Enviar pedido pelo WhatsApp"}
               </button>
-              <p className="text-center text-xs text-black/45">Os itens ficam reservados para você por 48 horas.</p>
+              <p className="text-center text-xs text-black/60">Os itens ficam reservados para você por 48 horas.</p>
             </form>
           ) : (
             <p className="mt-5 rounded-xl bg-black/5 py-3 text-center text-sm text-black/60">
               O envio de pedidos está indisponível no momento.
             </p>
           )}
-          <p className="mt-3 text-center text-xs text-black/45">Pagamento e entrega combinados diretamente com a loja.</p>
+          <p className="mt-3 text-center text-xs text-black/60">Pagamento e entrega combinados diretamente com a loja.</p>
           <button
             onClick={() => {
               if (window.confirm("Esvaziar o carrinho?")) clear();
             }}
-            className="mt-3 w-full text-sm text-black/50 hover:text-black"
+            className="mt-3 w-full text-sm text-black/60 hover:text-black"
           >
             Esvaziar carrinho
           </button>

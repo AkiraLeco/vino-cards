@@ -22,7 +22,7 @@ const COLOR = {
   received: "bg-amber-100 text-amber-800",
   paid: "bg-sky-100 text-sky-800",
   delivered: "bg-emerald-100 text-emerald-800",
-  cancelled: "bg-black/10 text-black/55",
+  cancelled: "bg-black/10 text-black/60",
 } as const;
 const NEXT: Record<string, [string, string][]> = {
   received: [["paid", "Marcar como pago"], ["cancelled", "Cancelar e devolver ao estoque"]],
@@ -61,11 +61,11 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
       </div>
 
       {error && (
-        <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+        <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
           Não foi possível carregar os pedidos. Confirme que as migrations 003 e 004 foram executadas no Supabase.
         </p>
       )}
-      {!error && orders.length === 0 && <p className="rounded-xl bg-white p-6 text-center text-sm text-black/55">Nenhum pedido.</p>}
+      {!error && orders.length === 0 && <p className="rounded-xl bg-white p-6 text-center text-sm text-black/60">Nenhum pedido.</p>}
 
       {orders.map((o) => (
         <article key={o.id} className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
@@ -87,7 +87,7 @@ export default async function Pedidos({ searchParams }: { searchParams: Promise<
             {o.order_items.map((i) => (
               <li key={i.id} className="flex justify-between gap-3 py-1.5">
                 <span>
-                  {i.qty}x {i.name} {i.condition && <span className="text-black/45">({i.condition})</span>}
+                  {i.qty}x {i.name} {i.condition && <span className="text-black/60">({i.condition})</span>}
                 </span>
                 <span>{brl(Number(i.price) * i.qty)}</span>
               </li>

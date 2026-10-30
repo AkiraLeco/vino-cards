@@ -40,10 +40,10 @@ export default async function Colecoes({ params }: { params: Promise<{ game: str
       <div className="mb-6 border-b border-gold/30 pb-4">
         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-deep">{GAMES[game]}</p>
         <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl">Coleções</h1>
-        <p className="mt-1 text-sm text-black/55">Escolha uma coleção para ver as cartas.</p>
+        <p className="mt-1 text-sm text-black/60">Escolha uma coleção para ver as cartas.</p>
       </div>
       {error && (
-        <p className="rounded-lg bg-red-100 p-3 text-sm text-red-800">
+        <p role="alert" className="rounded-lg bg-red-100 p-3 text-sm text-red-800">
           Erro ao carregar as coleções. Confirme que o SQL de migração foi executado no Supabase.
         </p>
       )}

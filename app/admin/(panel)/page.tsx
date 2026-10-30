@@ -59,7 +59,7 @@ export default async function AdminList({ searchParams }: { searchParams: Promis
       <div className="grid grid-cols-3 gap-2 sm:gap-3">
         {stats.map(([k, v]) => (
           <div key={k} className="rounded-2xl border border-gold/25 bg-white p-3 text-center shadow-sm sm:p-5">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-black/50 sm:text-[11px]">{k}</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-black/60 sm:text-[11px]">{k}</p>
             <p className="font-display text-2xl font-bold text-ink sm:text-4xl">{v}</p>
           </div>
         ))}
@@ -96,13 +96,13 @@ export default async function AdminList({ searchParams }: { searchParams: Promis
           Filtrar
         </button>
         {filtered && (
-          <Link href="/admin" className="px-2 py-2 text-sm text-black/55 underline">
+          <Link href="/admin" className="px-2 py-2 text-sm text-black/60 underline">
             Limpar
           </Link>
         )}
       </form>
 
-      <div className="flex items-center justify-between text-sm text-black/55">
+      <div className="flex items-center justify-between text-sm text-black/60">
         <span>
           {total} {total === 1 ? "item" : "itens"}
           {filtered && " encontrados"}

@@ -67,7 +67,7 @@ export default async function Catalog({
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-deep">Catálogo</p>
           <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl">{title}</h1>
-          <p className="text-sm text-black/55">
+          <p className="text-sm text-black/60">
             {total === 0
               ? "Nenhum item"
               : `Mostrando ${from}-${to} de ${total.toLocaleString("pt-BR")} ${total === 1 ? "item" : "itens"}`}
@@ -87,7 +87,7 @@ export default async function Catalog({
       <div>
 
       {error && (
-        <p className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+        <p role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
           Erro ao carregar os itens. Se você acabou de atualizar o site, confirme que o SQL de
           migração foi executado no Supabase.
         </p>
@@ -97,7 +97,7 @@ export default async function Catalog({
         <div className="mt-6 rounded-2xl border border-dashed border-black/15 bg-white px-6 py-14 text-center">
           <p className="font-display text-5xl text-gold">♠</p>
           <p className="mt-2 font-semibold">Nenhum item encontrado</p>
-          <p className="mt-1 text-sm text-black/55">
+          <p className="mt-1 text-sm text-black/60">
             Tente remover algum filtro ou volte mais tarde, estamos sempre adicionando novidades.
           </p>
           <Link href={basePath} className="mt-4 inline-block rounded-full bg-ink px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-gold-deep">
