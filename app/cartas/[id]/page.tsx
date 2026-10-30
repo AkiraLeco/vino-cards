@@ -14,7 +14,9 @@ import { CATEGORIES, CONDITIONS, GAMES, cardImage, type Card } from "@/lib/types
 export const revalidate = 60;
 
 // Uma consulta só por requisição (metadata e página compartilham o resultado).
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const getCard = cache(async (id: string) => {
+  if (!UUID.test(id)) return null; // endereço inventado: 404 em vez de erro do banco
   const { data, error } = await createPublicClient().from("cards").select("*").eq("id", id).maybeSingle();
   if (error) throw error; // erro de rede/banco vai para error.tsx, não vira 404
   return data as Card | null;
