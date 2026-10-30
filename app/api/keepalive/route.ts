@@ -10,5 +10,7 @@ export async function GET(request: Request) {
   }
   const supabase = await createClient();
   const { error } = await supabase.from("cards").select("id").limit(1);
-  return NextResponse.json({ ok: !error }, { status: error ? 500 : 200 });
+  // Cancela pedidos vencidos (48 h sem confirmação) e devolve o estoque; sem a migration 004 só retorna erro, ignorado.
+  const { data: expired } = await supabase.rpc("expire_orders");
+  return NextResponse.json({ ok: !error, expired: expired ?? 0 }, { status: error ? 500 : 200 });
 }

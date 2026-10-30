@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createOrder } from "./actions";
 import CardImage from "@/components/CardImage";
 import { useCart } from "@/components/CartProvider";
 import { WHATSAPP_ORDER } from "@/lib/features";
@@ -19,6 +20,31 @@ export default function CartPage() {
     if (hasLines) void refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasLines]);
+  const [form, setForm] = useState({ name: "", phone: "", note: "" });
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    setError(null);
+    const res = await createOrder({ ...form, items: lines.map((l) => ({ id: l.id, qty: l.qty })) });
+    if (res.ok) {
+      const url = whatsappUrl(lines, window.location.origin, res.number);
+      clear();
+      window.location.href = url; // mesma aba: celulares costumam bloquear pop-up aberto após uma espera
+      return;
+    }
+    if (res.unavailable) {
+      // Banco sem a tabela de pedidos: mantém o envio simples pelo WhatsApp.
+      window.location.href = whatsappUrl(lines, window.location.origin);
+      return;
+    }
+    setError(res.error);
+    setBusy(false);
+    void refresh();
+  }
+
   const total = lines.reduce((s, l) => s + l.price * l.qty, 0);
   const units = lines.reduce((s, l) => s + l.qty, 0);
 
@@ -100,14 +126,48 @@ export default function CartPage() {
             <span className="font-display text-4xl font-bold">{brl(total)}</span>
           </div>
           {WHATSAPP_ORDER ? (
-            <a
-              href={whatsappUrl(lines, window.location.origin)}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-5 block rounded-xl bg-[#1faa59] py-3.5 text-center text-sm font-bold uppercase tracking-[0.14em] text-white shadow-lg shadow-black/10 transition hover:bg-[#178a47]"
-            >
-              Enviar pedido pelo WhatsApp
-            </a>
+            <form onSubmit={submit} className="mt-5 flex flex-col gap-2.5">
+              <input
+                required
+                minLength={2}
+                maxLength={100}
+                autoComplete="name"
+                placeholder="Seu nome"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className="rounded-xl border border-black/10 px-3 py-2.5 text-sm outline-none focus:border-gold"
+              />
+              <input
+                required
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                placeholder="WhatsApp com DDD"
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                className="rounded-xl border border-black/10 px-3 py-2.5 text-sm outline-none focus:border-gold"
+              />
+              <textarea
+                maxLength={500}
+                rows={2}
+                placeholder="Observação (opcional)"
+                value={form.note}
+                onChange={(e) => setForm({ ...form, note: e.target.value })}
+                className="rounded-xl border border-black/10 px-3 py-2.5 text-sm outline-none focus:border-gold"
+              />
+              {error && (
+                <p role="alert" className="rounded-lg bg-red-50 p-2.5 text-sm text-red-800">
+                  {error}
+                </p>
+              )}
+              <button
+                disabled={busy}
+                className="rounded-xl bg-[#1faa59] py-3.5 text-center text-sm font-bold uppercase tracking-[0.14em] text-white shadow-lg shadow-black/10 transition hover:bg-[#178a47] disabled:opacity-60"
+              >
+                {busy ? "Enviando..." : "Enviar pedido pelo WhatsApp"}
+              </button>
+              <p className="text-center text-xs text-black/45">Os itens ficam reservados para você por 48 horas.</p>
+            </form>
           ) : (
             <p className="mt-5 rounded-xl bg-black/5 py-3 text-center text-sm text-black/60">
               O envio de pedidos está indisponível no momento.

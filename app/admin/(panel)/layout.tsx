@@ -23,6 +23,9 @@ export default async function PanelLayout({ children }: { children: React.ReactN
         <Link href="/admin" className="ml-2 font-bold">
           Produtos
         </Link>
+        <Link href="/admin/pedidos" className="font-bold">
+          Pedidos
+        </Link>
         <Link href="/admin/nova" className="font-semibold text-gold-deep hover:underline">
           + Novo produto
         </Link>

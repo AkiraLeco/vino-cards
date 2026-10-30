@@ -12,7 +12,7 @@ export interface CartLine {
   image?: string;
 }
 
-export function whatsappUrl(lines: CartLine[], origin: string) {
+export function whatsappUrl(lines: CartLine[], origin: string, orderNumber?: number) {
   const total = lines.reduce((s, l) => s + l.price * l.qty, 0);
   const body = lines
     .map(
@@ -20,7 +20,10 @@ export function whatsappUrl(lines: CartLine[], origin: string) {
         `• ${l.qty}x ${l.name} (${l.condition}) - ${brl(l.price * l.qty)}\n  ${origin}/cartas/${l.id}`,
     )
     .join("\n");
-  const text = `Olá! Tenho interesse nas cartas:\n\n${body}\n\nTotal: ${brl(total)}`;
+  const head = orderNumber
+    ? `Olá! Fiz o pedido #${String(orderNumber).padStart(4, "0")} no site:`
+    : "Olá! Tenho interesse nas cartas:";
+  const text = `${head}\n\n${body}\n\nTotal: ${brl(total)}`;
   const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
   return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
 }
