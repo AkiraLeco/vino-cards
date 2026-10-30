@@ -108,7 +108,7 @@ export default async function CardPage({
   const section = card.category === "accessory" ? "acessorios" : card.category === "sealed" ? "selados" : "cartas";
   const crumbs: [string, string][] = [["Início", "/"]];
   if (card.game) {
-    crumbs.push([GAMES[card.game], `/${card.game}/cartas`]);
+    crumbs.push([GAMES[card.game], `/${card.game}`]);
     crumbs.push([
       card.category === "sealed" ? "Produtos Selados" : "Cartas Avulsas",
       `/${card.game}/${section}`,
