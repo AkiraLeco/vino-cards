@@ -121,7 +121,11 @@ export async function saveCard(_: string | null, form: FormData): Promise<string
     : await supabase.from("cards").insert(row);
   if (error) {
     console.error("saveCard", error);
-    return "Não foi possível salvar. Tente novamente.";
+    if (error.code === "42501")
+      return "Sem permissão para salvar: seu usuário ainda não é admin no Supabase. Confira o passo do papel admin (migration 003) e entre de novo no /admin.";
+    if (error.code === "23514") return "Algum valor foi recusado pelo banco (preço, quantidade, status ou condição). Revise os campos.";
+    if (error.code === "PGRST204" || error.code === "42703") return "O banco está desatualizado: rode as migrations pendentes no Supabase.";
+    return `Não foi possível salvar (código ${error.code ?? "desconhecido"}). Tente novamente.`;
   }
 
   updateTag("cards");
