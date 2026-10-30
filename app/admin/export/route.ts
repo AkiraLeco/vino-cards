@@ -1,7 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import { CATEGORIES, CONDITIONS, GAMES, type Card } from "@/lib/types";
 
-const cell = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+// Prefixa com apóstrofo valores que o Excel interpretaria como fórmula (CSV injection).
+const cell = (v: unknown) => {
+  let t = String(v ?? "");
+  if (/^[=+\-@\t\r]/.test(t) && !/^-?\d+([.,]\d+)?$/.test(t)) t = `'${t}`;
+  return `"${t.replace(/"/g, '""')}"`;
+};
 
 export async function GET() {
   const supabase = await createClient();
@@ -20,6 +25,7 @@ export async function GET() {
     headers: {
       "content-type": "text/csv; charset=utf-8",
       "content-disposition": 'attachment; filename="cartas.csv"',
+      "cache-control": "no-store",
     },
   });
 }

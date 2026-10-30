@@ -21,5 +21,6 @@ export function whatsappUrl(lines: CartLine[], origin: string) {
     )
     .join("\n");
   const text = `Olá! Tenho interesse nas cartas:\n\n${body}\n\nTotal: ${brl(total)}`;
-  return `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+  const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
+  return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
 }

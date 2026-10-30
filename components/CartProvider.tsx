@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 import type { CartLine } from "@/lib/whatsapp";
 
 interface Ctx {
@@ -11,6 +12,8 @@ interface Ctx {
   setQty: (id: string, qty: number) => void;
   remove: (id: string) => void;
   clear: () => void;
+  /** Confere preço e estoque atuais no banco; remove itens vendidos e ajusta quantidades. */
+  refresh: () => Promise<void>;
 }
 
 const CartCtx = createContext<Ctx | null>(null);
@@ -60,6 +63,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       ),
     remove: (id) => persist(lines.filter((x) => x.id !== id)),
     clear: () => persist([]),
+    refresh: async () => {
+      if (!lines.length) return;
+      const { data, error } = await createClient()
+        .from("cards")
+        .select("id, price, quantity, status")
+        .in("id", lines.map((l) => l.id));
+      if (error || !data) return;
+      const fresh = new Map(data.map((r) => [r.id as string, r]));
+      persist(
+        lines.flatMap((l) => {
+          const r = fresh.get(l.id);
+          if (!r || r.status === "sold" || r.quantity < 1) return [];
+          return [{ ...l, price: Number(r.price), max: r.quantity, qty: Math.min(l.qty, r.quantity) }];
+        }),
+      );
+    },
   };
 
   return (

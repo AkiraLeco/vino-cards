@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cache } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import AddToCart from "@/components/AddToCart";
@@ -12,6 +13,13 @@ import { CATEGORIES, CONDITIONS, GAMES, cardImage, type Card } from "@/lib/types
 // Dados públicos: página em cache, renovada a cada 60 s (o admin também a renova ao salvar).
 export const revalidate = 60;
 
+// Uma consulta só por requisição (metadata e página compartilham o resultado).
+const getCard = cache(async (id: string) => {
+  const { data, error } = await createPublicClient().from("cards").select("*").eq("id", id).maybeSingle();
+  if (error) throw error; // erro de rede/banco vai para error.tsx, não vira 404
+  return data as Card | null;
+});
+
 // Prévia ao compartilhar o link (WhatsApp, Instagram etc.)
 export async function generateMetadata({
   params,
@@ -19,10 +27,8 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const supabase = createPublicClient();
-  const { data } = await supabase.from("cards").select("*").eq("id", id).maybeSingle();
-  if (!data) return {};
-  const c = data as Card;
+  const c = await getCard(id);
+  if (!c) return {};
   const title = `${c.name} - ${brl(c.price)}`;
   const description = [
     c.set_name,
@@ -36,6 +42,7 @@ export async function generateMetadata({
   return {
     title,
     description,
+    robots: c.status === "sold" ? { index: false } : undefined,
     openGraph: { title, description, images: image.startsWith("http") ? [image] : [] },
   };
 }
@@ -46,10 +53,8 @@ export default async function CardPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const supabase = createPublicClient();
-  const { data } = await supabase.from("cards").select("*").eq("id", id).maybeSingle();
-  if (!data) notFound();
-  const card = data as Card;
+  const card = await getCard(id);
+  if (!card) notFound();
 
   const single = card.category === "single";
   const rows: [string, string | null][] = [
@@ -64,6 +69,7 @@ export default async function CardPage({
     ["Em estoque", String(card.quantity)],
   ];
 
+  const supabase = createPublicClient();
   let relatedQuery = supabase
     .from("cards")
     .select("*")

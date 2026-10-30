@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import CardImage from "@/components/CardImage";
 import { useCart } from "@/components/CartProvider";
 import { WHATSAPP_ORDER } from "@/lib/features";
@@ -11,7 +12,13 @@ const step =
   "grid h-8 w-8 place-items-center rounded-full border border-black/10 text-base transition hover:border-gold hover:bg-violet-50 disabled:cursor-not-allowed disabled:opacity-30";
 
 export default function CartPage() {
-  const { lines, setQty, remove, clear } = useCart();
+  const { lines, setQty, remove, clear, refresh } = useCart();
+  // Ao abrir o carrinho, atualiza preços e estoque (itens vendidos saem sozinhos).
+  const hasLines = lines.length > 0;
+  useEffect(() => {
+    if (hasLines) void refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasLines]);
   const total = lines.reduce((s, l) => s + l.price * l.qty, 0);
   const units = lines.reduce((s, l) => s + l.qty, 0);
 
