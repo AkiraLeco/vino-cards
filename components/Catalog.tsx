@@ -1,8 +1,8 @@
 import Link from "next/link";
 import CardItem from "@/components/CardItem";
 import Filters, { type FilterMode } from "@/components/Filters";
-import { createClient } from "@/lib/supabase/server";
-import type { Card, Category, Game } from "@/lib/types";
+import { fetchCatalog, fetchFilterOptions } from "@/lib/catalog";
+import type { Category, Game } from "@/lib/types";
 
 export type SP = Record<string, string | undefined>;
 
@@ -21,49 +21,32 @@ export default async function Catalog({
   category?: Category;
   mode: FilterMode;
 }) {
-  const supabase = await createClient();
-
   const per = [30, 60, 90].includes(Number(sp.per)) ? Number(sp.per) : 30;
   const page = Math.max(1, Math.floor(Number(sp.page)) || 1);
   const price = (v?: string) => (v && v.trim() !== "" && Number.isFinite(Number(v)) ? Number(v) : null);
-  const min = price(sp.min);
-  const max = price(sp.max);
-  const hideSold = !sp.f || sp.stock === "1";
 
-  let query = supabase.from("cards").select("*", { count: "exact" });
-  if (game) query = query.eq("game", game);
-  if (category) query = query.eq("category", category);
-  if (hideSold) query = query.in("status", ["available", "reserved"]);
-  if (sp.q) query = query.ilike("name", `%${sp.q}%`);
-  if (sp.set) query = query.eq("set_name", sp.set);
-  if (sp.rarity) query = query.eq("rarity", sp.rarity);
-  if (sp.cond) query = query.eq("condition", sp.cond);
-  if (sp.lang) query = query.eq("language", sp.lang);
-  if (min !== null) query = query.gte("price", min);
-  if (max !== null) query = query.lte("price", max);
-  query =
-    sp.sort === "price_asc"
-      ? query.order("price", { ascending: true })
-      : sp.sort === "price_desc"
-        ? query.order("price", { ascending: false })
-        : sp.sort === "name"
-          ? query.order("name", { ascending: true })
-          : query.order("featured", { ascending: false }).order("created_at", { ascending: false });
-  query = query.range((page - 1) * per, page * per - 1);
+  const [{ cards, total, failed: error }, opts] = await Promise.all([
+    fetchCatalog({
+      game,
+      category,
+      hideSold: !sp.f || sp.stock === "1",
+      q: sp.q,
+      set: sp.set,
+      rarity: sp.rarity,
+      cond: sp.cond,
+      lang: sp.lang,
+      min: price(sp.min),
+      max: price(sp.max),
+      sort: sp.sort,
+      page,
+      per,
+    }),
+    fetchFilterOptions(game ?? null, category ?? null),
+  ]);
 
-  let metaQuery = supabase.from("cards").select("set_name, rarity");
-  if (game) metaQuery = metaQuery.eq("game", game);
-  if (category) metaQuery = metaQuery.eq("category", category);
-
-  const [{ data, error, count }, { data: meta }] = await Promise.all([query, metaQuery]);
-
-  const cards = (data ?? []) as Card[];
-  const total = count ?? 0;
   const pages = Math.max(1, Math.ceil(total / per));
   const from = total === 0 ? 0 : (page - 1) * per + 1;
   const to = Math.min(total, page * per);
-  const uniq = (k: "set_name" | "rarity") =>
-    [...new Set((meta ?? []).map((m) => m[k]).filter(Boolean))].sort() as string[];
 
   const pageHref = (p: number) => {
     const params = new URLSearchParams();
@@ -95,7 +78,7 @@ export default async function Catalog({
       <div className="lg:grid lg:grid-cols-[260px_minmax(0,1fr)] lg:items-start lg:gap-8">
       <aside className="lg:sticky lg:top-24">
       <Filters
-        opts={{ sets: uniq("set_name"), rarities: uniq("rarity") }}
+        opts={opts}
         values={sp}
         action={basePath}
         mode={mode}

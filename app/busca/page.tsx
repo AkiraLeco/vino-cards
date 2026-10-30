@@ -2,7 +2,6 @@ import Catalog, { type SP } from "@/components/Catalog";
 
 export const metadata = { title: "Busca", robots: { index: false } };
 
-export const dynamic = "force-dynamic";
 
 export default async function Busca({ searchParams }: { searchParams: Promise<SP> }) {
   const sp = await searchParams;

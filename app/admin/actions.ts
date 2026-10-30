@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/auth";
 import { LANGUAGES } from "@/lib/types";
@@ -124,6 +124,7 @@ export async function saveCard(_: string | null, form: FormData): Promise<string
     return "Não foi possível salvar. Tente novamente.";
   }
 
+  updateTag("cards");
   revalidatePath("/", "layout");
   redirect("/admin");
 }
@@ -144,6 +145,7 @@ export async function deleteCard(_: string | null, form: FormData): Promise<stri
     .filter(Boolean)
     .map((p: string) => decodeURIComponent(p));
   if (paths.length) await supabase.storage.from("card-photos").remove(paths);
+  updateTag("cards");
   revalidatePath("/", "layout");
   redirect("/admin");
 }
@@ -165,6 +167,7 @@ export async function setStatus(form: FormData): Promise<string | null> {
     console.error("setStatus", error);
     return "Não foi possível alterar o status.";
   }
+  updateTag("cards");
   revalidatePath("/", "layout");
   return null;
 }
@@ -190,7 +193,8 @@ export async function sellOne(_: string | null, form: FormData): Promise<string 
       return "Não foi possível registrar a venda.";
     }
     if (updated?.length) {
-      revalidatePath("/", "layout");
+      updateTag("cards");
+  revalidatePath("/", "layout");
       return null;
     }
   }

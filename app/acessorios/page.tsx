@@ -1,11 +1,15 @@
+import type { Metadata } from "next";
+import { catalogSeo } from "@/lib/seo";
 import Catalog, { type SP } from "@/components/Catalog";
 
-export const metadata = {
-  title: "Acessórios",
-  description: "Playmats, sleeves, deckboxes e outros acessórios para cartas.",
-};
+export async function generateMetadata({ searchParams }: { searchParams: Promise<SP> }): Promise<Metadata> {
+  return {
+    ...catalogSeo("/acessorios", await searchParams),
+    title: "Acessórios",
+    description: "Playmats, sleeves, deckboxes e outros acessórios para cartas.",
+  };
+}
 
-export const dynamic = "force-dynamic";
 
 export default async function Acessorios({ searchParams }: { searchParams: Promise<SP> }) {
   return (

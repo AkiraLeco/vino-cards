@@ -31,6 +31,7 @@ export const metadata: Metadata = {
     template: `%s | ${STORE_NAME}`,
   },
   openGraph: { siteName: STORE_NAME, type: "website", locale: "pt_BR" },
+  twitter: { card: "summary_large_image" },
   description: "Cartas avulsas, produtos selados e acessórios de Pokémon e Riftbound: veja estado, coleção, preço e disponibilidade.",
 };
 

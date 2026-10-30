@@ -4,7 +4,7 @@ import { type GameTileData } from "@/components/GameTile";
 import PromoBanner, { type PromoSlide } from "@/components/PromoBanner";
 import TileCarousel from "@/components/TileCarousel";
 import { STORE_NAME } from "@/lib/format";
-import { PERKS } from "@/lib/site";
+import { PERKS, siteUrl } from "@/lib/site";
 import { createPublicClient } from "@/lib/supabase/public";
 import type { Card } from "@/lib/types";
 
@@ -85,8 +85,27 @@ export default async function Home() {
     .limit(10);
   const cards = (data ?? []) as Card[];
 
+  const jsonLd = [
+    { "@context": "https://schema.org", "@type": "Organization", name: STORE_NAME, url: siteUrl() },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: STORE_NAME,
+      url: siteUrl(),
+      potentialAction: {
+        "@type": "SearchAction",
+        target: `${siteUrl()}/busca?q={search_term_string}`,
+        "query-input": "required name=search_term_string",
+      },
+    },
+  ];
+
   return (
     <div className="mx-auto max-w-[1400px]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\u003c") }}
+      />
       <PromoBanner slides={SLIDES} />
 
       <section className="mt-6">
