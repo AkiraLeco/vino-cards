@@ -104,7 +104,7 @@ export default async function Home() {
     <div className="mx-auto max-w-[1400px]">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\u003c") }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
       <PromoBanner slides={SLIDES} />
 
