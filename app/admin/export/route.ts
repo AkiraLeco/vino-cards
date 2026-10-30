@@ -1,12 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
+import { csvCell } from "@/lib/validation";
 import { CATEGORIES, CONDITIONS, GAMES, type Card } from "@/lib/types";
 
-// Prefixa com apóstrofo valores que o Excel interpretaria como fórmula (CSV injection).
-const cell = (v: unknown) => {
-  let t = String(v ?? "");
-  if (/^[=+\-@\t\r]/.test(t) && !/^-?\d+([.,]\d+)?$/.test(t)) t = `'${t}`;
-  return `"${t.replace(/"/g, '""')}"`;
-};
+const cell = csvCell;
 
 export async function GET() {
   const supabase = await createClient();

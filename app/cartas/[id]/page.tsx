@@ -8,13 +8,13 @@ import { brl } from "@/lib/format";
 import CardItem from "@/components/CardItem";
 import { createPublicClient } from "@/lib/supabase/public";
 import { siteUrl } from "@/lib/site";
+import { UUID } from "@/lib/validation";
 import { CATEGORIES, CONDITIONS, GAMES, cardImage, type Card } from "@/lib/types";
 
 // Dados públicos: página em cache, renovada a cada 60 s (o admin também a renova ao salvar).
 export const revalidate = 60;
 
 // Uma consulta só por requisição (metadata e página compartilham o resultado).
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const getCard = cache(async (id: string) => {
   if (!UUID.test(id)) return null; // endereço inventado: 404 em vez de erro do banco
   const { data, error } = await createPublicClient().from("cards").select("*").eq("id", id).maybeSingle();

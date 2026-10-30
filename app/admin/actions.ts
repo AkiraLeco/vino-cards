@@ -5,6 +5,7 @@ import { revalidatePath, updateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/auth";
 import { LANGUAGES } from "@/lib/types";
+import { UUID, safeUrl } from "@/lib/validation";
 
 const requireUser = requireAdmin;
 
@@ -35,21 +36,7 @@ const CONDITION_KEYS = ["M", "NM", "SP", "MP", "HP", "D"];
 
 const MAX_PRICE = 1_000_000;
 const MAX_QTY = 100_000;
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
 const text = (v: FormDataEntryValue | null, max: number) => String(v ?? "").trim().slice(0, max);
-
-/** Aceita só https de hosts conhecidos (Supabase Storage e imagens da API TCG). */
-function safeUrl(raw: string): boolean {
-  try {
-    const u = new URL(raw);
-    if (u.protocol !== "https:") return false;
-    const supa = process.env.NEXT_PUBLIC_SUPABASE_URL ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname : null;
-    return u.hostname === "images.pokemontcg.io" || u.hostname === supa;
-  } catch {
-    return false;
-  }
-}
 
 /** Devolve a mensagem de erro (mostrada no formulário) ou redireciona ao salvar. */
 export async function saveCard(_: string | null, form: FormData): Promise<string | null> {
@@ -86,7 +73,7 @@ export async function saveCard(_: string | null, form: FormData): Promise<string
     .map((u) => u.trim())
     .filter(Boolean);
   if (photos.length > 10) return "Use no máximo 10 fotos.";
-  if (!photos.every(safeUrl)) return "Uma das fotos tem endereço inválido. Envie a foto novamente.";
+  if (!photos.every((u) => safeUrl(u))) return "Uma das fotos tem endereço inválido. Envie a foto novamente.";
   const imageApiUrl = text(form.get("image_api_url"), 500);
   if (imageApiUrl && !safeUrl(imageApiUrl)) return "Endereço da imagem inválido.";
 

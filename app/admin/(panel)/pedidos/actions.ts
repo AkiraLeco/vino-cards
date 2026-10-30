@@ -2,9 +2,9 @@
 
 import { revalidatePath, updateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth";
+import { UUID } from "@/lib/validation";
 
 const STATUSES = ["received", "paid", "delivered", "cancelled"];
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export async function setOrderStatus(form: FormData): Promise<void> {
   const supabase = await requireAdmin();

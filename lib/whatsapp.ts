@@ -1,4 +1,4 @@
-import { brl } from "./format";
+import { brl } from "./format.ts";
 
 export interface CartLine {
   id: string;
