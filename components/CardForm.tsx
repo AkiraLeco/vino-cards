@@ -8,6 +8,7 @@ import { brl } from "@/lib/format";
 import { compressImage } from "@/lib/image";
 import { createClient } from "@/lib/supabase/client";
 import { searchTcg, type TcgResult } from "@/lib/pokemontcg";
+import { searchRiftbound } from "@/lib/riftbound";
 import { CATEGORIES, CONDITIONS, GAMES, LANGUAGES, type Card } from "@/lib/types";
 
 const field =
@@ -79,7 +80,7 @@ export default function CardForm({ card }: { card?: Card }) {
 
   async function search() {
     setLoading(true);
-    setResults(await searchTcg(q).catch(() => []));
+    setResults(await (game === "riftbound" ? searchRiftbound(q) : searchTcg(q)).catch(() => []));
     setLoading(false);
   }
 
@@ -144,7 +145,10 @@ export default function CardForm({ card }: { card?: Card }) {
             {category !== "accessory" && (
               <label className={label}>
                 Jogo
-                <select value={game} onChange={(e) => setGame(e.target.value)} className={field}>
+                <select value={game} onChange={(e) => {
+                    setGame(e.target.value);
+                    setResults([]);
+                  }} className={field}>
                   {Object.entries(GAMES).map(([k, t]) => (
                     <option key={k} value={k}>
                       {t}
@@ -155,9 +159,9 @@ export default function CardForm({ card }: { card?: Card }) {
             )}
           </div>
 
-          {isSingle && game === "pokemon" && (
+          {isSingle && (game === "pokemon" || game === "riftbound") && (
             <div className="mt-4 rounded-xl bg-violet-50 p-3">
-              <p className="mb-2 text-sm font-semibold">Buscar na base Pokémon TCG (preenche os dados)</p>
+              <p className="mb-2 text-sm font-semibold">Buscar na base {game === "riftbound" ? "Riftbound" : "Pokémon TCG"} (preenche os dados)</p>
               <div className="flex gap-2">
                 <input
                   value={q}
@@ -168,7 +172,7 @@ export default function CardForm({ card }: { card?: Card }) {
                       search();
                     }
                   }}
-                  placeholder="Ex: Charizard (nome em inglês)"
+                  placeholder={game === "riftbound" ? "Ex: Jinx (nome em inglês)" : "Ex: Charizard (nome em inglês)"}
                   className={field}
                 />
                 <button
@@ -193,12 +197,6 @@ export default function CardForm({ card }: { card?: Card }) {
                 </div>
               )}
             </div>
-          )}
-          {isSingle && game !== "pokemon" && (
-            <p className="mt-4 rounded-xl bg-black/5 p-3 text-sm text-black/70">
-              A busca automática existe só para Pokémon. Para {GAMES[game as keyof typeof GAMES]}, preencha os
-              dados e envie a foto.
-            </p>
           )}
         </section>
 

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { normNum } from "../lib/liga.ts";
+import { mapRiftItems } from "../lib/riftbound.ts";
 import { UUID, csvCell, safeUrl } from "../lib/validation.ts";
 import { whatsappUrl, type CartLine } from "../lib/whatsapp.ts";
 
@@ -49,4 +50,31 @@ test("whatsappUrl monta a mensagem com total e número do pedido", () => {
   assert.match(text, /https:\/\/loja\.exemplo\/cartas\/i1/);
   assert.match(text, /Total: R\$\s?25,50/);
   assert.doesNotMatch(decodeURIComponent(whatsappUrl(lines, "https://x").split("text=")[1]), /pedido #/);
+});
+
+test("mapRiftItems converte a Riftcodex e ignora cartas sem imagem", () => {
+  const out = mapRiftItems([
+    {
+      riftbound_id: "ogn-202-298",
+      name: "Jinx - Rebel",
+      collector_number: 202,
+      classification: { rarity: "Epic" },
+      set: { set_id: "OGN", label: "Origins" },
+      media: { image_url: "https://cmsassets.rgpub.io/a.png" },
+    },
+    { riftbound_id: "x", name: "Sem imagem", collector_number: 1, media: { image_url: null } },
+  ]);
+  assert.equal(out.length, 1);
+  assert.deepEqual(out[0], {
+    id: "ogn-202-298",
+    name: "Jinx - Rebel",
+    number: "202",
+    rarity: "Epic",
+    set: { name: "Origins", ptcgoCode: "OGN" },
+    images: { small: "https://cmsassets.rgpub.io/a.png", large: "https://cmsassets.rgpub.io/a.png" },
+  });
+});
+
+test("safeUrl aceita imagens da Riftcodex/Riot", () => {
+  assert.equal(safeUrl("https://cmsassets.rgpub.io/sanity/images/x.png?accountingTag=RB", SUPA), true);
 });

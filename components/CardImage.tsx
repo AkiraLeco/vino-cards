@@ -1,8 +1,9 @@
 import Image from "next/image";
+import { API_IMAGE_HOSTS } from "@/lib/validation";
 
 // Hosts liberados em next.config.ts. Qualquer outro endereço (ou SVG) é exibido sem otimização,
 // para a imagem nunca quebrar.
-const OPTIMIZED_HOSTS = ["images.pokemontcg.io", process.env.NEXT_PUBLIC_SUPABASE_URL ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname : ""];
+const OPTIMIZED_HOSTS = [...API_IMAGE_HOSTS, process.env.NEXT_PUBLIC_SUPABASE_URL ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname : ""];
 
 function canOptimize(src: string) {
   try {

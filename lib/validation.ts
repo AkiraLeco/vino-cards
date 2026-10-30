@@ -1,3 +1,6 @@
+/** Hosts das imagens de cartas vindas das APIs (Pokémon TCG e Riftcodex/Riot). */
+export const API_IMAGE_HOSTS = ["images.pokemontcg.io", "cmsassets.rgpub.io"];
+
 export const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /** Aceita só https de hosts conhecidos (Supabase Storage e imagens da API TCG). */
@@ -6,7 +9,7 @@ export function safeUrl(raw: string, supabaseUrl = process.env.NEXT_PUBLIC_SUPAB
     const u = new URL(raw);
     if (u.protocol !== "https:") return false;
     const supa = supabaseUrl ? new URL(supabaseUrl).hostname : null;
-    return u.hostname === "images.pokemontcg.io" || u.hostname === supa;
+    return API_IMAGE_HOSTS.includes(u.hostname) || u.hostname === supa;
   } catch {
     return false;
   }
