@@ -65,7 +65,9 @@ export default function InfiniteCards({ game, initial }: { game: Game; initial: 
     return () => io.disconnect();
   }, [game, done, cards.length]);
 
-  useEffect(updateEdges, [cards.length, loop, updateEdges]);
+  useEffect(() => {
+    updateEdges();
+  }, [updateEdges]);
 
   const move = (dir: 1 | -1) => {
     const el = scroller.current;
