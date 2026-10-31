@@ -2,6 +2,7 @@ import Link from "next/link";
 import CardImage from "@/components/CardImage";
 import { notFound } from "next/navigation";
 import { createPublicClient } from "@/lib/supabase/public";
+import { getSetDates, sortByRelease } from "@/lib/setdates";
 import { GAMES, cardImage, isGame } from "@/lib/types";
 
 // Só depende do jogo na URL: página em cache, renovada a cada 2 min (o admin também a renova ao salvar).
@@ -33,7 +34,9 @@ export default async function Colecoes({ params }: { params: Promise<{ game: str
     if (cur) cur.count += 1;
     else sets.set(name, { count: 1, image: cardImage(c) });
   }
-  const list = [...sets.entries()].sort(([a], [b]) => a.localeCompare(b));
+  // Mais recentes primeiro (data de lançamento vinda das APIs dos jogos).
+  const order = sortByRelease([...sets.keys()], await getSetDates(game));
+  const list = order.map((name) => [name, sets.get(name)!] as const);
 
   return (
     <div className="mx-auto max-w-[1400px]">

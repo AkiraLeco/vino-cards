@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { normNum } from "../lib/liga.ts";
 import { mapRiftItems } from "../lib/riftbound.ts";
+import { sortByRelease } from "../lib/setdates.ts";
 import { UUID, csvCell, safeUrl } from "../lib/validation.ts";
 import { whatsappUrl, type CartLine } from "../lib/whatsapp.ts";
 
@@ -77,4 +78,9 @@ test("mapRiftItems converte a Riftcodex e ignora cartas sem imagem", () => {
 
 test("safeUrl aceita imagens da Riftcodex/Riot", () => {
   assert.equal(safeUrl("https://cmsassets.rgpub.io/sanity/images/x.png?accountingTag=RB", SUPA), true);
+});
+
+test("sortByRelease ordena do mais recente ao mais antigo e deixa sem data no fim", () => {
+  const dates = new Map([["Antiga", 100], ["Nova", 300], ["Média", 200]]);
+  assert.deepEqual(sortByRelease(["Antiga", "Zeta", "Nova", "Alfa", "Média"], dates), ["Nova", "Média", "Antiga", "Alfa", "Zeta"]);
 });

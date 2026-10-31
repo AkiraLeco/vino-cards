@@ -1,4 +1,5 @@
 import { unstable_cache } from "next/cache";
+import { getSetDates, sortByRelease } from "@/lib/setdates";
 import { createPublicClient } from "@/lib/supabase/public";
 import type { Card, Category, Game } from "@/lib/types";
 
@@ -64,7 +65,7 @@ export const fetchFilterOptions = unstable_cache(
     const { data } = await q.limit(5000);
     const uniq = (k: "set_name" | "rarity") =>
       [...new Set((data ?? []).map((m) => m[k]).filter(Boolean))].sort() as string[];
-    return { sets: uniq("set_name"), rarities: uniq("rarity") };
+    return { sets: sortByRelease(uniq("set_name"), await getSetDates(game)), rarities: uniq("rarity") };
   },
   ["catalog-filters"],
   { revalidate: 300, tags: ["cards"] },
