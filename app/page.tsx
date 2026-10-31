@@ -1,10 +1,12 @@
 import Link from "next/link";
 import CardItem from "@/components/CardItem";
+import InfiniteCards from "@/components/InfiniteCards";
 import { type GameTileData } from "@/components/GameTile";
 import PromoBanner, { type PromoSlide } from "@/components/PromoBanner";
 import TileCarousel from "@/components/TileCarousel";
 import { STORE_NAME } from "@/lib/format";
 import { PERKS, siteUrl } from "@/lib/site";
+import { HOME_PAGE_SIZE } from "@/lib/home";
 import { createPublicClient } from "@/lib/supabase/public";
 import { GAMES, type Card, type Game } from "@/lib/types";
 
@@ -85,7 +87,8 @@ export default async function Home() {
       .eq("game", game)
       .order("featured", { ascending: false })
       .order("created_at", { ascending: false })
-      .limit(10);
+      .order("id")
+      .limit(HOME_PAGE_SIZE);
     return (data ?? []) as Card[];
   };
   const [pokemon, riftbound] = await Promise.all([rowFor("pokemon"), rowFor("riftbound")]);
@@ -134,13 +137,7 @@ export default async function Home() {
                   Ver todas →
                 </Link>
               </div>
-              <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-3 sm:gap-4">
-                {cards.map((c) => (
-                  <div key={c.id} className="flex w-[46%] shrink-0 snap-start [&>*]:w-full sm:w-[30%] lg:w-[23.5%] xl:w-[19%]">
-                    <CardItem card={c} />
-                  </div>
-                ))}
-              </div>
+              <InfiniteCards game={game} initial={cards} />
             </section>
           ),
       )}

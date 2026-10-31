@@ -20,7 +20,7 @@ export interface CatalogQuery {
 }
 
 /** Só as colunas que o card da listagem usa (a página do item busca o registro completo). */
-const LIST_COLUMNS =
+export const LIST_COLUMNS =
   "id, game, category, name, set_name, number, condition, is_foil, price, ref_price, quantity, status, photo_urls, image_api_url";
 
 async function runCatalog(p: CatalogQuery) {
