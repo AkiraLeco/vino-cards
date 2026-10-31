@@ -6,7 +6,7 @@ import TileCarousel from "@/components/TileCarousel";
 import { STORE_NAME } from "@/lib/format";
 import { PERKS, siteUrl } from "@/lib/site";
 import { createPublicClient } from "@/lib/supabase/public";
-import type { Card } from "@/lib/types";
+import { GAMES, type Card, type Game } from "@/lib/types";
 
 // Dados públicos: a página é gerada e renovada a cada 60 s (o admin também a renova ao salvar).
 export const revalidate = 60;
@@ -75,15 +75,24 @@ export default async function Home() {
     .order("created_at", { ascending: false })
     .limit(5);
   const sealed = (sealedData ?? []) as Card[];
-  const { data } = await supabase
-    .from("cards")
-    .select("*")
-    .in("status", ["available", "reserved"])
-    .eq("category", "single")
-    .order("featured", { ascending: false })
-    .order("created_at", { ascending: false })
-    .limit(10);
-  const cards = (data ?? []) as Card[];
+  // Uma fileira de cartas avulsas por jogo (destaques primeiro, depois as mais novas).
+  const rowFor = async (game: Game) => {
+    const { data } = await supabase
+      .from("cards")
+      .select("*")
+      .in("status", ["available", "reserved"])
+      .eq("category", "single")
+      .eq("game", game)
+      .order("featured", { ascending: false })
+      .order("created_at", { ascending: false })
+      .limit(10);
+    return (data ?? []) as Card[];
+  };
+  const [pokemon, riftbound] = await Promise.all([rowFor("pokemon"), rowFor("riftbound")]);
+  const rows = [
+    { game: "pokemon" as const, cards: pokemon },
+    { game: "riftbound" as const, cards: riftbound },
+  ];
 
   const jsonLd = [
     { "@context": "https://schema.org", "@type": "Organization", name: STORE_NAME, url: siteUrl() },
@@ -112,23 +121,28 @@ export default async function Home() {
         <TileCarousel tiles={TILES} />
       </section>
 
-      {cards.length > 0 && (
-        <section className="mt-14">
-          <div className="mb-6 flex items-end justify-between gap-4 border-b border-gold/30 pb-3">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-deep">Seleção da casa</p>
-              <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">Cartas avulsas</h2>
-            </div>
-            <Link href="/pokemon/cartas" className="text-sm font-semibold text-ink underline-offset-4 hover:text-gold-deep hover:underline">
-              Ver todos →
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
-            {cards.map((c) => (
-              <CardItem key={c.id} card={c} />
-            ))}
-          </div>
-        </section>
+      {rows.map(
+        ({ game, cards }) =>
+          cards.length > 0 && (
+            <section key={game} className="mt-14">
+              <div className="mb-6 flex items-end justify-between gap-4 border-b border-gold/30 pb-3">
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-deep">Cartas avulsas</p>
+                  <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">{GAMES[game]}</h2>
+                </div>
+                <Link href={`/${game}/cartas`} className="text-sm font-semibold text-ink underline-offset-4 hover:text-gold-deep hover:underline">
+                  Ver todas →
+                </Link>
+              </div>
+              <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-3 sm:gap-4">
+                {cards.map((c) => (
+                  <div key={c.id} className="flex w-[46%] shrink-0 snap-start [&>*]:w-full sm:w-[30%] lg:w-[23.5%] xl:w-[19%]">
+                    <CardItem card={c} />
+                  </div>
+                ))}
+              </div>
+            </section>
+          ),
       )}
 
       {sealed.length > 0 && (
